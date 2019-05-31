@@ -1,0 +1,15 @@
+# Default values for postgres-stash.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+docker:
+  registry: appscode
+  image: postgres-stash
+  tag: 9.6
+
+# optional argument to send pgdump or psql command
+pgArgs: ""
+
+# default values for prometheus metrics
+metrics:
+  enabled: true
+  labels: []

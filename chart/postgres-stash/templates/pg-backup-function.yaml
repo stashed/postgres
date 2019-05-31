@@ -1,0 +1,45 @@
+apiVersion: stash.appscode.com/v1beta1
+kind: Function
+metadata:
+  name: pg-backup
+  labels:
+    {{- include "postgres-stash.labels" . | nindent 4 }}
+spec:
+  image: {{ .Values.docker.registry }}/{{ .Values.docker.image }}:{{- .Values.docker.tag }}
+  args:
+  - backup-pg
+  # setup information
+  - --provider=${REPOSITORY_PROVIDER:=}
+  - --bucket=${REPOSITORY_BUCKET:=}
+  - --endpoint=${REPOSITORY_ENDPOINT:=}
+  - --rest-server-url=${REPOSITORY_URL:=}
+  - --path=${REPOSITORY_PREFIX:=}
+  - --secret-dir=/etc/repository/secret
+  - --scratch-dir=/tmp
+  - --enable-cache=${ENABLE_CACHE:=true}
+  - --max-connections=${MAX_CONNECTIONS:=0} # 0 indicates use default connection limit
+  - --hostname=${HOSTNAME:=}
+  - --pg-args=${pgArgs:={{ .Values.pgArgs }}} # optional arguments pass to pgdump command
+  # target information
+  - --namespace=${NAMESPACE:=default}
+  - --app-binding=${TARGET_NAME:=}
+  # cleanup information
+  - --retention-keep-last=${RETENTION_KEEP_LAST:=0}
+  - --retention-keep-hourly=${RETENTION_KEEP_HOURLY:=0}
+  - --retention-keep-daily=${RETENTION_KEEP_DAILY:=0}
+  - --retention-keep-weekly=${RETENTION_KEEP_WEEKLY:=0}
+  - --retention-keep-monthly=${RETENTION_KEEP_MONTHLY:=0}
+  - --retention-keep-yearly=${RETENTION_KEEP_YEARLY:=0}
+  - --retention-keep-tags=${RETENTION_KEEP_TAGS:=}
+  - --retention-prune=${RETENTION_PRUNE:=false}
+  - --retention-dry-run=${RETENTION_DRY_RUN:=false}
+  # output & metric information
+  - --output-dir=${outputDir:=}
+  - --metrics-enabled={{ .Values.metrics.enabled }}
+  - --metrics-pushgateway-url=${PROMETHEUS_PUSHGATEWAY_URL:=}
+  {{- if .Values.metrics.labels }}
+  - --metrics-labels={{ .Values.metrics.labels | quote }}
+  {{- end }}
+  volumeMounts:
+  - name: ${secretVolume}
+    mountPath: /etc/repository/secret
