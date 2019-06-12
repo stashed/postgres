@@ -1,7 +1,7 @@
 apiVersion: kubedb.com/v1alpha1
 kind: Postgres
 metadata:
-  name: sample-postgres
+  name: restored-postgres
   namespace: demo
 spec:
   version: "11.2"

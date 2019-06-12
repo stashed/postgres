@@ -1,0 +1,11 @@
+apiVersion: appcatalog.appscode.com/v1alpha1
+kind: AppBinding
+metadata:
+  name: my-custom-appbinding
+  namespace: my-database-namespace
+spec:
+  clientConfig:
+    service:
+      name: my-database-service
+  secret:
+    name: my-database-credentials-secret

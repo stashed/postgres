@@ -4,8 +4,7 @@
 docker:
   registry: appscode
   image: postgres-stash
-  tag: 9.6
-
+  tag: 11.2
 # optional argument to send pgdump or psql command
 pgArgs: ""
 
