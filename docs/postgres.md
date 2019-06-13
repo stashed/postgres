@@ -339,10 +339,173 @@ sample-postgres-backup   */5 * * * *   False     0        <none>          61s
 **BackupSession:**
 
 ```console
+$ kubectl get backupsession -n demo
+NAME                                BACKUPCONFIGURATION      PHASE       AGE
+sample-postgres-backup-1560350521   sample-postgres-backup   Succeeded   88s
 ```
 
 **Verify Backup:**
 
+Repository:
+
+```console
+$ kubectl get repository -n demo gcs-repo
+NAME       INTEGRITY   SIZE        SNAPSHOT-COUNT   LAST-SUCCESSFUL-BACKUP   AGE
+gcs-repo   true        3.441 KiB   1                31s                      17m
+```
+Image:
+
+<figure align="center">
+  <img alt="Backup data in GCS Bucket" src="/docs/images/sample-postgres-backup.png">
+  <figcaption align="center">Fig: Backup data in GCS Bucket</figcaption>
+</figure>
+
 ## Restore PostgreSQL
 
+**Deploy Restored Database:**
+
+```yaml
+apiVersion: kubedb.com/v1alpha1
+kind: Postgres
+metadata:
+  name: restored-postgres
+  namespace: demo
+spec:
+  version: "11.2"
+  storageType: Durable
+  databaseSecret:
+    secretName: sample-postgres-auth # use same secret as original the database
+  storage:
+    storageClassName: "standard"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+  init:
+    stashRestoreSession:
+      name: sample-postgres-restore
+  terminationPolicy: Delete
+```
+
+```console
+$ kubectl apply -f ./docs/examples/restore/restored-postgres.yaml
+postgres.kubedb.com/restored-postgres created
+```
+
+```console
+$ kubectl get pg -n demo restored-postgres
+NAME                VERSION   STATUS         AGE
+restored-postgres   11.2      Initializing   3m21s
+```
+
+appbinding
+
+```console
+$ kubectl get appbindings -n demo restored-postgres
+NAME                AGE
+restored-postgres   9m59s
+```
+
+RestoreSession:
+
+```yaml
+apiVersion: stash.appscode.com/v1beta1
+kind: RestoreSession
+metadata:
+  name: sample-postgres-restore
+  namespace: demo
+  labels:
+    kubedb.com/kind: Postgres
+spec:
+  task:
+    name: pg-restore
+  repository:
+    name: gcs-repo
+  target:
+    ref:
+      apiVersion: appcatalog.appscode.com/v1alpha1
+      kind: AppBinding
+      name: restored-postgres
+  rules:
+  - snapshots: [latest]
+```
+
+```console
+$ kubectl apply -f ./docs/examples/restore/restoresession.yaml
+restoresession.stash.appscode.com/sample-postgres-restore created
+```
+
+```console
+$ kubectl get restoresession -n demo sample-postgres-restore
+NAME                      REPOSITORY-NAME   PHASE       AGE
+sample-postgres-restore   gcs-repo          Succeeded   43s
+```
+
+**Verify Restored Data:**
+
+```console
+$ kubectl get pg -n demo restored-postgres
+NAME                VERSION   STATUS    AGE
+restored-postgres   11.2      Running   2m16s
+```
+
+Verify data:
+
+```console
+$ kubectl get pods -n demo --selector="kubedb.com/name=restored-postgres"
+NAME                READY   STATUS    RESTARTS   AGE
+sample-postgres-0   1/1     Running   0          8m58s
+```
+
+```console
+$ kubectl get pods -n demo --selector="kubedb.com/name=restored-postgres"
+NAME                  READY   STATUS    RESTARTS   AGE
+restored-postgres-0   1/1     Running   0          3m15s
+```
+
+```console
+$ kubectl exec -it -n demo restored-postgres-0 sh
+# login as "postgres" superuser.
+/ # psql -U postgres
+psql (11.2)
+Type "help" for help.
+
+# list available databases
+postgres=# \l
+                                 List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges   
+-----------+----------+----------+------------+------------+-----------------------
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+(3 rows)
+
+# connect to "postgres" database
+postgres=# \c postgres
+You are now connected to database "postgres" as user "postgres".
+
+# check the table we had created in original database has been restored here
+postgres=# \d
+          List of relations
+ Schema |  Name   | Type  |  Owner   
+--------+---------+-------+----------
+ public | company | table | postgres
+(1 row)
+
+# quit from the database
+postgres=# \q
+
+# exit from the pod
+/ # exit
+```
+
 ## Cleanup
+
+```console
+kubectl delete restoresession -n demo sample-postgres-restore
+kubectl delete pg -n demo restored-postgres
+kubectl delete pg -n demo sample-postgres
+```

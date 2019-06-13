@@ -6,6 +6,8 @@ metadata:
 spec:
   version: "11.2"
   storageType: Durable
+  databaseSecret:
+    secretName: sample-postgres-auth # use same secret as original the database
   storage:
     storageClassName: "standard"
     accessModes:
@@ -13,4 +15,7 @@ spec:
     resources:
       requests:
         storage: 1Gi
+  init:
+    stashRestoreSession:
+      name: sample-postgres-restore
   terminationPolicy: Delete
