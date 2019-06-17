@@ -96,7 +96,7 @@ metadata:
   name: sample-postgres
   namespace: demo
 spec:
-  version: "10.6-v2"
+  version: "9.6.7-v4"
   storageType: Durable
   storage:
     storageClassName: "standard"
@@ -122,7 +122,7 @@ Let's check if the database is ready to use,
 ```console
 $ kubectl get pg -n demo sample-postgres
 NAME              VERSION   STATUS    AGE
-sample-postgres   10.6-v2   Running   3m11s
+sample-postgres   9.6.7-v4  Running   3m11s
 ```
 
 The database is `Running`. Verify that KubeDB has created a Secret and a Service for this database using the following commands,
@@ -168,7 +168,7 @@ metadata:
     app.kubernetes.io/instance: sample-postgres
     app.kubernetes.io/managed-by: kubedb.com
     app.kubernetes.io/name: postgres
-    app.kubernetes.io/version: "10.6-v2"
+    app.kubernetes.io/version: "9.6.7-v4"
     kubedb.com/kind: Postgres
     kubedb.com/name: sample-postgres
 ...
@@ -233,7 +233,7 @@ Now, let's exec into the pod and create a table,
 $ kubectl exec -it -n demo sample-postgres-0 sh
 # login as "postgres" superuser.
 / # psql -U postgres
-psql (10.6)
+psql (9.6.7)
 Type "help" for help.
 
 # list available databases
@@ -428,7 +428,7 @@ metadata:
   name: restored-postgres
   namespace: demo
 spec:
-  version: "10.6-v2"
+  version: "9.6.7-v4"
   storageType: Durable
   databaseSecret:
     secretName: sample-postgres-auth # use same secret as original the database
@@ -461,7 +461,7 @@ If you check the database status, you will see it is stuck in `Initializing` sta
 ```console
 $ kubectl get pg -n demo restored-postgres
 NAME                VERSION   STATUS         AGE
-restored-postgres   10.6-v2   Initializing   3m21s
+restored-postgres   9.6.7-v4  Initializing   3m21s
 ```
 
 **Create RestoreSession:**
@@ -541,7 +541,7 @@ At first, check if the database has gone into `Running` state by the following c
 ```console
 $ kubectl get pg -n demo restored-postgres
 NAME                VERSION   STATUS    AGE
-restored-postgres   10.6-v2   Running   2m16s
+restored-postgres   9.6.7-v4   Running   2m16s
 ```
 
 Now, find out the database pod by the following command,
@@ -558,7 +558,7 @@ Now, exec into the database pod and list available tables,
 $ kubectl exec -it -n demo restored-postgres-0 sh
 # login as "postgres" superuser.
 / # psql -U postgres
-psql (10.6)
+psql (9.6.7)
 Type "help" for help.
 
 # list available databases

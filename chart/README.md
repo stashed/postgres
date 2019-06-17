@@ -48,7 +48,7 @@ The following table lists the configurable parameters of the Postgre-stash chart
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | `docker.registry` | Docker registry used to pull respective images                                                                                   | `appscode`       |
 | `docker.image`    | Docker image used to backup/restore PosegreSQL database                                                                          | `postgres-stash` |
-| `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `9.6`            |
+| `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `9.x`            |
 | `pgArgs`          | Optional arguments to pass to `psql`/`pgdump` command                                                                            |                  |
 | `metrics.enabled` | Specifies whether to send Prometheus metrics                                                                                     | `true`           |
 | `metrics.labels`  | Optional comma separated labels to add the Prometheus metrics                                                                    |                  |
