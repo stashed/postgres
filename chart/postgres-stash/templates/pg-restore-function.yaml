@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "postgres-stash.labels" . | nindent 4 }}
 spec:
-  image: {{ .Values.docker.registry }}/{{ .Values.docker.image }}:{{ .Values.docker.tag }}
+  image: {{ .Values.global.registry }}/{{ .Values.global.image }}:{{ .Values.global.tag }}
   args:
   - restore-pg
   # setup information
@@ -19,17 +19,17 @@ spec:
   - --enable-cache=${ENABLE_CACHE:=true}
   - --max-connections=${MAX_CONNECTIONS:=0} # 0 indicates use default connection limit
   - --hostname=${HOSTNAME:=}
-  - --pg-args=${pgArgs:={{ .Values.pgArgs }}} # optional arguments pass to pgdump command
+  - --pg-args=${pgArgs:={{ .Values.global.restore.pgArgs }}} # optional arguments pass to pgdump command
   # target information
   - --namespace=${NAMESPACE:=default}
   - --app-binding=${TARGET_NAME:=}
   - --snapshot=${RESTORE_SNAPSHOTS:=}
   # output & metric information
   - --output-dir=${outputDir:=}
-  - --metrics-enabled={{ .Values.metrics.enabled }}
+  - --metrics-enabled={{ .Values.global.metrics.enabled }}
   - --metrics-pushgateway-url=${PROMETHEUS_PUSHGATEWAY_URL:=}
-  {{- if .Values.metrics.labels }}
-  - --metrics-labels={{ .Values.metrics.labels | quote }}
+  {{- if .Values.global.metrics.labels }}
+  - --metrics-labels={{ .Values.global.metrics.labels | quote }}
   {{- end }}
   volumeMounts:
   - name: ${secretVolume}

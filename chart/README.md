@@ -44,25 +44,28 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Postgre-stash chart and their default values.
 
-|     Parameter     |                                                           Description                                                            |     Default      |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| `docker.registry` | Docker registry used to pull respective images                                                                                   | `appscode`       |
-| `docker.image`    | Docker image used to backup/restore PosegreSQL database                                                                          | `postgres-stash` |
-| `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `9.x`            |
-| `pgArgs`          | Optional arguments to pass to `psql`/`pgdump` command                                                                            |                  |
-| `metrics.enabled` | Specifies whether to send Prometheus metrics                                                                                     | `true`           |
-| `metrics.labels`  | Optional comma separated labels to add the Prometheus metrics                                                                    |                  |
+|        Parameter         |                                                           Description                                                            |     Default      |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `global.registry`        | Docker registry used to pull respective images                                                                                   | `appscode`       |
+| `global.image`           | Docker image used to backup/restore PosegreSQL database                                                                          | `postgres-stash` |
+| `global.tag`             | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `9.x`            |
+| `global.backup.pgArgs`   | Optional arguments to pass to `pgdump` command  while bakcup                                                                     |                  |
+| `global.restore.pgArgs`  | Optional arguments to pass to `psql` command while restore                                                                       |                  |
+| `global.metrics.enabled` | Specifies whether to send Prometheus metrics                                                                                     | `true`           |
+| `global.metrics.labels`  | Optional comma separated labels to add the Prometheus metrics                                                                    |                  |
+
+> We have declared all the configurable parameters as global parameter so that the parent chart can overwrite them.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 For example:
 
 ```console
-helm install --name postgres-stash --set metrics.enabled=false appscode/postgres-stash
+helm install --name postgres-stash --set global.metrics.enabled=false appscode/postgres-stash
 ```
 
-**Tips:** Use escape character (`\`) while providing multiple comma-separated labels for `metrics.labels`.
+**Tips:** Use escape character (`\`) while providing multiple comma-separated labels for `global.metrics.labels`.
 
 ```console
- helm install chart/postgres-stash --set metrics.labels="k1=v1\,k2=v2"
+ helm install chart/postgres-stash --set global.metrics.labels="k1=v1\,k2=v2"
 ```
