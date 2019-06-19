@@ -115,7 +115,7 @@ metadata:
   name: sample-postgres
   namespace: demo
 spec:
-  version: "11.1-v2"
+  version: "11.2"
   storageType: Durable
   storage:
     storageClassName: "standard"
@@ -141,7 +141,7 @@ Let's check if the database is ready to use,
 ```console
 $ kubectl get pg -n demo sample-postgres
 NAME              VERSION   STATUS    AGE
-sample-postgres   11.1-v2   Running   3m11s
+sample-postgres   11.2      Running   3m11s
 ```
 
 The database is `Running`. Verify that KubeDB has created a Secret and a Service for this database using the following commands,
@@ -187,7 +187,7 @@ metadata:
     app.kubernetes.io/instance: sample-postgres
     app.kubernetes.io/managed-by: kubedb.com
     app.kubernetes.io/name: postgres
-    app.kubernetes.io/version: "11.1-v2"
+    app.kubernetes.io/version: "11.2"
     kubedb.com/kind: Postgres
     kubedb.com/name: sample-postgres
 ...
@@ -252,7 +252,7 @@ Now, let's exec into the pod and create a table,
 $ kubectl exec -it -n demo sample-postgres-0 sh
 # login as "postgres" superuser.
 / # psql -U postgres
-psql (11.1)
+psql (11.2)
 Type "help" for help.
 
 # list available databases
@@ -355,7 +355,7 @@ metadata:
 spec:
   schedule: "*/5 * * * *"
   task:
-    name: pg-backup-11.1
+    name: pg-backup-11.2
   repository:
     name: gcs-repo
   target:
@@ -447,7 +447,7 @@ metadata:
   name: restored-postgres
   namespace: demo
 spec:
-  version: "11.1-v2"
+  version: "11.2"
   storageType: Durable
   databaseSecret:
     secretName: sample-postgres-auth # use same secret as original the database
@@ -480,7 +480,7 @@ If you check the database status, you will see it is stuck in `Initializing` sta
 ```console
 $ kubectl get pg -n demo restored-postgres
 NAME                VERSION   STATUS         AGE
-restored-postgres   11.1-v2   Initializing   3m21s
+restored-postgres   11.2      Initializing   3m21s
 ```
 
 **Create RestoreSession:**
@@ -509,7 +509,7 @@ metadata:
     kubedb.com/kind: Postgres # this label is mandatory if you are using KubeDB to deploy the database.
 spec:
   task:
-    name: pg-restore-11.1
+    name: pg-restore-11.2
   repository:
     name: gcs-repo
   target:
@@ -560,7 +560,7 @@ At first, check if the database has gone into `Running` state by the following c
 ```console
 $ kubectl get pg -n demo restored-postgres
 NAME                VERSION   STATUS    AGE
-restored-postgres   11.1-v2   Running   2m16s
+restored-postgres   11.2      Running   2m16s
 ```
 
 Now, find out the database pod by the following command,
@@ -577,7 +577,7 @@ Now, exec into the database pod and list available tables,
 $ kubectl exec -it -n demo restored-postgres-0 sh
 # login as "postgres" superuser.
 / # psql -U postgres
-psql (11.1)
+psql (11.2)
 Type "help" for help.
 
 # list available databases
