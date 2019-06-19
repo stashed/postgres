@@ -6,7 +6,7 @@
 global:
   registry: appscode
   image: postgres-stash
-  tag: 10.6
+  tag: 11.1
 
   # optional argument to send pgdump or psql command
   backup:
