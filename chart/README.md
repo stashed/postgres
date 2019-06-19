@@ -7,12 +7,12 @@
 ```console
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install appscode/postgres-stash --name=postgres-stash-9.6 --version=9.6
+helm install appscode/postgres-stash --name=postgres-stash-10.2 --version=10.2
 ```
 
 ## Introduction
 
-This chart installs necessary `Function` and `Task` definition to backup or restore PostgreSQL database 9.6 using Stash.
+This chart installs necessary `Function` and `Task` definition to backup or restore PostgreSQL database 10.2 using Stash.
 
 ## Prerequisites
 
@@ -32,20 +32,20 @@ helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
 ```
 
-- Install the chart with the release name `postgres-stash-9.6` run the following command,
+- Install the chart with the release name `postgres-stash-10.2` run the following command,
 
 ```console
-helm install appscode/postgres-stash --name=postgres-stash-9.6 --version=9.6
+helm install appscode/postgres-stash --name=postgres-stash-10.2 --version=10.2
 ```
 
-The above commands installs `Functions` and `Task` crds that are necessary to backup PostgreSQL database 9.6 using Stash.
+The above commands installs `Functions` and `Task` crds that are necessary to backup PostgreSQL database 10.2 using Stash.
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `postgres-stash-9.6` run the following command,
+To uninstall/delete the `postgres-stash-10.2` run the following command,
 
 ```console
-helm delete postgres-stash-9.6
+helm delete postgres-stash-10.2
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -58,7 +58,7 @@ The following table lists the configurable parameters of the `postgre-stash` cha
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | `global.registry`        | Docker registry used to pull respective images                                                                                   | `appscode`       |
 | `global.image`           | Docker image used to backup/restore PosegreSQL database                                                                          | `postgres-stash` |
-| `global.tag`             | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `9.6`            |
+| `global.tag`             | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `10.2`           |
 | `global.backup.pgArgs`   | Optional arguments to pass to `pgdump` command  while bakcup                                                                     |                  |
 | `global.restore.pgArgs`  | Optional arguments to pass to `psql` command while restore                                                                       |                  |
 | `global.metrics.enabled` | Specifies whether to send Prometheus metrics                                                                                     | `true`           |
@@ -71,7 +71,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 For example:
 
 ```console
-helm install --name postgres-stash-9.6 --set global.metrics.enabled=false appscode/postgres-stash
+helm install --name postgres-stash-10.2 --set global.metrics.enabled=false appscode/postgres-stash
 ```
 
 **Tips:** Use escape character (`\`) while providing multiple comma-separated labels for `global.metrics.labels`.

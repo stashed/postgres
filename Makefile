@@ -44,8 +44,8 @@ BIN_PLATFORMS    := $(DOCKER_PLATFORMS)
 OS   := $(if $(GOOS),$(GOOS),$(shell go env GOOS))
 ARCH := $(if $(GOARCH),$(GOARCH),$(shell go env GOARCH))
 
-BASEIMAGE_PROD   ?= postgres:10.6-alpine
-BASEIMAGE_DBG    ?= postgres:10.6
+BASEIMAGE_PROD   ?= postgres:10.2-alpine
+BASEIMAGE_DBG    ?= postgres:10.2
 
 IMAGE            := $(REGISTRY)/$(BIN)
 VERSION_PROD     := $(VERSION)
