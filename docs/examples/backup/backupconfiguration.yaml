@@ -6,7 +6,7 @@ metadata:
 spec:
   schedule: "*/5 * * * *"
   task:
-    name: pg-backup-10.2
+    name: pg-backup-10.6
   repository:
     name: gcs-repo
   target:
