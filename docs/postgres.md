@@ -22,7 +22,7 @@ Stash supports backup and restores PostgreSQL database. This guide will show you
 
 - Install Stash in your cluster following the steps [here](https://appscode.com/products/stash/0.8.3/setup/install/).
 
-- Install [KubeDB](https://kubedb.com)(`Optional`) in your cluster following the steps [here](https://kubedb.com/docs/0.12.0/setup/install/).
+- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/0.12.0/setup/install/).
 
 - If you are not familiar with how Stash backup and restore databases, please check the following guide:
   - [How Stash backup and restore databases](https://appscode.com/products/stash/0.8.3/guides/databases/overview/).
@@ -44,35 +44,54 @@ namespace/demo created
 
 >Note: YAML files used in this tutorial are stored [here](https://github.com/stashed/postgres/examples/).
 
-## Install Postgres plugin for Stash
+## Install Postgres Catalog for Stash
 
-At first, we have to install Postgres plugin `postgres-stash` for Stash. This plugin creates necessary `Function` and `Task` definition which is used by Stash to backup or restore a PostgreSQL database. We are going to use [Helm](https://helm.sh/) to install `postgres-stash` chart.
+At first, we have to install Postgres plugin (`postgres-catalog`) for Stash. This plugin creates necessary `Function` and `Task` definition which is used by Stash to backup or restore a PostgreSQL database. We are going to use [Helm](https://helm.sh/) to install `postgres-catalog` chart.
 
-Let's install `postgres-stash` chart,
+If you have already installed `stash-catalog` which contains necessary `Function` and `Task` definition to backup or restore all the databases supported by Stash, you can skip installing `postgres-catalog`.
+
+Let's install `postgres-catalog` chart,
 
 ```console
-$ helm repo add appscode https://charts.appscode.com/stable/
-$ helm repo update
-$ helm install appscode/postgres-stash --name postgres-stash
+helm repo add appscode https://charts.appscode.com/stable/
+helm repo update
+helm install appscode/postgres-catalog --name postgres-catalog
 ```
 
-Once installed, this will create `pg-backup` and `pg-recovery` Function. Verify that the Functions has been created successfully by,
+Once installed, this will create `pg-backup-*` and `pg-recovery-*` Functions for all supported PostgreSQL versions. Verify that the Functions has been created successfully by,
 
 ```console
 $ kubectl get function
-NAME            AGE
-pg-backup       3h7m
-pg-restore      3h7m
-update-status   3h7m
+NAME             AGE
+pg-backup-9.6    6s
+pg-backup-10.2   6s
+pg-backup-10.6   6s
+pg-backup-11.1   6s
+pg-backup-11.2   6s
+pg-restore-9.6   6s
+pg-restore-10.2  6s
+pg-restore-10.6  6s
+pg-restore-11.1  6s
+pg-restore-11.2  6s
+update-status    6d19h
 ```
 
-This will also create `pg-backup` and `pg-restore` Task. Verify that they have been created successfully by,
+This will also create `pg-backup-*` and `pg-restore-*` Tasks for all supported PostgreSQL versions. Verify that they have been created successfully by,
 
 ```console
 $ kubectl get task
-NAME         AGE
-pg-backup    3h9m
-pg-restore   3h9m
+NAME             AGE
+NAME             AGE
+pg-backup-9.6    10s
+pg-backup-10.2   10s
+pg-backup-10.6   10s
+pg-backup-11.1   10s
+pg-backup-11.2   10s
+pg-restore-9.6   10s
+pg-restore-10.2  10s
+pg-restore-10.6  10s
+pg-restore-11.1  10s
+pg-restore-11.2  10s
 ```
 
 Now, Stash is ready to backup PostgreSQL database.
@@ -336,7 +355,7 @@ metadata:
 spec:
   schedule: "*/5 * * * *"
   task:
-    name: pg-backup
+    name: pg-backup-9.6
   repository:
     name: gcs-repo
   target:
@@ -490,7 +509,7 @@ metadata:
     kubedb.com/kind: Postgres # this label is mandatory if you are using KubeDB to deploy the database.
 spec:
   task:
-    name: pg-restore
+    name: pg-restore-9.6
   repository:
     name: gcs-repo
   target:
@@ -603,4 +622,10 @@ kubectl delete restoresession -n demo sample-postgres-restore
 kubectl delete backupconfiguration -n demo sample-postgres-backup
 kubectl delete pg -n demo restored-postgres
 kubectl delete pg -n demo sample-postgres
+```
+
+To uninstall `postgres-catalog` chart, run the following command,
+
+```console
+helm delete postgres-catalog
 ```

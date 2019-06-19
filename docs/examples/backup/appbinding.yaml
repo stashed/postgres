@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/instance: sample-postgres
     app.kubernetes.io/managed-by: kubedb.com
     app.kubernetes.io/name: postgres
-    app.kubernetes.io/version: "11.2"
+    app.kubernetes.io/version: "9.6"
     kubedb.com/kind: Postgres
     kubedb.com/name: sample-postgres
 ...

@@ -13,7 +13,7 @@ CHART_LOCATION="chart"
 
 APPSCODE_ENV=${APPSCODE_ENV:-prod}
 DOCKER_REGISTRY=${DOCKER_REGISTRY:-appscode}
-IMAGE_TAG=9
+IMAGE_TAG=9.6
 
 BACKUP_ARGS=""
 RESTORE_ARGS=""
@@ -112,7 +112,7 @@ while test $# -gt 0; do
       ;;
     --metrics-enabled*)
       val=$(echo $1 | sed -e 's/^[^=]*=//g')
-      if [ "$val" = "false" ]; then
+      if [[ "$val" == "false" ]]; then
         ENABLE_PROMETHEUS_METRICS=false
       fi
       shift
