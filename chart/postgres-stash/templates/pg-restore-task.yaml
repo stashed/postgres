@@ -6,7 +6,7 @@ metadata:
     {{- include "postgres-stash.labels" . | nindent 4 }}
 spec:
   steps:
-  - name: pg-restore
+  - name: pg-restore-{{- include "postgres-stash.versionSuffix" . }}
     params:
     - name: outputDir
       value: /tmp/output
