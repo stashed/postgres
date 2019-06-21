@@ -1,7 +1,7 @@
 apiVersion: stash.appscode.com/v1beta1
 kind: Function
 metadata:
-  name: pg-backup-{{ .Chart.Version }}
+  name: pg-backup-{{- include "postgres-stash.versionSuffix" . }}
   labels:
     {{- include "postgres-stash.labels" . | nindent 4 }}
 spec:

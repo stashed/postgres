@@ -31,6 +31,10 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "postgres-stash.versionSuffix" -}}
+{{- .Chart.Version | replace "." "-" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 # default labels for posgres-stash resources
 {{- define "postgres-stash.labels" -}}
 app.kubernetes.io/name: {{ include "postgres-stash.name" . }}
