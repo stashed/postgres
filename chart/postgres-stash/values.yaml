@@ -3,18 +3,18 @@
 # Declare variables to be passed into your templates.
 
 # we are declaring these values as global so that parent chart can overwrite them
-global:
+docker:
   registry: appscode
   image: postgres-stash
   tag: 11.2
 
-  # optional argument to send pgdump or psql command
-  backup:
-    pgArgs: ""
-  restore:
-    pgArgs: ""
+# optional argument to send pgdump or psql command
+backup:
+  pgArgs: ""
+restore:
+  pgArgs: ""
 
-  # default values for prometheus metrics
-  metrics:
-    enabled: true
-    labels: []
+# default values for prometheus metrics
+metrics:
+  enabled: true
+  labels: []

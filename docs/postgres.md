@@ -232,6 +232,7 @@ spec:
   clientConfig:
     service:
       name: my-database-service
+      port: 5432
   secret:
     name: my-database-credentials-secret
 ```

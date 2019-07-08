@@ -1,11 +1,11 @@
 apiVersion: stash.appscode.com/v1beta1
 kind: Function
 metadata:
-  name: pg-backup-{{- include "postgres-stash.versionSuffix" . }}
+  name: pg-backup-{{- .Chart.Version }}
   labels:
     {{- include "postgres-stash.labels" . | nindent 4 }}
 spec:
-  image: {{ .Values.global.registry }}/{{ .Values.global.image }}:{{- .Values.global.tag }}
+  image: {{ .Values.docker.registry }}/{{ .Values.docker.image }}:{{- .Values.docker.tag }}
   args:
   - backup-pg
   # setup information
@@ -19,7 +19,7 @@ spec:
   - --enable-cache=${ENABLE_CACHE:=true}
   - --max-connections=${MAX_CONNECTIONS:=0} # 0 indicates use default connection limit
   - --hostname=${HOSTNAME:=}
-  - --pg-args=${pgArgs:={{ .Values.global.backup.pgArgs }}} # optional arguments pass to pgdump command
+  - --pg-args=${pgArgs:={{ .Values.backup.pgArgs }}} # optional arguments pass to pgdump command
   # target information
   - --namespace=${NAMESPACE:=default}
   - --app-binding=${TARGET_NAME:=}
@@ -35,10 +35,10 @@ spec:
   - --retention-dry-run=${RETENTION_DRY_RUN:=false}
   # output & metric information
   - --output-dir=${outputDir:=}
-  - --metrics-enabled={{ .Values.global.metrics.enabled }}
+  - --metrics-enabled={{ .Values.metrics.enabled }}
   - --metrics-pushgateway-url=${PROMETHEUS_PUSHGATEWAY_URL:=}
-  {{- if .Values.global.metrics.labels }}
-  - --metrics-labels={{ .Values.global.metrics.labels | quote }}
+  {{- if .Values.metrics.labels }}
+  - --metrics-labels={{ .Values.metrics.labels | quote }}
   {{- end }}
   volumeMounts:
   - name: ${secretVolume}
