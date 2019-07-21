@@ -1,6 +1,6 @@
 # Postgres-stash
 
-[postgres-stash](https://github.com/stashed/postgres-stash) - PostgreSQL database backup/restore plugin for [Stash](https://appscode.com/products/stash/) by AppsCode.
+[postgres-stash](https://github.com/stashed/postgres-stash) - PostgreSQL database backup/restore plugin for [Stash by AppsCode](https://appscode.com/products/stash/).
 
 ## TL;DR;
 
