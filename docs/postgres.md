@@ -42,7 +42,7 @@ $ kubectl create ns demo
 namespace/demo created
 ```
 
-> Note: YAML files used in this tutorial are stored [here](https://github.com/stashed/postgres/examples/).
+> Note: YAML files used in this tutorial are stored [here](https://github.com/stashed/postgres/tree/master/docs/examples).
 
 ## Install Postgres Catalog for Stash
 
