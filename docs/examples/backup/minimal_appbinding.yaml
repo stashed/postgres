@@ -1,0 +1,12 @@
+apiVersion: appcatalog.appscode.com/v1alpha1
+kind: AppBinding
+metadata:
+  name: my-custom-appbinding
+  namespace: my-database-namespace
+spec:
+  clientConfig:
+    service:
+      name: my-database-service
+      port: 5432
+  secret:
+    name: my-database-credentials-secret
