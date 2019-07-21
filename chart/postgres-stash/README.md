@@ -1,6 +1,6 @@
 # Postgres-stash
 
-[postgres-stash by AppsCode](https://github.com/stashed/postgres-stash) - PostgreSQL database backup/restore plugin for [Stash](https://github.com/stashed/).
+[postgres-stash](https://github.com/stashed/postgres-stash) - PostgreSQL database backup/restore plugin for [Stash](https://appscode.com/products/stash/) by AppsCode.
 
 ## TL;DR;
 
@@ -16,7 +16,7 @@ This chart installs necessary `Function` and `Task` definition to backup or rest
 
 ## Prerequisites
 
-- Kubernetes 1.9+
+- Kubernetes 1.11+
 
 ## Installing the Chart
 
@@ -59,8 +59,8 @@ The following table lists the configurable parameters of the `postgre-stash` cha
 | `docker.registry` | Docker registry used to pull respective images                                                                                   | `appscode`       |
 | `docker.image`    | Docker image used to backup/restore PosegreSQL database                                                                          | `postgres-stash` |
 | `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `11.2`           |
-| `backup.pgArgs`   | Optional arguments to pass to `pgdump` command  while bakcup                                                                     |                  |
-| `restore.pgArgs`  | Optional arguments to pass to `psql` command while restore                                                                       |                  |
+| `backup.pgArgs`   | Optional arguments to pass to `pgdump` command  for bakcup                                                                       |                  |
+| `restore.pgArgs`  | Optional arguments to pass to `psql` command for restoration                                                                     |                  |
 | `metrics.enabled` | Specifies whether to send Prometheus metrics                                                                                     | `true`           |
 | `metrics.labels`  | Optional comma separated labels to add to the Prometheus metrics                                                                 |                  |
 

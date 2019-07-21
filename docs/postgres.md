@@ -14,7 +14,7 @@ section_menu_id: guides
 
 # Backup and Restore PostgreSQL database using Stash
 
-Stash supports backup and restores PostgreSQL database. This guide will show you how you can backup and restore your PostgreSQL database with Stash.
+Stash 0.9.0+ supports backup and restoration of PostgreSQL databases. This guide will show you how you can backup and restore your PostgreSQL database with Stash.
 
 ## Before You Begin
 

@@ -18,7 +18,7 @@ helm repo update
 helm install appscode/postgres-stash --name=postgres-stash-11.2 --version=11.2
 ```
 
-To install catalog for all supported PostgreSQL version, please visit [here](https://github.com/stashed/catalog).
+To install catalog for all supported PostgreSQL versions, please visit [here](https://github.com/stashed/catalog).
 
 ## Uninstall
 
