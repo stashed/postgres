@@ -10,3 +10,4 @@ spec:
       port: 5432
   secret:
     name: my-database-credentials-secret
+  type: postgres

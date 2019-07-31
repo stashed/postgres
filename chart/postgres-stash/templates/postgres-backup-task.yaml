@@ -1,12 +1,12 @@
 apiVersion: stash.appscode.com/v1beta1
 kind: Task
 metadata:
-  name: pg-restore-{{- .Chart.Version }}
+  name: postgres-backup-{{- .Chart.Version }}
   labels:
     {{- include "postgres-stash.labels" . | nindent 4 }}
 spec:
   steps:
-  - name: pg-restore-{{- .Chart.Version }}
+  - name: postgres-backup-{{- .Chart.Version }}
     params:
     - name: outputDir
       value: /tmp/output

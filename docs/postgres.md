@@ -22,7 +22,7 @@ Stash 0.9.0+ supports backup and restoration of PostgreSQL databases. This guide
 
 - Install Stash in your cluster following the steps [here](https://appscode.com/products/stash/0.8.3/setup/install/).
 
-- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/0.12.0/setup/install/).
+- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/0.12.0/setup/install/). This step is optional. You can deploy your database using any method you want. We are using KubeDB because it automates some tasks that you have to do manually otherwise.
 
 - If you are not familiar with how Stash backup and restore databases, please check the following guide:
   - [How Stash backup and restore databases](https://appscode.com/products/stash/0.8.3/guides/databases/overview/).
@@ -46,23 +46,54 @@ namespace/demo created
 
 ## Install Postgres Catalog for Stash
 
-At first, we have to install Postgres plugin (`postgres-catalog`) for Stash. This plugin creates necessary `Function` and `Task` definition which is used by Stash to backup or restore a PostgreSQL database. We are going to use [Helm](https://helm.sh/) to install `postgres-catalog` chart.
 
-If you have already installed `stash-catalog` which contains necessary `Function` and `Task` definition to backup or restore all the databases supported by Stash, you can skip installing `postgres-catalog`.
+Stash uses a `Function-Task` model for auto-backup. We have to install Postgres catalogs (`postgres-stash`) for Stash. This catalog creates necessary `Function` and `Task` definitions.
 
-Let's install `postgres-catalog` chart,
+You can install the catalog either as a helm chart or you can create only the YAMLs of the respective resources.
+
+<ul class="nav nav-tabs" id="installerTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link" id="helm-tab" data-toggle="tab" href="#helm" role="tab" aria-controls="helm" aria-selected="false">Helm</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" id="script-tab" data-toggle="tab" href="#script" role="tab" aria-controls="script" aria-selected="true">Script</a>
+  </li>
+</ul>
+<div class="tab-content" id="installerTabContent">
+ <!-- ------------ Helm Tab Begins----------- -->
+  <div class="tab-pane fade" id="helm" role="tabpanel" aria-labelledby="helm-tab">
+
+### Install as chart release
+
+Run the following script to install `postgres-stash` catalog as a Helm chart.
 
 ```console
-helm repo add appscode https://charts.appscode.com/stable/
-helm repo update
-helm install appscode/postgres-catalog --name postgres-catalog
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --catalog=postgres-stash
 ```
 
-Once installed, this will create `pg-backup-*` and `pg-recovery-*` Functions for all supported PostgreSQL versions. Verify that the Functions has been created successfully by,
+</div>
+<!-- ------------ Helm Tab Ends----------- -->
+
+<!-- ------------ Script Tab Begins----------- -->
+<div class="tab-pane fade show active" id="script" role="tabpanel" aria-labelledby="script-tab">
+
+### Install only YAMLs
+
+Run the following script to install `postgres-stash` catalog as Kubernetes YAMLs.
 
 ```console
-$ kubectl get function.stash.appscode.com
-NAME             AGE
+curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/script.sh | bash -s -- --catalog=postgres-stash
+```
+
+</div>
+<!-- ------------ Script Tab Ends----------- -->
+</div>
+
+Once installed, this will create `pg-backup-*` and `pg-recovery-*` Functions for all supported PostgreSQL versions. To verify, run the following command:
+
+```console
+$ kubectl get functions.stash.appscode.com
+NAME            AGE
 pg-backup-9.6    6s
 pg-backup-10.2   6s
 pg-backup-10.6   6s
@@ -73,14 +104,15 @@ pg-restore-10.2  6s
 pg-restore-10.6  6s
 pg-restore-11.1  6s
 pg-restore-11.2  6s
-update-status    6d19h
+pvc-backup       6h55m
+pvc-restore      6h55m
+update-status    6h55m
 ```
 
-This will also create `pg-backup-*` and `pg-restore-*` Tasks for all supported PostgreSQL versions. Verify that they have been created successfully by,
+Also, verify that the necessary `Task`s have been created.
 
 ```console
-$ kubectl get task.stash.appscode.com
-NAME             AGE
+$ kubectl get tasks.stash.appscode.com
 NAME             AGE
 pg-backup-9.6    10s
 pg-backup-10.2   10s
@@ -92,6 +124,8 @@ pg-restore-10.2  10s
 pg-restore-10.6  10s
 pg-restore-11.1  10s
 pg-restore-11.2  10s
+pvc-backup       4d7h
+pvc-restore      4d7h
 ```
 
 Now, Stash is ready to backup PostgreSQL database.

@@ -3,7 +3,7 @@ module stash.appscode.dev/postgres
 go 1.12
 
 require (
-	github.com/appscode/go v0.0.0-20190621064509-6b292c9166e3
+	github.com/appscode/go v0.0.0-20190722173419-e454bf744023
 	github.com/gophercloud/gophercloud v0.0.0-20190520235722-e87e5f90e7e6 // indirect
 	github.com/spf13/cobra v0.0.5
 	k8s.io/api v0.0.0-20190515023547-db5a9d1c40eb // indirect
@@ -14,9 +14,9 @@ require (
 	k8s.io/kubernetes v1.14.2 // indirect
 	k8s.io/utils v0.0.0-20190520173318-324c5df7d3f0 // indirect
 	kmodules.xyz/client-go v0.0.0-20190715080709-7162a6c90b04
-	kmodules.xyz/custom-resources v0.0.0-20190508103408-464e8324c3ec
+	kmodules.xyz/custom-resources v0.0.0-20190723185639-711575c0b8a9
 	kmodules.xyz/objectstore-api v0.0.0-20190718002052-da668b440b0b // indirect
-	stash.appscode.dev/stash v0.0.0-20190718155146-3de534baa0a0
+	stash.appscode.dev/stash v0.0.0-20190730144328-4ec6caf83810
 )
 
 replace (
