@@ -517,7 +517,7 @@ kmodules.xyz/client-go/meta
 kmodules.xyz/client-go/tools/clientcmd
 kmodules.xyz/client-go/apiextensions/v1beta1
 kmodules.xyz/client-go
-# kmodules.xyz/custom-resources v0.0.0-20190723185639-711575c0b8a9
+# kmodules.xyz/custom-resources v0.0.0-20190730174012-d0224972f055
 kmodules.xyz/custom-resources/client/clientset/versioned
 kmodules.xyz/custom-resources/client/clientset/versioned/typed/appcatalog/v1alpha1
 kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1
@@ -562,7 +562,7 @@ sigs.k8s.io/kustomize/pkg/expansion
 sigs.k8s.io/kustomize/pkg/transformers/config/defaultconfig
 # sigs.k8s.io/yaml v1.1.0
 sigs.k8s.io/yaml
-# stash.appscode.dev/stash v0.0.0-20190730144328-4ec6caf83810
+# stash.appscode.dev/stash v0.0.0-20190801103836-00ae05b9748b
 stash.appscode.dev/stash/client/clientset/versioned/fake
 stash.appscode.dev/stash/apis
 stash.appscode.dev/stash/client/clientset/versioned/scheme

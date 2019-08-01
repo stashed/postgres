@@ -139,6 +139,7 @@ func NewCmdRestore() *cobra.Command {
 	cmd.Flags().IntVar(&setupOpt.MaxConnections, "max-connections", setupOpt.MaxConnections, "Specify maximum concurrent connections for GCS, Azure and B2 backend")
 
 	cmd.Flags().StringVar(&dumpOpt.Host, "hostname", dumpOpt.Host, "Name of the host machine")
+	cmd.Flags().StringVar(&dumpOpt.SourceHost, "source-hostname", dumpOpt.SourceHost, "Name of the host whose data will be restored")
 	// TODO: sliceVar
 	cmd.Flags().StringVar(&dumpOpt.Snapshot, "snapshot", dumpOpt.Snapshot, "Snapshot to dump")
 

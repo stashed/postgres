@@ -19,6 +19,7 @@ spec:
   - --enable-cache=${ENABLE_CACHE:=true}
   - --max-connections=${MAX_CONNECTIONS:=0} # 0 indicates use default connection limit
   - --hostname=${HOSTNAME:=}
+  - --source-hostname=${SOURCE_HOSTNAME:=}
   - --pg-args=${pgArgs:={{ .Values.restore.pgArgs }}} # optional arguments pass to pgdump command
   # target information
   - --namespace=${NAMESPACE:=default}

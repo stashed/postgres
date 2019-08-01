@@ -14,9 +14,8 @@ require (
 	k8s.io/kubernetes v1.14.2 // indirect
 	k8s.io/utils v0.0.0-20190520173318-324c5df7d3f0 // indirect
 	kmodules.xyz/client-go v0.0.0-20190715080709-7162a6c90b04
-	kmodules.xyz/custom-resources v0.0.0-20190723185639-711575c0b8a9
-	kmodules.xyz/objectstore-api v0.0.0-20190718002052-da668b440b0b // indirect
-	stash.appscode.dev/stash v0.0.0-20190730144328-4ec6caf83810
+	kmodules.xyz/custom-resources v0.0.0-20190730174012-d0224972f055
+	stash.appscode.dev/stash v0.0.0-20190801103836-00ae05b9748b
 )
 
 replace (
