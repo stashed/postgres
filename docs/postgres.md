@@ -108,7 +108,7 @@ pvc-restore             7h6m
 update-status           7h6m
 ```
 
-Also, verify that the necessary `Task`s have been created.
+Also, verify that the necessary `Task` have been created.
 
 ```console
 $ kubectl get tasks.stash.appscode.com
