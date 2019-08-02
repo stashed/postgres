@@ -15,7 +15,7 @@ require (
 	k8s.io/utils v0.0.0-20190520173318-324c5df7d3f0 // indirect
 	kmodules.xyz/client-go v0.0.0-20190715080709-7162a6c90b04
 	kmodules.xyz/custom-resources v0.0.0-20190730174012-d0224972f055
-	stash.appscode.dev/stash v0.0.0-20190801103836-00ae05b9748b
+	stash.appscode.dev/stash v0.0.0-20190802112317-998fac02935b
 )
 
 replace (

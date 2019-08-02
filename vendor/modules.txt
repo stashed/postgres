@@ -562,7 +562,7 @@ sigs.k8s.io/kustomize/pkg/expansion
 sigs.k8s.io/kustomize/pkg/transformers/config/defaultconfig
 # sigs.k8s.io/yaml v1.1.0
 sigs.k8s.io/yaml
-# stash.appscode.dev/stash v0.0.0-20190801103836-00ae05b9748b
+# stash.appscode.dev/stash v0.0.0-20190802112317-998fac02935b
 stash.appscode.dev/stash/client/clientset/versioned/fake
 stash.appscode.dev/stash/apis
 stash.appscode.dev/stash/client/clientset/versioned/scheme

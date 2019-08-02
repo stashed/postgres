@@ -568,11 +568,8 @@ kmodules.xyz/client-go v0.0.0-20190507204740-e4690d8026e7/go.mod h1:3meAILhyA9BT
 kmodules.xyz/client-go v0.0.0-20190508091620-0d215c04352f/go.mod h1:R1t4K2wWb6PTkhQPEjqQIWz+gRS0/Z0mMfIy/TsdB/w=
 kmodules.xyz/client-go v0.0.0-20190715080709-7162a6c90b04 h1:17h0mshnlihkZMP6LqMmpliCQIknKasjdNGWyZCCmV4=
 kmodules.xyz/client-go v0.0.0-20190715080709-7162a6c90b04/go.mod h1:3h1/ZglH6fV2uv3p9AB1JnHUknhWniShJ7fBJfSf7Js=
-kmodules.xyz/custom-resources v0.0.0-20190723185639-711575c0b8a9 h1:wLeUF4rEVaQxIgXHLNcLQiTCZWzgmU78erhWCHKhKUg=
-kmodules.xyz/custom-resources v0.0.0-20190723185639-711575c0b8a9/go.mod h1:0C61XSEPGexAmkrayynpNnCTacvkwn4802CRAQ5tUPI=
 kmodules.xyz/custom-resources v0.0.0-20190730174012-d0224972f055 h1:w5CZ2h0pkofl6gAtchAP79vEuMAkbyRngU1jV9lzfWc=
 kmodules.xyz/custom-resources v0.0.0-20190730174012-d0224972f055/go.mod h1:0C61XSEPGexAmkrayynpNnCTacvkwn4802CRAQ5tUPI=
-kmodules.xyz/objectstore-api v0.0.0-20190715131036-28ef070833ef/go.mod h1:SwUpd3z5BvdUks/Nh8Wtyp8US2ATxhxQmMathe4lyOM=
 kmodules.xyz/objectstore-api v0.0.0-20190718002052-da668b440b0b h1:VRUyLLGvBjAezi9pQ89vGR+tcO+XROdJanGe2gPyGrY=
 kmodules.xyz/objectstore-api v0.0.0-20190718002052-da668b440b0b/go.mod h1:SwUpd3z5BvdUks/Nh8Wtyp8US2ATxhxQmMathe4lyOM=
 kmodules.xyz/offshoot-api v0.0.0-20190715115723-36c8fce142c1 h1:ak95Tpl+ur0n+18naC3FzNL01f6QmV9UR3zRF/SCFUs=
@@ -590,9 +587,7 @@ sigs.k8s.io/kustomize v2.0.3+incompatible/go.mod h1:MkjgH3RdOWrievjo6c9T245dYlB5
 sigs.k8s.io/structured-merge-diff v0.0.0-20190302045857-e85c7b244fd2/go.mod h1:wWxsB5ozmmv/SG7nM11ayaAW51xMvak/t1r0CSlcokI=
 sigs.k8s.io/yaml v1.1.0 h1:4A07+ZFc2wgJwo8YNlQpr1rVlgUDlxXHhPJciaPY5gs=
 sigs.k8s.io/yaml v1.1.0/go.mod h1:UJmg0vDUVViEyp3mgSv9WPwZCDxu4rQW1olrI1uml+o=
-stash.appscode.dev/stash v0.0.0-20190730144328-4ec6caf83810 h1:MH0bv/OgVaT6PuEgLddgyDaOw5wDWdlNQpSWVdYnBZs=
-stash.appscode.dev/stash v0.0.0-20190730144328-4ec6caf83810/go.mod h1:KRJ1jYA+ExThV8pFDde2ls3G8jr0fjJTn74G/+EngXY=
-stash.appscode.dev/stash v0.0.0-20190801103836-00ae05b9748b h1:ThVWxuf5cz6IWDLpVF1AIbDJutnbkvrbdg4slsqhowU=
-stash.appscode.dev/stash v0.0.0-20190801103836-00ae05b9748b/go.mod h1:63LEyYs/wEDh3D/5RrTaTin43TdGUHtQNr3jOrOeYHo=
+stash.appscode.dev/stash v0.0.0-20190802112317-998fac02935b h1:LX9S8QaXnxDrRbzIlD6HKZkCkc6f0I3UauZJ8rAMOTY=
+stash.appscode.dev/stash v0.0.0-20190802112317-998fac02935b/go.mod h1:63LEyYs/wEDh3D/5RrTaTin43TdGUHtQNr3jOrOeYHo=
 xorm.io/builder v0.3.5/go.mod h1:ZFbByS/KxZI1FKRjL05PyJ4YrK2bcxlUaAxdum5aTR8=
 xorm.io/core v0.6.3/go.mod h1:8kz/C6arVW/O9vk3PgCiMJO2hIAm1UcuOL3dSPyZ2qo=
