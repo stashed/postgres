@@ -46,7 +46,7 @@ namespace/demo created
 
 ## Install Postgres Catalog for Stash
 
-Stash uses a `Function-Task` model to backup databases. We have to install Postgres catalogs (`postgres-stash`) for Stash. This catalog creates necessary `Function` and `Task` definitions to backup/restore PostgreSQL database.
+Stash uses a `Function-Task` model to backup databases. We have to install Postgres catalogs (`postgres-stash`) for Stash. This catalog creates necessary `Function` and `Task` definitions to backup/restore PostgreSQL databases.
 
 You can install the catalog either as a helm chart or you can create only the YAMLs of the respective resources.
 
@@ -445,7 +445,7 @@ sample-postgres-backup-1560350521   sample-postgres-backup   Succeeded   5m45s
 
 We can see above that the backup session has succeeded. Now, we are going to verify that the backed up data has been stored in the backend.
 
->Note: Respective CronJob creates `BackupSession` crd with the following label `stash.appscode.com/backup-configuration=<BackupConfiguration crd name>`. We can use this label to watch only the `BackupSession` of our desired `BackupConfiguration`.
+> Note: Backup CronJob creates `BackupSession` crds with the following label `stash.appscode.com/backup-configuration=<BackupConfiguration crd name>`. We can use this label to watch only the `BackupSession` of our desired `BackupConfiguration`.
 
 **Verify Backup:**
 
@@ -689,9 +689,9 @@ To cleanup the Postgres catalogs that we had created earlier, run the following:
  <!-- ------------ Helm Tab Begins----------- -->
   <div class="tab-pane fade" id="helm-uninstaller" role="tabpanel" aria-labelledby="helm-uninstaller-tab">
 
-### Uninstall  `postgres-stash-*` chart releases
+### Uninstall  `postgres-stash-*` charts
 
-Run the following script to uninstall `postgres-stash` catalogs that was installed as a chart releases.
+Run the following script to uninstall `postgres-stash` catalogs that was installed as a Helm chart.
 
 ```console
 curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash -s -- --uninstall --catalog=postgres-stash
@@ -703,7 +703,7 @@ curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/chart.sh | bash 
 <!-- ------------ Script Tab Begins----------- -->
 <div class="tab-pane fade show active" id="script-uninstaller" role="tabpanel" aria-labelledby="script-uninstaller-tab">
 
-### Uninstall `postgres-stash` catalog's  YAMLs
+### Uninstall `postgres-stash` catalog YAMLs
 
 Run the following script to uninstall `postgres-stash` catalog that was installed as Kubernetes YAMLs.
 
