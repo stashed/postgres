@@ -4,7 +4,7 @@
 
 # we are declaring these values as global so that parent chart can overwrite them
 docker:
-  registry: appscode
+  registry: stashed
   image: stash-postgres
   tag: 11.2
 
