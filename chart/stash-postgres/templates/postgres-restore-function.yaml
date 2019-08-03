@@ -3,7 +3,7 @@ kind: Function
 metadata:
   name: postgres-restore-{{- .Chart.Version }}
   labels:
-    {{- include "postgres-stash.labels" . | nindent 4 }}
+    {{- include "stash-postgres.labels" . | nindent 4 }}
 spec:
   image: {{ .Values.docker.registry }}/{{ .Values.docker.image }}:{{ .Values.docker.tag }}
   args:

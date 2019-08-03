@@ -1,13 +1,13 @@
 # Postgres-stash
 
-[postgres-stash](https://github.com/stashed/postgres-stash) - PostgreSQL database backup/restore plugin for [Stash by AppsCode](https://appscode.com/products/stash/).
+[stash-postgres](https://github.com/stashed/stash-postgres) - PostgreSQL database backup/restore plugin for [Stash by AppsCode](https://appscode.com/products/stash/).
 
 ## TL;DR;
 
 ```console
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install appscode/postgres-stash --name=postgres-stash-11.2 --version=11.2
+helm install appscode/stash-postgres --name=stash-postgres-11.2 --version=11.2
 ```
 
 ## Introduction
@@ -32,20 +32,20 @@ helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
 ```
 
-- Install the chart with the release name `postgres-stash-11.2` run the following command,
+- Install the chart with the release name `stash-postgres-11.2` run the following command,
 
 ```console
-helm install appscode/postgres-stash --name=postgres-stash-11.2 --version=11.2
+helm install appscode/stash-postgres --name=stash-postgres-11.2 --version=11.2
 ```
 
 The above commands installs `Functions` and `Task` crds that are necessary to backup PostgreSQL database 11.2 using Stash.
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `postgres-stash-11.2` run the following command,
+To uninstall/delete the `stash-postgres-11.2` run the following command,
 
 ```console
-helm delete postgres-stash-11.2
+helm delete stash-postgres-11.2
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -57,7 +57,7 @@ The following table lists the configurable parameters of the `postgre-stash` cha
 |     Parameter     |                                                           Description                                                            |     Default      |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | `docker.registry` | Docker registry used to pull respective images                                                                                   | `appscode`       |
-| `docker.image`    | Docker image used to backup/restore PosegreSQL database                                                                          | `postgres-stash` |
+| `docker.image`    | Docker image used to backup/restore PosegreSQL database                                                                          | `stash-postgres` |
 | `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `11.2`           |
 | `backup.pgArgs`   | Optional arguments to pass to `pgdump` command  for bakcup                                                                       |                  |
 | `restore.pgArgs`  | Optional arguments to pass to `psql` command for restoration                                                                     |                  |
@@ -69,11 +69,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 For example:
 
 ```console
-helm install --name postgres-stash-11.2 --set metrics.enabled=false appscode/postgres-stash
+helm install --name stash-postgres-11.2 --set metrics.enabled=false appscode/stash-postgres
 ```
 
 **Tips:** Use escape character (`\`) while providing multiple comma-separated labels for `metrics.labels`.
 
 ```console
- helm install chart/postgres-stash --set metrics.labels="k1=v1\,k2=v2"
+ helm install chart/stash-postgres --set metrics.labels="k1=v1\,k2=v2"
 ```

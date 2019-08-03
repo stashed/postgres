@@ -1,11 +1,11 @@
-# Default values for postgres-stash.
+# Default values for stash-postgres.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 # we are declaring these values as global so that parent chart can overwrite them
 docker:
   registry: appscode
-  image: postgres-stash
+  image: stash-postgres
   tag: 11.2
 
 # optional argument to send pgdump or psql command

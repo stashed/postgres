@@ -3,7 +3,7 @@ kind: Task
 metadata:
   name: postgres-restore-{{- .Chart.Version }}
   labels:
-    {{- include "postgres-stash.labels" . | nindent 4 }}
+    {{- include "stash-postgres.labels" . | nindent 4 }}
 spec:
   steps:
   - name: postgres-restore-{{- .Chart.Version }}
