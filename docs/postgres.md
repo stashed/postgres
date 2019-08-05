@@ -22,7 +22,7 @@ Stash 0.9.0+ supports backup and restoration of PostgreSQL databases. This guide
 
 - Install Stash in your cluster following the steps [here](https://appscode.com/products/stash/0.8.3/setup/install/).
 
-- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/0.12.0/setup/install/). This step is optional. You can deploy your database using any method you want. We are using KubeDB because it automates some tasks that you have to do manually otherwise.
+- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/latest/setup/install/). This step is optional. You can deploy your database using any method you want. We are using KubeDB because it automates some tasks that you have to do manually otherwise.
 
 - If you are not familiar with how Stash backup and restore databases, please check the following guide:
   - [How Stash backup and restore databases](https://appscode.com/products/stash/0.8.3/guides/databases/overview/).
