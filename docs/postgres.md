@@ -267,6 +267,9 @@ spec:
       port: 5432
   secret:
     name: my-database-credentials-secret
+  # type field is optional. you can keep it empty.
+  # if you keep it emtpty then the value of TARGET_APP_RESOURCE variable
+  # will be set to "appbinding" during auto-backup.
   type: postgres
 ```
 
@@ -480,6 +483,8 @@ Let's delete the `sample-postgres-backup` BackupConfiguration,
 $ kubectl delete backupconfiguration -n demo sample-postgres-backup
 backupconfiguration.stash.appscode.com "sample-postgres-backup" deleted
 ```
+
+> If you are using Auto-Backup to backup this database, you have to remove the auto-backup specific annotation from the respective `AppBinding`. Stash will automatically delete the respective `BackupConfiguration` object.
 
 **Deploy Restored Database:**
 
