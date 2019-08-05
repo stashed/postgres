@@ -1,4 +1,4 @@
-# Stash-postgres
+# stash-postgres
 
 [stash-postgres](https://github.com/stashed/stash-postgres) - PostgreSQL database backup/restore plugin for [Stash by AppsCode](https://appscode.com/products/stash/).
 
@@ -59,8 +59,8 @@ The following table lists the configurable parameters of the `stash-postgres` ch
 | `docker.registry` | Docker registry used to pull respective images                                                                                   | `stashed`        |
 | `docker.image`    | Docker image used to backup/restore PosegreSQL database                                                                          | `stash-postgres` |
 | `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `11.2`           |
-| `backup.pgArgs`   | Optional arguments to pass to `pgdump` command  while bakcup                                                                     |                  |
-| `restore.pgArgs`  | Optional arguments to pass to `psql` command while restore                                                                       |                  |
+| `backup.pgArgs`   | Optional arguments to pass to `pgdump` command  during bakcup process                                                            |                  |
+| `restore.pgArgs`  | Optional arguments to pass to `psql` command during restore process                                                              |                  |
 | `metrics.enabled` | Specifies whether to send Prometheus metrics                                                                                     | `true`           |
 | `metrics.labels`  | Optional comma separated labels to add to the Prometheus metrics                                                                 |                  |
 
