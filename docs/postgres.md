@@ -88,7 +88,7 @@ curl -fsSL https://github.com/stashed/catalog/raw/master/deploy/script.sh | bash
 <!-- ------------ Script Tab Ends----------- -->
 </div>
 
-Once installed, this will create `postgres-backup-*` and `postgres-recovery-*` Functions for all supported PostgreSQL versions. To verify, run the following command:
+Once installed, this will create `postgres-backup-*` and `postgres-restore-*` Functions for all supported PostgreSQL versions. To verify, run the following command:
 
 ```console
 $ kubectl get functions.stash.appscode.com
@@ -131,7 +131,7 @@ Now, Stash is ready to backup PostgreSQL database.
 
 ## Backup PostgreSQL
 
-This section will demonstrate how to backup PostgreSQL database. Here, we are going to deploy a PosgreSQL database using KubeDB. Then, we are going to backup this database into a GCS bucket. Finally, we are going to restore the backed up data into another PostgreSQL database.
+This section will demonstrate how to backup PostgreSQL database. Here, we are going to deploy a PostgreSQL database using KubeDB. Then, we are going to backup this database into a GCS bucket. Finally, we are going to restore the backed up data into another PostgreSQL database.
 
 ### Deploy Sample PosgreSQL Database
 
@@ -475,16 +475,24 @@ Now, we are going to restore the database from the backup we have taken in the p
 
 **Stop Taking Backup of the Old Database:**
 
-At first, let's stop taking any further backup of the old database so that no backup is taken during restore process. We are going to delete the `BackupConfiguration` crd that we had created to backup the `sample-postgres` database. Then, Stash will stop taking any further backup for this database.
+At first, let's stop taking any further backup of the old database so that no backup is taken during restore process. We are going to pause the `BackupConfiguration` crd that we had created to backup the `sample-postgres` database. Then, Stash will stop taking any further backup for this database.
 
-Let's delete the `sample-postgres-backup` BackupConfiguration,
+Let's pause the `sample-postgres-backup` BackupConfiguration,
 
 ```console
-$ kubectl delete backupconfiguration -n demo sample-postgres-backup
-backupconfiguration.stash.appscode.com "sample-postgres-backup" deleted
+$ kubectl patch backupconfiguration -n demo sample-postgres-backup --type="merge" --patch='{"spec": {"paused": true}}'
+backupconfiguration.stash.appscode.com/sample-postgres-backup patched
 ```
 
-> If you are using Auto-Backup to backup this database, you have to remove the auto-backup specific annotation from the respective `AppBinding`. Stash will automatically delete the respective `BackupConfiguration` object.
+Now, wait for a moment. Stash will pause the BackupConfiguration. Verify that the BackupConfiguration  has been paused,
+
+```console
+$ kubectl get backupconfiguration -n demo sample-postgres-backup
+NAME                    TASK                        SCHEDULE      PAUSED   AGE
+sample-postgres-backup  postgres-backup-11.2        */5 * * * *   true     26m
+```
+
+Notice the `PAUSED` column. Value `true` for this field means that the BackupConfiguration has been paused.
 
 **Deploy Restored Database:**
 
