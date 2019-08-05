@@ -16,11 +16,11 @@
 SHELL=/bin/bash -o pipefail
 
 # The binary to build (just the basename).
-BIN      := postgres-stash
+BIN      := stash-postgres
 COMPRESS ?= no
 
 # Where to push the docker image.
-REGISTRY ?= appscode
+REGISTRY ?= stashed
 
 # This version-strategy uses git tags to set the version string
 git_branch       := $(shell git rev-parse --abbrev-ref HEAD)

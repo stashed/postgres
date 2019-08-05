@@ -16,7 +16,7 @@ import (
 
 func NewRootCmd() *cobra.Command {
 	var rootCmd = &cobra.Command{
-		Use:               "postgres-stash",
+		Use:               "stash-postgres",
 		Short:             `PostgreSQL backup & restore plugin for Stash by AppsCode`,
 		Long:              `PostgreSQL backup & restore plugin for Stash by AppsCode. For more information, visit here: https://appscode.com/products/stash`,
 		DisableAutoGenTag: true,
