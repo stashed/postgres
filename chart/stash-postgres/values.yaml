@@ -13,8 +13,3 @@ backup:
   pgArgs: ""
 restore:
   pgArgs: ""
-
-# default values for prometheus metrics
-metrics:
-  enabled: true
-  labels: []

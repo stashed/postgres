@@ -35,11 +35,6 @@ spec:
   - --retention-dry-run=${RETENTION_DRY_RUN:=false}
   # output & metric information
   - --output-dir=${outputDir:=}
-  - --metrics-enabled={{ .Values.metrics.enabled }}
-  - --metrics-pushgateway-url=${PROMETHEUS_PUSHGATEWAY_URL:=}
-  {{- if .Values.metrics.labels }}
-  - --metrics-labels={{ .Values.metrics.labels | quote }}
-  {{- end }}
   volumeMounts:
   - name: ${secretVolume}
     mountPath: /etc/repository/secret

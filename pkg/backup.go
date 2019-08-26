@@ -10,7 +10,6 @@ import (
 	"github.com/appscode/go/log"
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
@@ -43,9 +42,6 @@ func NewCmdBackup() *cobra.Command {
 		backupOpt = restic.BackupOptions{
 			Host:          restic.DefaultHost,
 			StdinFileName: PgDumpFile,
-		}
-		metrics = restic.MetricsOptions{
-			JobName: JobPGBackup,
 		}
 	)
 
@@ -117,13 +113,7 @@ func NewCmdBackup() *cobra.Command {
 
 			// Run backup
 			backupOutput, backupErr := resticWrapper.RunBackup(backupOpt)
-			// If metrics are enabled then generate metrics
-			if metrics.Enabled {
-				err := backupOutput.HandleMetrics(&metrics, backupErr)
-				if err != nil {
-					return errors.NewAggregate([]error{backupErr, err})
-				}
-			}
+
 			// If output directory specified, then write the output in "output.json" file in the specified directory
 			if backupErr == nil && outputDir != "" {
 				err := backupOutput.WriteOutput(filepath.Join(outputDir, restic.DefaultOutputFileName))
@@ -165,11 +155,6 @@ func NewCmdBackup() *cobra.Command {
 	cmd.Flags().BoolVar(&backupOpt.RetentionPolicy.DryRun, "retention-dry-run", backupOpt.RetentionPolicy.DryRun, "Specify whether to test retention policy without deleting actual data")
 
 	cmd.Flags().StringVar(&outputDir, "output-dir", outputDir, "Directory where output.json file will be written (keep empty if you don't need to write output in file)")
-
-	cmd.Flags().BoolVar(&metrics.Enabled, "metrics-enabled", metrics.Enabled, "Specify whether to export Prometheus metrics")
-	cmd.Flags().StringVar(&metrics.PushgatewayURL, "metrics-pushgateway-url", metrics.PushgatewayURL, "Pushgateway URL where the metrics will be pushed")
-	cmd.Flags().StringVar(&metrics.MetricFileDir, "metrics-dir", metrics.MetricFileDir, "Directory where to write metric.prom file (keep empty if you don't want to write metric in a text file)")
-	cmd.Flags().StringSliceVar(&metrics.Labels, "metrics-labels", metrics.Labels, "Labels to apply in exported metrics")
 
 	return cmd
 }

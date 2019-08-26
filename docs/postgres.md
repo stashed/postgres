@@ -683,6 +683,7 @@ So, from the above output, we can see the table `company` that we had created in
 To cleanup the Kubernetes resources created by this tutorial, run:
 
 ```console
+kubectl delete backupconfiguration -n demo sample-postgres-backup
 kubectl delete restoresession -n demo sample-postgres-restore
 kubectl delete pg -n demo restored-postgres
 kubectl delete pg -n demo sample-postgres
