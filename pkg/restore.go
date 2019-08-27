@@ -6,7 +6,6 @@ import (
 	"github.com/appscode/go/flags"
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
@@ -29,9 +28,6 @@ func NewCmdRestore() *cobra.Command {
 		dumpOpt = restic.DumpOptions{
 			Host:     restic.DefaultHost,
 			FileName: PgDumpFile,
-		}
-		metrics = restic.MetricsOptions{
-			JobName: JobPGBackup,
 		}
 	)
 
@@ -103,13 +99,7 @@ func NewCmdRestore() *cobra.Command {
 
 			// Run dump
 			dumpOutput, backupErr := resticWrapper.Dump(dumpOpt)
-			// If metrics are enabled then generate metrics
-			if metrics.Enabled {
-				err := dumpOutput.HandleMetrics(&metrics, backupErr)
-				if err != nil {
-					return errors.NewAggregate([]error{backupErr, err})
-				}
-			}
+
 			// If output directory specified, then write the output in "output.json" file in the specified directory
 			if backupErr == nil && outputDir != "" {
 				err := dumpOutput.WriteOutput(filepath.Join(outputDir, restic.DefaultOutputFileName))
@@ -144,11 +134,5 @@ func NewCmdRestore() *cobra.Command {
 	cmd.Flags().StringVar(&dumpOpt.Snapshot, "snapshot", dumpOpt.Snapshot, "Snapshot to dump")
 
 	cmd.Flags().StringVar(&outputDir, "output-dir", outputDir, "Directory where output.json file will be written (keep empty if you don't need to write output in file)")
-
-	cmd.Flags().BoolVar(&metrics.Enabled, "metrics-enabled", metrics.Enabled, "Specify whether to export Prometheus metrics")
-	cmd.Flags().StringVar(&metrics.PushgatewayURL, "metrics-pushgateway-url", metrics.PushgatewayURL, "Pushgateway URL where the metrics will be pushed")
-	cmd.Flags().StringVar(&metrics.MetricFileDir, "metrics-dir", metrics.MetricFileDir, "Directory where to write metric.prom file (keep empty if you don't want to write metric in a text file)")
-	cmd.Flags().StringSliceVar(&metrics.Labels, "metrics-labels", metrics.Labels, "Labels to apply in exported metrics")
-
 	return cmd
 }

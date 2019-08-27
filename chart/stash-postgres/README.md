@@ -61,19 +61,11 @@ The following table lists the configurable parameters of the `stash-postgres` ch
 | `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `11.2`           |
 | `backup.pgArgs`   | Optional arguments to pass to `pgdump` command  during bakcup process                                                            |                  |
 | `restore.pgArgs`  | Optional arguments to pass to `psql` command during restore process                                                              |                  |
-| `metrics.enabled` | Specifies whether to send Prometheus metrics                                                                                     | `true`           |
-| `metrics.labels`  | Optional comma separated labels to add to the Prometheus metrics                                                                 |                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 For example:
 
 ```console
-helm install --name stash-postgres-11.2 --set metrics.enabled=false appscode/stash-postgres
-```
-
-**Tips:** Use escape character (`\`) while providing multiple comma-separated labels for `metrics.labels`.
-
-```console
- helm install chart/stash-postgres --set metrics.labels="k1=v1\,k2=v2"
+helm install --name stash-postgres-11.2 --set docker.registry=my-registry appscode/stash-postgres
 ```

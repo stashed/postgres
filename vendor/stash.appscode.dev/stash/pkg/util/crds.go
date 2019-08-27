@@ -1,8 +1,11 @@
 package util
 
 import (
+	"fmt"
+
 	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"stash.appscode.dev/stash/apis"
 	api_v1beta1 "stash.appscode.dev/stash/apis/stash/v1beta1"
 	cs "stash.appscode.dev/stash/client/clientset/versioned"
 	util_v1beta1 "stash.appscode.dev/stash/client/clientset/versioned/typed/stash/v1beta1/util"
@@ -69,6 +72,8 @@ func updateStatusFunction(image docker.Docker) *api_v1beta1.Function {
 				"--repository=${REPOSITORY_NAME:=}",
 				"--restore-session=${RESTORE_SESSION:=}",
 				"--output-dir=${outputDir:=}",
+				"--metrics-enabled=true",
+				fmt.Sprintf("--metrics-pushgateway-url=%s", PushgatewayURL()),
 				"--enable-status-subresource=${ENABLE_STATUS_SUBRESOURCE:=false}",
 			},
 		},
@@ -105,8 +110,6 @@ func pvcBackupFunction(image docker.Docker) *api_v1beta1.Function {
 				"--retention-prune=${RETENTION_PRUNE:=false}",
 				"--retention-dry-run=${RETENTION_DRY_RUN:=false}",
 				"--output-dir=${outputDir:=}",
-				"--metrics-enabled=true",
-				"--metrics-pushgateway-url=${PROMETHEUS_PUSHGATEWAY_URL:=}",
 			},
 			VolumeMounts: []core.VolumeMount{
 				{
@@ -144,8 +147,6 @@ func pvcRestoreFunction(image docker.Docker) *api_v1beta1.Function {
 				"--restore-paths=${RESTORE_PATHS}",
 				"--snapshots=${RESTORE_SNAPSHOTS:=}",
 				"--output-dir=${outputDir:=}",
-				"--metrics-enabled=true",
-				"--metrics-pushgateway-url=${PROMETHEUS_PUSHGATEWAY_URL:=}",
 			},
 			VolumeMounts: []core.VolumeMount{
 				{
@@ -177,7 +178,7 @@ func pvcBackupTask() *api_v1beta1.Task {
 						},
 						{
 							Name:  "targetVolume",
-							Value: "target-volume",
+							Value: apis.StashDefaultVolume,
 						},
 						{
 							Name:  "secretVolume",
@@ -197,7 +198,7 @@ func pvcBackupTask() *api_v1beta1.Task {
 			},
 			Volumes: []core.Volume{
 				{
-					Name: "target-volume",
+					Name: apis.StashDefaultVolume,
 					VolumeSource: core.VolumeSource{
 						PersistentVolumeClaim: &core.PersistentVolumeClaimVolumeSource{
 							ClaimName: "${TARGET_NAME}",
@@ -233,7 +234,7 @@ func pvcRestoreTask() *api_v1beta1.Task {
 						},
 						{
 							Name:  "targetVolume",
-							Value: "target-volume",
+							Value: apis.StashDefaultVolume,
 						},
 						{
 							Name:  "secretVolume",
@@ -253,7 +254,7 @@ func pvcRestoreTask() *api_v1beta1.Task {
 			},
 			Volumes: []core.Volume{
 				{
-					Name: "target-volume",
+					Name: apis.StashDefaultVolume,
 					VolumeSource: core.VolumeSource{
 						PersistentVolumeClaim: &core.PersistentVolumeClaimVolumeSource{
 							ClaimName: "${TARGET_NAME}",

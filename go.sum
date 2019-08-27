@@ -177,7 +177,7 @@ github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvW
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/kmodules/apimachinery v0.0.0-20190508045248-a52a97a7a2bf h1:XUigLZjjxvtR+TD7mncq0wUOaaG2H/zslqM42crk0SY=
 github.com/kmodules/apimachinery v0.0.0-20190508045248-a52a97a7a2bf/go.mod h1:1nbDY1cBTGna53FTjqnehJWker1BB75r+ElWRqNcYo8=
-github.com/kmodules/apiserver v0.0.0-20190508082252-8397d761d4b5/go.mod h1:rMEImsX8dFD0jGmDQXq3zbWddcIU8vlcrMWPzpXEm9g=
+github.com/kmodules/apiserver v0.0.0-20190811223248-5a95b2df4348/go.mod h1:rMEImsX8dFD0jGmDQXq3zbWddcIU8vlcrMWPzpXEm9g=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
 github.com/kr/pretty v0.1.0 h1:L/CwN0zerZDmRFUapSPitk6f+Q3+0za1rQkzVuMiMFI=
@@ -431,8 +431,8 @@ kmodules.xyz/client-go v0.0.0-20190808141354-bbb9e14f60ab h1:rnKcFaDLtqpdooase2B
 kmodules.xyz/client-go v0.0.0-20190808141354-bbb9e14f60ab/go.mod h1:1GI6h5D31op/2D+Hrn9DhXW6iUd5wsHBQRoLeY7fndM=
 kmodules.xyz/custom-resources v0.0.0-20190808144301-114abf10dfe2 h1:u0zEFCvAttk09O64UzY1DVXNke9uAANmf4vllnVquS8=
 kmodules.xyz/custom-resources v0.0.0-20190808144301-114abf10dfe2/go.mod h1:vlKyFcCXC+2Kfn3Fa5Z7RnBWyp4t46FSeEutNqpqMm8=
-kmodules.xyz/objectstore-api v0.0.0-20190808153322-733e8798e8de h1:Z/z3SSS+mvRGzLT5HXLazogjnOYIfbYTYWrKBsiLtp8=
-kmodules.xyz/objectstore-api v0.0.0-20190808153322-733e8798e8de/go.mod h1:Wx+Ffc7weI6zv7NQvq0GWXMGGQFn6LqVb0KcXQFwRFs=
+kmodules.xyz/objectstore-api v0.0.0-20190824212210-196174aa0fc0 h1:ELq3ybK3noQP9SyZx34QsnZgU2As9r8hPAGEnuIy7Co=
+kmodules.xyz/objectstore-api v0.0.0-20190824212210-196174aa0fc0/go.mod h1:vFvmrMvRlkcUANfU4Ko3dZR3HUhWMUQc1sEHcwufims=
 kmodules.xyz/offshoot-api v0.0.0-20190808152534-e3dc715f844b h1:VZUtg4L9Qm2C7PBwa4sp/SvHckKidZSpkA33GoB24SA=
 kmodules.xyz/offshoot-api v0.0.0-20190808152534-e3dc715f844b/go.mod h1:AzvHBjJvhFwUEiWrEKfdsgoqt5Ulio44Beo1vPoq7ww=
 kmodules.xyz/openshift v0.0.0-20190808144841-c8f9a927f1d1 h1:NmVj5+kPpUgoxRans2XZt5SXm9cVy8E3b4yHaeVzqak=
@@ -444,5 +444,5 @@ sigs.k8s.io/kustomize v2.0.3+incompatible/go.mod h1:MkjgH3RdOWrievjo6c9T245dYlB5
 sigs.k8s.io/structured-merge-diff v0.0.0-20190302045857-e85c7b244fd2/go.mod h1:wWxsB5ozmmv/SG7nM11ayaAW51xMvak/t1r0CSlcokI=
 sigs.k8s.io/yaml v1.1.0 h1:4A07+ZFc2wgJwo8YNlQpr1rVlgUDlxXHhPJciaPY5gs=
 sigs.k8s.io/yaml v1.1.0/go.mod h1:UJmg0vDUVViEyp3mgSv9WPwZCDxu4rQW1olrI1uml+o=
-stash.appscode.dev/stash v0.9.0-rc.0 h1:GhzBnqHYBgq+2bcuwsDK3nhq2PPEhGkBH0EFAXp2OmY=
-stash.appscode.dev/stash v0.9.0-rc.0/go.mod h1:/YjAPx/9E4ScxWea1mbJC6qx9TomhqS83AUy2LufVVk=
+stash.appscode.dev/stash v0.9.0-rc.0.0.20190826131715-3be27ba2689e h1:AYVMg2yTN7lxe7IThGH0fc4iaBS4H8eBjCcu7w0OLmo=
+stash.appscode.dev/stash v0.9.0-rc.0.0.20190826131715-3be27ba2689e/go.mod h1:6WrRpjkI1av7305B60BLRx+PZzwMAoiGmOd5ewYAAyw=
