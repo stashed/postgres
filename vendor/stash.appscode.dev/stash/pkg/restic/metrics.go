@@ -9,11 +9,26 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/push"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
+	"k8s.io/kubernetes/pkg/apis/core"
+	appcatalog "kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
 	"stash.appscode.dev/stash/apis"
 	api_v1beta1 "stash.appscode.dev/stash/apis/stash/v1beta1"
 	cs "stash.appscode.dev/stash/client/clientset/versioned"
+)
+
+const (
+	MetricsLabelDriver     = "driver"
+	MetricsLabelKind       = "kind"
+	MetricsLabelAppGroup   = "group"
+	MetricsLabelName       = "name"
+	MetricsLabelNamespace  = "namespace"
+	MetricsLabelRepository = "repository"
+	MetricsLabelBackend    = "backend"
+	MetricsLabelBucket     = "bucket"
+	MetricsLabelPrefix     = "prefix"
 )
 
 // BackupMetrics defines prometheus metrics for backup setup and individual host backup
@@ -478,52 +493,59 @@ func (metricOpt *MetricsOptions) sendMetrics(registry *prometheus.Registry, jobN
 	return nil
 }
 
-func backupMetricLabels(clientConfig *rest.Config, backupConfig *api_v1beta1.BackupConfiguration, userProvidedLabels []string) (prometheus.Labels, error) {
-	promLabels := prometheus.Labels{}
-	for _, v := range userProvidedLabels {
-		parts := strings.Split(v, "=")
-		if len(parts) == 2 {
-			promLabels[parts[0]] = parts[1]
-		}
-	}
+func backupMetricLabels(config *rest.Config, backupConfig *api_v1beta1.BackupConfiguration, userProvidedLabels []string) (prometheus.Labels, error) {
+	// add user provided labels
+	promLabels := parseUserProvidedLabels(userProvidedLabels)
+
 	// insert target information as metrics label
 	if backupConfig != nil {
 		if backupConfig.Spec.Driver == api_v1beta1.VolumeSnapshotter {
-			promLabels["driver"] = string(api_v1beta1.VolumeSnapshotter)
-			// for VolumeSnapshot individual volumes is target
-			promLabels["kind"] = apis.KindPersistentVolumeClaim
-			// for VolumeSnapshot hostname label will have the respective PVC name
+			promLabels = upsertLabel(promLabels, volumeSnapshotterLabels())
 		} else {
-			promLabels["driver"] = string(api_v1beta1.ResticSnapshotter)
-			// if target specified then add target info as label
+			promLabels[MetricsLabelDriver] = string(api_v1beta1.ResticSnapshotter)
+			// insert backup target specific labels
 			if backupConfig.Spec.Target != nil {
-				switch backupConfig.Spec.Target.Ref.Kind {
-				case apis.KindAppBinding:
-					appKind, err := getAppKind(clientConfig, backupConfig.Spec.Target.Ref.Name, backupConfig.Namespace)
-					if err != nil {
-						return nil, err
-					}
-					promLabels["kind"] = appKind
-				default:
-					promLabels["kind"] = backupConfig.Spec.Target.Ref.Kind
+				labels, err := targetLabels(config, backupConfig.Spec.Target.Ref, backupConfig.Namespace)
+				if err != nil {
+					return nil, err
 				}
-				promLabels["name"] = backupConfig.Spec.Target.Ref.Name
+				promLabels = upsertLabel(promLabels, labels)
 			}
+			promLabels[MetricsLabelRepository] = backupConfig.Spec.Repository.Name
 		}
-		promLabels["namespace"] = backupConfig.Namespace
-		promLabels["repository"] = backupConfig.Spec.Repository.Name
+		promLabels[MetricsLabelNamespace] = backupConfig.Namespace
+	}
+	return promLabels, nil
+}
+
+func restoreMetricLabels(config *rest.Config, restoreSession *api_v1beta1.RestoreSession, userProvidedLabels []string) (prometheus.Labels, error) {
+	// add user provided labels
+	promLabels := parseUserProvidedLabels(userProvidedLabels)
+
+	// insert target information as metrics label
+	if restoreSession != nil {
+		if restoreSession.Spec.Driver == api_v1beta1.VolumeSnapshotter {
+			promLabels = upsertLabel(promLabels, volumeSnapshotterLabels())
+		} else {
+			promLabels[MetricsLabelDriver] = string(api_v1beta1.ResticSnapshotter)
+			// insert restore target specific metrics
+			if restoreSession.Spec.Target != nil {
+				labels, err := targetLabels(config, restoreSession.Spec.Target.Ref, restoreSession.Namespace)
+				if err != nil {
+					return nil, err
+				}
+				promLabels = upsertLabel(promLabels, labels)
+			}
+			promLabels[MetricsLabelRepository] = restoreSession.Spec.Repository.Name
+		}
+		promLabels[MetricsLabelNamespace] = restoreSession.Namespace
 	}
 	return promLabels, nil
 }
 
 func repoMetricLabels(clientConfig *rest.Config, backupConfig *api_v1beta1.BackupConfiguration, userProvidedLabels []string) (prometheus.Labels, error) {
-	promLabels := prometheus.Labels{}
-	for _, v := range userProvidedLabels {
-		parts := strings.Split(v, "=")
-		if len(parts) == 2 {
-			promLabels[parts[0]] = parts[1]
-		}
-	}
+	// add user provided labels
+	promLabels := parseUserProvidedLabels(userProvidedLabels)
 
 	// insert repository information as label
 	if backupConfig != nil && backupConfig.Spec.Target != nil {
@@ -548,53 +570,15 @@ func repoMetricLabels(clientConfig *rest.Config, backupConfig *api_v1beta1.Backu
 			return nil, err
 		}
 
-		promLabels["name"] = repository.Name
-		promLabels["namespace"] = repository.Namespace
-		promLabels["backend"] = provider
+		promLabels[MetricsLabelName] = repository.Name
+		promLabels[MetricsLabelNamespace] = repository.Namespace
+		promLabels[MetricsLabelBackend] = provider
 		if bucket != "" {
-			promLabels["bucket"] = bucket
+			promLabels[MetricsLabelBucket] = bucket
 		}
 		if prefix != "" {
-			promLabels["prefix"] = prefix
+			promLabels[MetricsLabelPrefix] = prefix
 		}
-	}
-	return promLabels, nil
-}
-
-func restoreMetricLabels(clientConfig *rest.Config, restoreSession *api_v1beta1.RestoreSession, userProvidedLabels []string) (prometheus.Labels, error) {
-	promLabels := prometheus.Labels{}
-	for _, v := range userProvidedLabels {
-		parts := strings.Split(v, "=")
-		if len(parts) == 2 {
-			promLabels[parts[0]] = parts[1]
-		}
-	}
-	// insert target information as metrics label
-	if restoreSession != nil {
-		if restoreSession.Spec.Driver == api_v1beta1.VolumeSnapshotter {
-			promLabels["driver"] = string(api_v1beta1.VolumeSnapshotter)
-			// for VolumeSnapshot individual volumes is target
-			promLabels["kind"] = apis.KindPersistentVolumeClaim
-			// for VolumeSnapshot hostname label will have the respective PVC name
-		} else {
-			promLabels["driver"] = string(api_v1beta1.ResticSnapshotter)
-			// if target specified then add target info as label
-			if restoreSession.Spec.Target != nil {
-				switch restoreSession.Spec.Target.Ref.Kind {
-				case apis.KindAppBinding:
-					appKind, err := getAppKind(clientConfig, restoreSession.Spec.Target.Ref.Name, restoreSession.Namespace)
-					if err != nil {
-						return nil, err
-					}
-					promLabels["kind"] = appKind
-				default:
-					promLabels["kind"] = restoreSession.Spec.Target.Ref.Kind
-				}
-				promLabels["name"] = restoreSession.Spec.Target.Ref.Name
-			}
-		}
-		promLabels["namespace"] = restoreSession.Namespace
-		promLabels["repository"] = restoreSession.Spec.Repository.Name
 	}
 	return promLabels, nil
 }
@@ -609,23 +593,70 @@ func upsertLabel(original, new map[string]string) map[string]string {
 	for k, v := range new {
 		labels[k] = v
 	}
-
 	return labels
 }
 
-func getAppKind(clientConfig *rest.Config, name, namespace string) (string, error) {
+// targetLabels returns backup/restore target specific labels
+func targetLabels(config *rest.Config, target api_v1beta1.TargetRef, namespace string) (map[string]string, error) {
+
+	labels := make(map[string]string)
+	switch target.Kind {
+	case apis.KindAppBinding:
+		appGroup, appKind, err := getAppGroupKind(config, target.Name, namespace)
+		if err != nil {
+			return nil, err
+		}
+		labels[MetricsLabelKind] = appKind
+		labels[MetricsLabelAppGroup] = appGroup
+	default:
+		labels[MetricsLabelKind] = target.Kind
+		gv, err := schema.ParseGroupVersion(target.APIVersion)
+		if err != nil {
+			return nil, err
+		}
+		labels[MetricsLabelAppGroup] = gv.Group
+	}
+	labels[MetricsLabelName] = target.Name
+	return labels, nil
+}
+
+// volumeSnpashotterLabels returns volume snapshot specific labels
+func volumeSnapshotterLabels() map[string]string {
+	return map[string]string{
+		MetricsLabelDriver:   string(api_v1beta1.VolumeSnapshotter),
+		MetricsLabelKind:     apis.KindPersistentVolumeClaim,
+		MetricsLabelAppGroup: core.GroupName,
+	}
+}
+
+func getAppGroupKind(clientConfig *rest.Config, name, namespace string) (string, string, error) {
 	appClient, err := appcatalog_cs.NewForConfig(clientConfig)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	appbinding, err := appClient.AppcatalogV1alpha1().AppBindings(namespace).Get(name, metav1.GetOptions{})
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	// if app type is provided then use it
-	_, targetAppResource := appbinding.AppGroupResource()
-	if targetAppResource == "" {
-		return appbinding.Kind, nil
+	// if app type is provided then use app group and app resource name.
+	// otherwise, default to AppBinding's group,resources name
+	targetAppGroup, targetAppResource := appbinding.AppGroupResource()
+	if targetAppGroup == "" && targetAppResource == "" {
+		targetAppGroup = appbinding.GroupVersionKind().Group
+		targetAppResource = appcatalog.ResourceApps
 	}
-	return targetAppResource, nil
+	return targetAppGroup, targetAppResource, nil
+}
+
+// parseUserProvidedLabels parses the labels provided by user as an array of key-value pair
+// and returns labels in Prometheus labels format
+func parseUserProvidedLabels(userLabels []string) prometheus.Labels {
+	labels := prometheus.Labels{}
+	for _, v := range userLabels {
+		parts := strings.Split(v, "=")
+		if len(parts) == 2 {
+			labels[parts[0]] = parts[1]
+		}
+	}
+	return labels
 }
