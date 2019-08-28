@@ -12,7 +12,6 @@ spec:
   - --provider=${REPOSITORY_PROVIDER:=}
   - --bucket=${REPOSITORY_BUCKET:=}
   - --endpoint=${REPOSITORY_ENDPOINT:=}
-  - --rest-server-url=${REPOSITORY_URL:=}
   - --path=${REPOSITORY_PREFIX:=}
   - --secret-dir=/etc/repository/secret
   - --scratch-dir=/tmp
