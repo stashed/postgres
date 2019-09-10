@@ -22,7 +22,7 @@ spec:
   - --pg-args=${pgArgs:={{ .Values.restore.pgArgs }}} # optional arguments pass to pgdump command
   # target information
   - --namespace=${NAMESPACE:=default}
-  - --app-binding=${TARGET_NAME:=}
+  - --appbinding=${TARGET_NAME:=}
   - --snapshot=${RESTORE_SNAPSHOTS:=}
   # output & metric information
   - --output-dir=${outputDir:=}

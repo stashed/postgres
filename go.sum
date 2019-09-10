@@ -444,5 +444,5 @@ sigs.k8s.io/kustomize v2.0.3+incompatible/go.mod h1:MkjgH3RdOWrievjo6c9T245dYlB5
 sigs.k8s.io/structured-merge-diff v0.0.0-20190302045857-e85c7b244fd2/go.mod h1:wWxsB5ozmmv/SG7nM11ayaAW51xMvak/t1r0CSlcokI=
 sigs.k8s.io/yaml v1.1.0 h1:4A07+ZFc2wgJwo8YNlQpr1rVlgUDlxXHhPJciaPY5gs=
 sigs.k8s.io/yaml v1.1.0/go.mod h1:UJmg0vDUVViEyp3mgSv9WPwZCDxu4rQW1olrI1uml+o=
-stash.appscode.dev/stash v0.9.0-rc.0.0.20190828102811-1b3de9eacd2c h1:1/v6yHdS1H4p5IRBwO/xUe0rXftlk6wcBu67Qe+kw4E=
-stash.appscode.dev/stash v0.9.0-rc.0.0.20190828102811-1b3de9eacd2c/go.mod h1:6WrRpjkI1av7305B60BLRx+PZzwMAoiGmOd5ewYAAyw=
+stash.appscode.dev/stash v0.9.0-rc.0.0.20190910104640-5f49f5d214aa h1:/cDpVS+SY8jr0P9AmPiIkj6EaPrVJzsmGDX2RgUYtMU=
+stash.appscode.dev/stash v0.9.0-rc.0.0.20190910104640-5f49f5d214aa/go.mod h1:6WrRpjkI1av7305B60BLRx+PZzwMAoiGmOd5ewYAAyw=

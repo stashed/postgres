@@ -9,7 +9,7 @@ require (
 	k8s.io/client-go v11.0.0+incompatible
 	kmodules.xyz/client-go v0.0.0-20190808141354-bbb9e14f60ab
 	kmodules.xyz/custom-resources v0.0.0-20190808144301-114abf10dfe2
-	stash.appscode.dev/stash v0.9.0-rc.0.0.20190828102811-1b3de9eacd2c
+	stash.appscode.dev/stash v0.9.0-rc.0.0.20190910104640-5f49f5d214aa
 )
 
 replace (

@@ -466,8 +466,8 @@ k8s.io/client-go/tools/auth
 k8s.io/client-go/tools/clientcmd/api
 k8s.io/client-go/tools/clientcmd/api/latest
 k8s.io/client-go/util/homedir
-k8s.io/client-go/pkg/version
 k8s.io/client-go/tools/reference
+k8s.io/client-go/pkg/version
 k8s.io/client-go/util/jsonpath
 k8s.io/client-go/plugin/pkg/client/auth/exec
 k8s.io/client-go/rest/watch
@@ -552,7 +552,7 @@ sigs.k8s.io/kustomize/pkg/expansion
 sigs.k8s.io/kustomize/pkg/transformers/config/defaultconfig
 # sigs.k8s.io/yaml v1.1.0
 sigs.k8s.io/yaml
-# stash.appscode.dev/stash v0.9.0-rc.0.0.20190828102811-1b3de9eacd2c
+# stash.appscode.dev/stash v0.9.0-rc.0.0.20190910104640-5f49f5d214aa
 stash.appscode.dev/stash/client/clientset/versioned/fake
 stash.appscode.dev/stash/apis
 stash.appscode.dev/stash/client/clientset/versioned/scheme
