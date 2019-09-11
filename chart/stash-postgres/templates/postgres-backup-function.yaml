@@ -21,7 +21,7 @@ spec:
   - --pg-args=${pgArgs:={{ .Values.backup.pgArgs }}} # optional arguments pass to pgdump command
   # target information
   - --namespace=${NAMESPACE:=default}
-  - --app-binding=${TARGET_NAME:=}
+  - --appbinding=${TARGET_NAME:=}
   # cleanup information
   - --retention-keep-last=${RETENTION_KEEP_LAST:=0}
   - --retention-keep-hourly=${RETENTION_KEEP_HOURLY:=0}
