@@ -57,7 +57,7 @@ func NewCmdRestore() *cobra.Command {
 				restoreOutput = &restic.RestoreOutput{
 					HostRestoreStats: []api_v1beta1.HostRestoreStats{
 						{
-							Hostname: opt.backupOptions.Host,
+							Hostname: opt.dumpOptions.Host,
 							Phase:    api_v1beta1.HostRestoreFailed,
 							Error:    err.Error(),
 						},
