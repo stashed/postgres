@@ -1,14 +1,14 @@
 ---
-title: Backup PostgreSQL | Stash
-description: Backup PostgreSQL database using Stash
+title: PostgreSQL | Stash
+description: Backup and restore standalone PostgreSQL database using Stash
 menu:
-  product_stash_0.8.3:
-    identifier: database-postgres
-    name: PostgreSQL
-    parent: database
-    weight: 20
+  product_stash_{{ .Version }}:
+    identifier: standalone-postgres
+    name: Standalone PostgreSQL
+    parent: stash-postgres-guides-11.2
+    weight: 10
 product_name: stash
-menu_name: product_stash_0.8.3
+menu_name: product_stash_{{ .Version }}
 section_menu_id: guides
 ---
 
@@ -20,20 +20,20 @@ Stash 0.9.0+ supports backup and restoration of PostgreSQL databases. This guide
 
 - At first, you need to have a Kubernetes cluster, and the `kubectl` command-line tool must be configured to communicate with your cluster. If you do not already have a cluster, you can create one by using Minikube.
 
-- Install Stash in your cluster following the steps [here](https://appscode.com/products/stash/0.8.3/setup/install/).
+- Install Stash in your cluster following the steps [here](https://appscode.com/products/stash/latest/setup/install/).
 
 - Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/latest/setup/install/). This step is optional. You can deploy your database using any method you want. We are using KubeDB because it automates some tasks that you have to do manually otherwise.
 
 - If you are not familiar with how Stash backup and restore databases, please check the following guide:
-  - [How Stash backup and restore databases](https://appscode.com/products/stash/0.8.3/guides/databases/overview/).
+  - [How Stash backup and restore databases](https://appscode.com/products/stash/latest/guides/databases/overview/).
 
 You have to be familiar with following custom resources:
 
-- [AppBinding](https://appscode.com/products/stash/0.8.3/concepts/crds/appbinding/)
-- [Function](https://appscode.com/products/stash/0.8.3/concepts/crds/function/)
-- [Task](https://appscode.com/products/stash/0.8.3/concepts/crds/task/)
-- [BackupConfiguration](https://appscode.com/products/stash/0.8.3/concepts/crds/backupconfiguration/)
-- [RestoreSession](https://appscode.com/products/stash/0.8.3/concepts/crds/restoresession/)
+- [AppBinding](https://appscode.com/products/stash/latest/concepts/crds/appbinding/)
+- [Function](https://appscode.com/products/stash/latest/concepts/crds/function/)
+- [Task](https://appscode.com/products/stash/latest/concepts/crds/task/)
+- [BackupConfiguration](https://appscode.com/products/stash/latest/concepts/crds/backupconfiguration/)
+- [RestoreSession](https://appscode.com/products/stash/latest/concepts/crds/restoresession/)
 
 To keep things isolated, we are going to use a separate namespace called `demo` throughout this tutorial. Create `demo` namespace if you haven't created yet.
 
@@ -190,7 +190,7 @@ sample-postgres            ClusterIP   10.106.147.155   <none>        5432/TCP  
 sample-postgres-replicas   ClusterIP   10.96.231.122    <none>        5432/TCP   22h
 ```
 
-Here, we have to use service `sample-postgres` and secret `sample-postgres-auth` to connect with the database. KubeDB creates an [AppBinding](https://appscode.com/products/stash/0.8.3/concepts/crds/appbinding/) crd that holds the necessary information to connect with the database.
+Here, we have to use service `sample-postgres` and secret `sample-postgres-auth` to connect with the database. KubeDB creates an [AppBinding](https://appscode.com/products/stash/latest/concepts/crds/appbinding/) crd that holds the necessary information to connect with the database.
 
 **Verify AppBinding:**
 
@@ -331,7 +331,7 @@ Now, we are ready to backup this sample database.
 
 ### Prepare Backend
 
-We are going to store our backed up data into a GCS bucket. At first, we need to create a secret with GCS credentials then we need to create a `Repository` crd. If you want to use a different backend, please read the respective backend configuration doc from [here](https://appscode.com/products/stash/0.8.3/guides/backends/overview/).
+We are going to store our backed up data into a GCS bucket. At first, we need to create a secret with GCS credentials then we need to create a `Repository` crd. If you want to use a different backend, please read the respective backend configuration doc from [here](https://appscode.com/products/stash/latest/guides/backends/overview/).
 
 **Create Storage Secret:**
 
