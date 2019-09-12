@@ -9,7 +9,7 @@ menu:
     weight: 10
 product_name: stash
 menu_name: product_stash_{{ .Version }}
-section_menu_id: guides
+section_menu_id: stash-addons
 ---
 
 # Backup and Restore PostgreSQL database using Stash
