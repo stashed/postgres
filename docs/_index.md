@@ -1,10 +1,10 @@
 ---
-title: PostgreSQL 11.2 Backup Guides | Stash
+title: PostgreSQL {{ .subproject_version }} Backup Guides | Stash
 menu:
-  product_stash_{{ .Version }}:
-    identifier: stash-postgres-guides-11.2
-    name: 11.2
+  product_stash_{{ .version }}:
+    identifier: stash-postgres-guides-{{ .subproject_version }}
+    name: {{ .subproject_version }}
     parent: stash-postgres-guides
     weight: 50
-menu_name: product_stash_{{ .Version }}
+menu_name: product_stash_{{ .version }}
 ---
