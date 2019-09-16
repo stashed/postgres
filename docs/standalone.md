@@ -21,16 +21,16 @@ Stash 0.9.0+ supports backup and restoration of PostgreSQL databases. This guide
 - At first, you need to have a Kubernetes cluster, and the `kubectl` command-line tool must be configured to communicate with your cluster. If you do not already have a cluster, you can create one by using Minikube.
 - Install Stash in your cluster following the steps [here](/docs/setup/install.md).
 - Install PostgreSQL addon for Stash following the steps [here](/docs/addons/postgres/setup/install.md)
-- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/latest/setup/install/). This step is optional. You can deploy your database using any method you want. We are using KubeDB because it automates some tasks that you have to do manually otherwise.
+- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/setup/install/). This step is optional. You can deploy your database using any method you want. We are using KubeDB because it automates some tasks that you have to do manually otherwise.
 - If you are not familiar with how Stash backup and restore PostgreSQL databases, please check the following guide [here](/docs/addons/postgres/overview.md):
 
 You have to be familiar with following custom resources:
 
-- [AppBinding](/docs/latest/concepts/crds/appbinding.md)
-- [Function](/docs/latest/concepts/crds/function.md)
-- [Task](/docs/latest/concepts/crds/task.md)
-- [BackupConfiguration](/docs/latest/concepts/crds/backupconfiguration.md)
-- [RestoreSession](/docs/latest/concepts/crds/restoresession.md)
+- [AppBinding](/docs/concepts/crds/appbinding.md)
+- [Function](/docs/concepts/crds/function.md)
+- [Task](/docs/concepts/crds/task.md)
+- [BackupConfiguration](/docs/concepts/crds/backupconfiguration.md)
+- [RestoreSession](/docs/concepts/crds/restoresession.md)
 
 To keep things isolated, we are going to use a separate namespace called `demo` throughout this tutorial. Create `demo` namespace if you haven't created yet.
 
@@ -102,7 +102,7 @@ sample-postgres            ClusterIP   10.106.147.155   <none>        5432/TCP  
 sample-postgres-replicas   ClusterIP   10.96.231.122    <none>        5432/TCP   22h
 ```
 
-Here, we have to use service `sample-postgres` and secret `sample-postgres-auth` to connect with the database. KubeDB creates an [AppBinding](/docs/latest/concepts/crds/appbinding.md) crd that holds the necessary information to connect with the database.
+Here, we have to use service `sample-postgres` and secret `sample-postgres-auth` to connect with the database. KubeDB creates an [AppBinding](/docs/concepts/crds/appbinding.md) crd that holds the necessary information to connect with the database.
 
 **Verify AppBinding:**
 
@@ -243,7 +243,7 @@ Now, we are ready to backup this sample database.
 
 ### Prepare Backend
 
-We are going to store our backed up data into a GCS bucket. At first, we need to create a secret with GCS credentials then we need to create a `Repository` crd. If you want to use a different backend, please read the respective backend configuration doc from [here](/docs/latest/guides/lastest/backends/overview.md).
+We are going to store our backed up data into a GCS bucket. At first, we need to create a secret with GCS credentials then we need to create a `Repository` crd. If you want to use a different backend, please read the respective backend configuration doc from [here](/docs/guides/latest/backends/overview.md).
 
 **Create Storage Secret:**
 
@@ -375,7 +375,7 @@ gcs-repo   true        3.441 KiB   1                31s                      17m
 Now, if we navigate to the GCS bucket, we are going to see backed up data has been stored in `demo/postgres/sample-postgres` directory as specified by `spec.backend.gcs.prefix` field of Repository crd.
 
 <figure align="center">
-  <img alt="Backup data in GCS Bucket" src="/docs/addons/postgres/{{< param "info.subproject_version" >}}/images/sample-postgres-backup.png">
+  <img alt="Backup data in GCS Bucket" src="../images/sample-postgres-backup.png">
   <figcaption align="center">Fig: Backup data in GCS Bucket</figcaption>
 </figure>
 
