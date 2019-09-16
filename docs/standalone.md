@@ -75,7 +75,7 @@ spec:
 Create the above `Postgres` crd,
 
 ```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< params "info.subproject_version" >}}/docs/examples/backup/postgres.yaml
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/backup/postgres.yaml
 postgres.kubedb.com/sample-postgres created
 ```
 
@@ -243,7 +243,7 @@ Now, we are ready to backup this sample database.
 
 ### Prepare Backend
 
-We are going to store our backed up data into a GCS bucket. At first, we need to create a secret with GCS credentials then we need to create a `Repository` crd. If you want to use a different backend, please read the respective backend configuration doc from [here](/docs/latest/guides/backends/overview.md).
+We are going to store our backed up data into a GCS bucket. At first, we need to create a secret with GCS credentials then we need to create a `Repository` crd. If you want to use a different backend, please read the respective backend configuration doc from [here](/docs/latest/guides/lastest/backends/overview.md).
 
 **Create Storage Secret:**
 
@@ -281,7 +281,7 @@ spec:
 Let's create the `Repository` we have shown above,
 
 ```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< params "info.subproject_version" >}}/docs/examples/backup/repository.yaml
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/backup/repository.yaml
 repository.stash.appscode.com/gcs-repo created
 ```
 
@@ -328,7 +328,7 @@ Here,
 Let's create the `BackupConfiguration` crd we have shown above,
 
 ```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< params "info.subproject_version" >}}/docs/examples/backup/backupconfiguration.yaml
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/backup/backupconfiguration.yaml
 backupconfiguration.stash.appscode.com/sample-postgres-backup created
 ```
 
@@ -447,7 +447,7 @@ Here,
 Let's create the above database,
 
 ```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< params "info.subproject_version" >}}/docs/examples/restore/restored-postgres.yaml
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/restore/restored-postgres.yaml
 postgres.kubedb.com/restored-postgres created
 ```
 
@@ -510,7 +510,7 @@ Here,
 Let's create the `RestoreSession` crd we have shown above,
 
 ```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< params "info.subproject_version" >}}/docs/examples/restore/restoresession.yaml
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/restore/restoresession.yaml
 restoresession.stash.appscode.com/sample-postgres-restore created
 ```
 
