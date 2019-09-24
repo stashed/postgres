@@ -39,7 +39,7 @@ $ kubectl create ns demo
 namespace/demo created
 ```
 
-> Note: YAML files used in this tutorial are stored [here](https://github.com/stashed/postgres/tree/master/docs/examples).
+> Note: YAML files used in this tutorial are stored [here](https://github.com/stashed/postgres/tree/{{< param "info.subproject_version" >}}/docs/examples).
 
 ## Backup PostgreSQL
 
@@ -375,7 +375,7 @@ gcs-repo   true        3.441 KiB   1                31s                      17m
 Now, if we navigate to the GCS bucket, we are going to see backed up data has been stored in `demo/postgres/sample-postgres` directory as specified by `spec.backend.gcs.prefix` field of Repository crd.
 
 <figure align="center">
-  <img alt="Backup data in GCS Bucket" src="../images/sample-postgres-backup.png">
+ <img alt="Backup data in GCS Bucket" src="../images/sample-postgres-backup.png">
   <figcaption align="center">Fig: Backup data in GCS Bucket</figcaption>
 </figure>
 
@@ -387,7 +387,7 @@ Now, we are going to restore the database from the backup we have taken in the p
 
 **Stop Taking Backup of the Old Database:**
 
-At first, let's stop taking any further backup of the old database so that no backup is taken during restore process. We are going to pause the `BackupConfiguration` crd that we had created to backup the `sample-postgres` database. Then, Stash will stop taking any further backup for this database.
+At first, let's stop taking any further backup of the old database so that no backup is taken during the restore process. We are going to pause the `BackupConfiguration` crd that we had created to backup the `sample-postgres` database. Then, Stash will stop taking any further backup for this database.
 
 Let's pause the `sample-postgres-backup` BackupConfiguration,
 
@@ -441,7 +441,7 @@ spec:
 
 Here,
 
-- `spec.databaseSecret.secretName` specifies the name of the database secret of the original database. You must use the same secret in the restored database. Otherwise, restore process will fail.
+- `spec.databaseSecret.secretName` specifies the name of the database secret of the original database. You must use the same secret in the restored database. Otherwise, the restore process will fail.
 - `spec.init.stashRestoreSession.name` specifies the `RestoreSession` crd name that we are going to use to restore this database.
 
 Let's create the above database,
