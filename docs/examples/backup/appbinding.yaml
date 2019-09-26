@@ -1,18 +1,18 @@
 apiVersion: appcatalog.appscode.com/v1alpha1
 kind: AppBinding
 metadata:
-  creationTimestamp: "2019-09-25T10:38:04Z"
-  generation: 1
+...
+  name: sample-postgres
+  namespace: demo
   labels:
     app.kubernetes.io/component: database
     app.kubernetes.io/instance: sample-postgres
     app.kubernetes.io/managed-by: kubedb.com
     app.kubernetes.io/name: postgres
-    app.kubernetes.io/version: 11.1-v2
+    app.kubernetes.io/version: "11.2"
     kubedb.com/kind: Postgres
     kubedb.com/name: sample-postgres
-  name: sample-postgres
-  namespace: demo
+...
 spec:
   clientConfig:
     service:
@@ -31,4 +31,3 @@ spec:
       from: POSTGRES_PASSWORD
       to: password
   type: kubedb.com/postgres
-  version: "11.1"

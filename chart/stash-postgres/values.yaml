@@ -6,7 +6,7 @@
 docker:
   registry: stashed
   image: stash-postgres
-  tag: 11.1
+  tag: 11.2
 
 # optional argument to send pgdump or psql command
 backup:

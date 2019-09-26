@@ -5,6 +5,6 @@ menu:
     identifier: stash-postgres-guides-{{ .subproject_version }}
     name: {{ .subproject_version }}
     parent: stash-postgres-guides
-    weight: 25
+    weight: 50
 menu_name: product_stash_{{ .version }}
 ---
