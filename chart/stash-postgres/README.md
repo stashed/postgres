@@ -54,11 +54,11 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the `stash-postgres` chart and their default values.
 
-| Parameter         | Description                                                                                                                      | Default          |
+|     Parameter     |                                                           Description                                                            |     Default      |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | `docker.registry` | Docker registry used to pull respective images                                                                                   | `stashed`        |
 | `docker.image`    | Docker image used to backup/restore PosegreSQL database                                                                          | `stash-postgres` |
-| `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `10.2`            |
+| `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `10.2`           |
 | `backup.pgArgs`   | Optional arguments to pass to `pgdump` command  during bakcup process                                                            |                  |
 | `restore.pgArgs`  | Optional arguments to pass to `psql` command during restore process                                                              |                  |
 

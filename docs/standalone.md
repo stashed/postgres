@@ -85,7 +85,7 @@ Let's check if the database is ready to use,
 
 ```console
 $ kubectl get pg -n demo sample-postgres
-NAME              VERSION     STATUS    AGE
+NAME              VERSION      STATUS    AGE
 sample-postgres   10.2-v4      Running   3m11s
 ```
 
@@ -124,7 +124,7 @@ $ kubectl get appbindings -n demo sample-postgres -o yaml
 apiVersion: appcatalog.appscode.com/v1alpha1
 kind: AppBinding
 metadata:
-  creationTimestamp: "2019-09-25T12:56:02Z"
+  creationTimestamp: "2019-09-25T12:42:56Z"
   generation: 1
   labels:
     app.kubernetes.io/component: database
@@ -458,7 +458,7 @@ If you check the database status, you will see it is stuck in `Initializing` sta
 
 ```console
 $ kubectl get pg -n demo restored-postgres
-NAME                VERSION     STATUS         AGE
+NAME                VERSION      STATUS         AGE
 restored-postgres   10.2-v4      Initializing   3m21s
 ```
 
@@ -539,7 +539,7 @@ At first, check if the database has gone into `Running` state by the following c
 
 ```console
 $ kubectl get pg -n demo restored-postgres
-NAME                VERSION     STATUS    AGE
+NAME                VERSION      STATUS    AGE
 restored-postgres   10.2-v4      Running   2m16s
 ```
 
