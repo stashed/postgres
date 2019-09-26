@@ -60,7 +60,7 @@ metadata:
   name: sample-postgres
   namespace: demo
 spec:
-  version: "10.6-v2"
+  version: "11.1-v2"
   storageType: Durable
   storage:
     storageClassName: "standard"
@@ -86,7 +86,7 @@ Let's check if the database is ready to use,
 ```console
 $ kubectl get pg -n demo sample-postgres
 NAME              VERSION      STATUS    AGE
-sample-postgres   10.6-v2      Running   3m11s
+sample-postgres   11.1-v2      Running   3m11s
 ```
 
 The database is `Running`. Verify that KubeDB has created a Secret and a Service for this database using the following commands,
@@ -124,14 +124,14 @@ $ kubectl get appbindings -n demo sample-postgres -o yaml
 apiVersion: appcatalog.appscode.com/v1alpha1
 kind: AppBinding
 metadata:
-  creationTimestamp: "2019-09-25T12:18:54Z"
+  creationTimestamp: "2019-09-25T10:38:04Z"
   generation: 1
   labels:
     app.kubernetes.io/component: database
     app.kubernetes.io/instance: sample-postgres
     app.kubernetes.io/managed-by: kubedb.com
     app.kubernetes.io/name: postgres
-    app.kubernetes.io/version: 10.6-v2
+    app.kubernetes.io/version: 11.1-v2
     kubedb.com/kind: Postgres
     kubedb.com/name: sample-postgres
   name: sample-postgres
@@ -154,7 +154,7 @@ spec:
       from: POSTGRES_PASSWORD
       to: password
   type: kubedb.com/postgres
-  version: "10.6"
+  version: "11.1"
 ```
 
 Stash uses the `AppBinding` crd to connect with the target database. It requires the following two fields to set in AppBinding's `Spec` section.
@@ -204,7 +204,7 @@ Now, let's exec into the pod and create a table,
 $ kubectl exec -it -n demo sample-postgres-0 sh
 # login as "postgres" superuser.
 / # psql -U postgres
-psql (10.6)
+psql (11.1)
 Type "help" for help.
 
 # list available databases
@@ -307,7 +307,7 @@ metadata:
 spec:
   schedule: "*/5 * * * *"
   task:
-    name: postgres-backup-10.6
+    name: postgres-backup-11.1
   repository:
     name: gcs-repo
   target:
@@ -316,6 +316,7 @@ spec:
       kind: AppBinding
       name: sample-postgres
   retentionPolicy:
+    name: keep-last-5
     keepLast: 5
     prune: true
 ```
@@ -404,7 +405,7 @@ Now, wait for a moment. Stash will pause the BackupConfiguration. Verify that th
 ```console
 $ kubectl get backupconfiguration -n demo sample-postgres-backup
 NAME                    TASK                        SCHEDULE      PAUSED   AGE
-sample-postgres-backup  postgres-backup-10.6        */5 * * * *   true     26m
+sample-postgres-backup  postgres-backup-11.1        */5 * * * *   true     26m
 ```
 
 Notice the `PAUSED` column. Value `true` for this field means that the BackupConfiguration has been paused.
@@ -425,7 +426,7 @@ metadata:
   name: restored-postgres
   namespace: demo
 spec:
-  version: "10.6-v2"
+  version: "11.1-v2"
   storageType: Durable
   databaseSecret:
     secretName: sample-postgres-auth # use same secret as original the database
@@ -459,7 +460,7 @@ If you check the database status, you will see it is stuck in `Initializing` sta
 ```console
 $ kubectl get pg -n demo restored-postgres
 NAME                VERSION      STATUS         AGE
-restored-postgres   10.6-v2      Initializing   3m21s
+restored-postgres   11.1-v2      Initializing   3m21s
 ```
 
 **Create RestoreSession:**
@@ -488,7 +489,7 @@ metadata:
     kubedb.com/kind: Postgres # this label is mandatory if you are using KubeDB to deploy the database.
 spec:
   task:
-    name: postgres-restore-10.6
+    name: postgres-restore-11.1
   repository:
     name: gcs-repo
   target:
@@ -540,7 +541,7 @@ At first, check if the database has gone into `Running` state by the following c
 ```console
 $ kubectl get pg -n demo restored-postgres
 NAME                VERSION      STATUS    AGE
-restored-postgres   10.6-v2      Running   2m16s
+restored-postgres   11.1-v2      Running   2m16s
 ```
 
 Now, find out the database pod by the following command,
@@ -557,7 +558,7 @@ Now, exec into the database pod and list available tables,
 $ kubectl exec -it -n demo restored-postgres-0 sh
 # login as "postgres" superuser.
 / # psql -U postgres
-psql (10.6)
+psql (11.1)
 Type "help" for help.
 
 # list available databases
