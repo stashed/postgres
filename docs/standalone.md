@@ -39,7 +39,7 @@ $ kubectl create ns demo
 namespace/demo created
 ```
 
-> Note: YAML files used in this tutorial are stored [here](https://github.com/stashed/postgres/tree/master/docs/examples).
+> Note: YAML files used in this tutorial are stored [here](https://github.com/stashed/postgres/tree/{{< param "info.subproject_version" >}}/docs/examples).
 
 ## Backup PostgreSQL
 
@@ -124,8 +124,8 @@ $ kubectl get appbindings -n demo sample-postgres -o yaml
 apiVersion: appcatalog.appscode.com/v1alpha1
 kind: AppBinding
 metadata:
-  name: sample-postgres
-  namespace: demo
+  creationTimestamp: "2019-09-25T11:32:33Z"
+  generation: 1
   labels:
     app.kubernetes.io/component: database
     app.kubernetes.io/instance: sample-postgres
@@ -134,6 +134,8 @@ metadata:
     app.kubernetes.io/version: "11.2"
     kubedb.com/kind: Postgres
     kubedb.com/name: sample-postgres
+  name: sample-postgres
+  namespace: demo
 spec:
   clientConfig:
     service:
@@ -145,13 +147,14 @@ spec:
   secret:
     name: sample-postgres-auth
   secretTransforms:
-    - renameKey:
-        from: POSTGRES_USER
-        to: username
-    - renameKey:
-        from: POSTGRES_PASSWORD
-        to: password
+  - renameKey:
+      from: POSTGRES_USER
+      to: username
+  - renameKey:
+      from: POSTGRES_PASSWORD
+      to: password
   type: kubedb.com/postgres
+  version: "11.2"
 ```
 
 Stash uses the `AppBinding` crd to connect with the target database. It requires the following two fields to set in AppBinding's `Spec` section.
@@ -313,6 +316,7 @@ spec:
       kind: AppBinding
       name: sample-postgres
   retentionPolicy:
+    name: keep-last-5
     keepLast: 5
     prune: true
 ```
@@ -375,7 +379,7 @@ gcs-repo   true        3.441 KiB   1                31s                      17m
 Now, if we navigate to the GCS bucket, we are going to see backed up data has been stored in `demo/postgres/sample-postgres` directory as specified by `spec.backend.gcs.prefix` field of Repository crd.
 
 <figure align="center">
-  <img alt="Backup data in GCS Bucket" src="../images/sample-postgres-backup.png">
+ <img alt="Backup data in GCS Bucket" src="../images/sample-postgres-backup.png">
   <figcaption align="center">Fig: Backup data in GCS Bucket</figcaption>
 </figure>
 
@@ -387,7 +391,7 @@ Now, we are going to restore the database from the backup we have taken in the p
 
 **Stop Taking Backup of the Old Database:**
 
-At first, let's stop taking any further backup of the old database so that no backup is taken during restore process. We are going to pause the `BackupConfiguration` crd that we had created to backup the `sample-postgres` database. Then, Stash will stop taking any further backup for this database.
+At first, let's stop taking any further backup of the old database so that no backup is taken during the restore process. We are going to pause the `BackupConfiguration` crd that we had created to backup the `sample-postgres` database. Then, Stash will stop taking any further backup for this database.
 
 Let's pause the `sample-postgres-backup` BackupConfiguration,
 
@@ -441,7 +445,7 @@ spec:
 
 Here,
 
-- `spec.databaseSecret.secretName` specifies the name of the database secret of the original database. You must use the same secret in the restored database. Otherwise, restore process will fail.
+- `spec.databaseSecret.secretName` specifies the name of the database secret of the original database. You must use the same secret in the restored database. Otherwise, the restore process will fail.
 - `spec.init.stashRestoreSession.name` specifies the `RestoreSession` crd name that we are going to use to restore this database.
 
 Let's create the above database,
