@@ -69,7 +69,7 @@ TAG              := $(VERSION)_$(OS)_$(ARCH)
 TAG_PROD         := $(TAG)
 TAG_DBG          := $(VERSION)-dbg_$(OS)_$(ARCH)
 
-GO_VERSION       ?= 1.12.7
+GO_VERSION       ?= 1.12.10
 BUILD_IMAGE      ?= appscode/golang-dev:$(GO_VERSION)-stretch
 
 OUTBIN = bin/$(OS)_$(ARCH)/$(BIN)
@@ -80,7 +80,10 @@ endif
 # Directories that we need created to build/test.
 BUILD_DIRS  := bin/$(OS)_$(ARCH)     \
                .go/bin/$(OS)_$(ARCH) \
-               .go/cache
+               .go/cache             \
+               $(HOME)/.credentials  \
+               $(HOME)/.kube         \
+               $(HOME)/.minikube
 
 DOCKERFILE_PROD  = Dockerfile.in
 DOCKERFILE_DBG   = Dockerfile.dbg
@@ -118,15 +121,15 @@ all-container: $(addprefix container-, $(subst /,_, $(DOCKER_PLATFORMS)))
 all-push: $(addprefix push-, $(subst /,_, $(DOCKER_PLATFORMS)))
 
 version:
-	@echo version=$(VERSION)
-	@echo version_strategy=$(version_strategy)
-	@echo git_tag=$(git_tag)
-	@echo git_branch=$(git_branch)
-	@echo commit_hash=$(commit_hash)
-	@echo commit_timestamp=$(commit_timestamp)
+	@echo ::set-output name=version::$(VERSION)
+	@echo ::set-output name=version_strategy::$(version_strategy)
+	@echo ::set-output name=git_tag::$(git_tag)
+	@echo ::set-output name=git_branch::$(git_branch)
+	@echo ::set-output name=commit_hash::$(commit_hash)
+	@echo ::set-output name=commit_timestamp::$(commit_timestamp)
 
 gen:
-	./hack/codegen.sh
+	@true
 
 fmt: $(BUILD_DIRS)
 	@docker run                                                 \
@@ -208,13 +211,13 @@ container: bin/.container-$(DOTFILE_IMAGE)-PROD bin/.container-$(DOTFILE_IMAGE)-
 bin/.container-$(DOTFILE_IMAGE)-%: bin/$(OS)_$(ARCH)/$(BIN) $(DOCKERFILE_%)
 	@echo "container: $(IMAGE):$(TAG_$*)"
 	@sed                                            \
-	    -e 's|{ARG_BIN}|$(BIN)|g'                   \
-	    -e 's|{ARG_ARCH}|$(ARCH)|g'                 \
-	    -e 's|{ARG_OS}|$(OS)|g'                     \
-	    -e 's|{ARG_FROM}|$(BASEIMAGE_$*)|g'         \
-	    -e 's|{RESTIC_VER}|$(RESTIC_VER)|g'         \
-	    -e 's|{NEW_RESTIC_VER}|$(NEW_RESTIC_VER)|g' \
-	    $(DOCKERFILE_$*) > bin/.dockerfile-$*-$(OS)_$(ARCH)
+		-e 's|{ARG_BIN}|$(BIN)|g'                   \
+		-e 's|{ARG_ARCH}|$(ARCH)|g'                 \
+		-e 's|{ARG_OS}|$(OS)|g'                     \
+		-e 's|{ARG_FROM}|$(BASEIMAGE_$*)|g'         \
+		-e 's|{RESTIC_VER}|$(RESTIC_VER)|g'         \
+		-e 's|{NEW_RESTIC_VER}|$(NEW_RESTIC_VER)|g' \
+		$(DOCKERFILE_$*) > bin/.dockerfile-$*-$(OS)_$(ARCH)
 	@DOCKER_CLI_EXPERIMENTAL=enabled docker buildx build --platform $(OS)/$(ARCH) --load --pull -t $(IMAGE):$(TAG_$*) -f bin/.dockerfile-$*-$(OS)_$(ARCH) .
 	@docker images -q $(IMAGE):$(TAG_$*) > $@
 	@echo
