@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"path/filepath"
+	"strings"
 
 	"github.com/appscode/go/flags"
 	"github.com/spf13/cobra"
@@ -137,8 +138,8 @@ func (opt *postgresOptions) restorePostgreSQL() (*restic.RestoreOutput, error) {
 			"-h", appBinding.Spec.ClientConfig.Service.Name,
 		},
 	}
-	if opt.pgArgs != "" {
-		opt.dumpOptions.StdoutPipeCommand.Args = append(opt.dumpOptions.StdoutPipeCommand.Args, opt.pgArgs)
+	for _, arg := range strings.Fields(opt.pgArgs) {
+		opt.dumpOptions.StdoutPipeCommand.Args = append(opt.dumpOptions.StdoutPipeCommand.Args, arg)
 	}
 
 	// wait for DB ready
