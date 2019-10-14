@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"path/filepath"
+	"strings"
 
 	"github.com/appscode/go/flags"
 	"github.com/spf13/cobra"
@@ -146,7 +147,10 @@ func (opt *postgresOptions) backupPostgreSQL() (*restic.BackupOutput, error) {
 		},
 	}
 	if opt.pgArgs != "" {
-		opt.backupOptions.StdinPipeCommand.Args = append(opt.backupOptions.StdinPipeCommand.Args, opt.pgArgs)
+		args := strings.Fields(opt.pgArgs)
+		for _, arg := range args {
+			opt.backupOptions.StdinPipeCommand.Args = append(opt.backupOptions.StdinPipeCommand.Args, arg)
+		}
 	}
 
 	// wait for DB ready
