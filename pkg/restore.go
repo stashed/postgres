@@ -138,11 +138,8 @@ func (opt *postgresOptions) restorePostgreSQL() (*restic.RestoreOutput, error) {
 			"-h", appBinding.Spec.ClientConfig.Service.Name,
 		},
 	}
-	if opt.pgArgs != "" {
-		args := strings.Fields(opt.pgArgs)
-		for _, arg := range args {
-			opt.dumpOptions.StdoutPipeCommand.Args = append(opt.dumpOptions.StdoutPipeCommand.Args, arg)
-		}
+	for _, arg := range strings.Fields(opt.pgArgs) {
+		opt.dumpOptions.StdoutPipeCommand.Args = append(opt.dumpOptions.StdoutPipeCommand.Args, arg)
 	}
 
 	// wait for DB ready

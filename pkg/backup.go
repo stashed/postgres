@@ -146,11 +146,8 @@ func (opt *postgresOptions) backupPostgreSQL() (*restic.BackupOutput, error) {
 			"-h", appBinding.Spec.ClientConfig.Service.Name,
 		},
 	}
-	if opt.pgArgs != "" {
-		args := strings.Fields(opt.pgArgs)
-		for _, arg := range args {
-			opt.backupOptions.StdinPipeCommand.Args = append(opt.backupOptions.StdinPipeCommand.Args, arg)
-		}
+	for _, arg := range strings.Fields(opt.pgArgs) {
+		opt.backupOptions.StdinPipeCommand.Args = append(opt.backupOptions.StdinPipeCommand.Args, arg)
 	}
 
 	// wait for DB ready
