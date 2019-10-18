@@ -3,13 +3,13 @@ module stash.appscode.dev/postgres
 go 1.12
 
 require (
-	github.com/appscode/go v0.0.0-20190808133642-1d4ef1f1c1e0
+	github.com/appscode/go v0.0.0-20191016085057-e186b6c94a3b
 	github.com/spf13/cobra v0.0.5
 	k8s.io/apimachinery v0.0.0-20190508063446-a3da69d3723c
 	k8s.io/client-go v11.0.0+incompatible
-	kmodules.xyz/client-go v0.0.0-20190808141354-bbb9e14f60ab
-	kmodules.xyz/custom-resources v0.0.0-20190808144301-114abf10dfe2
-	stash.appscode.dev/stash v0.9.0-rc.0.0.20190910104640-5f49f5d214aa
+	kmodules.xyz/client-go v0.0.0-20191016085444-3044854ca625
+	kmodules.xyz/custom-resources v0.0.0-20190927035424-65fe358bb045
+	stash.appscode.dev/stash v0.9.0-rc.1.0.20191018180359-9ef3cfeba2a2
 )
 
 replace (
