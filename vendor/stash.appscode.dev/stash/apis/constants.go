@@ -14,6 +14,7 @@ const (
 
 	Hostname       = "HOSTNAME"
 	SourceHostname = "SOURCE_HOSTNAME"
+	InterimDataDir = "INTERIM_DATA_DIR"
 
 	TargetName       = "TARGET_NAME"
 	TargetAPIVersion = "TARGET_API_VERSION"
@@ -52,11 +53,12 @@ const (
 	IONiceClass     = "IONICE_CLASS"
 	IONiceClassData = "IONICE_CLASS_DATA"
 
-	StatusSubresourceEnabled = "ENABLE_STATUS_SUBRESOURCE"
-
 	PushgatewayURL    = "PROMETHEUS_PUSHGATEWAY_URL"
 	PrometheusJobName = "PROMETHEUS_JOB_NAME"
 
-	StashDefaultVolume    = "stash-volume"
-	StashDefaultMountPath = "/stash-data"
+	StashDefaultVolume          = "stash-volume"
+	StashDefaultMountPath       = "/stash-data"
+	StashInterimVolume          = "stash-interim-volume"
+	StashInterimVolumeMountPath = "/stash-interim-volume"
+	StashInterimDataDir         = "/stash-interim-volume/data"
 )
