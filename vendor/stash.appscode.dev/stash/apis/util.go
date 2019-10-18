@@ -1,9 +1,5 @@
 package apis
 
-var (
-	EnableStatusSubresource bool
-)
-
 const (
 	StashKey   = "stash.appscode.com"
 	VersionTag = StashKey + "/tag"
@@ -20,4 +16,16 @@ const (
 	KindPersistentVolumeClaim = "PersistentVolumeClaim"
 	KindAppBinding            = "AppBinding"
 	KindDeploymentConfig      = "DeploymentConfig"
+)
+
+const (
+	ResourcePluralDeployment            = "deployments"
+	ResourcePluralReplicaSet            = "replicasets"
+	ResourcePluralReplicationController = "replicationcontrollers"
+	ResourcePluralStatefulSet           = "statefulsets"
+	ResourcePluralDaemonSet             = "daemonsets"
+	ResourcePluralPersistentVolumeClaim = "persistentvolumeclaims"
+	ResourcePluralAppBinding            = "appbindings"
+	ResourcePluralDeploymentConfig      = "deploymentconfigs"
+	ResourcePluralSecret                = "secrets"
 )
