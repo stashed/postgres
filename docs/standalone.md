@@ -357,8 +357,9 @@ Wait for a schedule to appear. Run the following command to watch `BackupSession
 $ watch -n 1 kubectl get backupsession -n demo -l=stash.appscode.com/backup-configuration=sample-postgres-backup
 
 Every 1.0s: kubectl get backupsession -n demo  -l=stash.appscode.com/backup-configuration=sample-postgres-backup           workstation: Thu Aug  1 18:29:19 2019
-NAME                                BACKUPCONFIGURATION      PHASE       AGE
-sample-postgres-backup-1560350521   sample-postgres-backup   Succeeded   5m45s
+
+NAME                                INVOKER-TYPE          INVOKER-NAME             PHASE       AGE
+sample-postgres-backup-1560350521   BackupConfiguration   sample-postgres-backup   Succeeded   5m45s
 ```
 
 We can see above that the backup session has succeeded. Now, we are going to verify that the backed up data has been stored in the backend.
