@@ -3,14 +3,15 @@ package pkg
 import (
 	"flag"
 
+	"stash.appscode.dev/stash/client/clientset/versioned/scheme"
+	"stash.appscode.dev/stash/pkg/util"
+
 	"github.com/appscode/go/flags"
 	v "github.com/appscode/go/version"
 	"github.com/spf13/cobra"
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"
 	"kmodules.xyz/client-go/logs"
 	"kmodules.xyz/client-go/tools/cli"
-	"stash.appscode.dev/stash/client/clientset/versioned/scheme"
-	"stash.appscode.dev/stash/pkg/util"
 )
 
 func NewRootCmd() *cobra.Command {
