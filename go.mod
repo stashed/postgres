@@ -7,9 +7,9 @@ require (
 	github.com/spf13/cobra v0.0.5
 	k8s.io/apimachinery v0.0.0-20190508063446-a3da69d3723c
 	k8s.io/client-go v11.0.0+incompatible
-	kmodules.xyz/client-go v0.0.0-20191016085444-3044854ca625
+	kmodules.xyz/client-go v0.0.0-20191023042933-b12d1ccfaf57
 	kmodules.xyz/custom-resources v0.0.0-20190927035424-65fe358bb045
-	stash.appscode.dev/stash v0.9.0-rc.1.0.20191018180359-9ef3cfeba2a2
+	stash.appscode.dev/stash v0.9.0-rc.2
 )
 
 replace (
@@ -26,6 +26,6 @@ replace (
 	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20190228160746-b3a7cee44a30
 	k8s.io/kubernetes => k8s.io/kubernetes v1.14.0
 	k8s.io/metrics => k8s.io/metrics v0.0.0-20190314001731-1bd6a4002213
-	k8s.io/utils => k8s.io/utils v0.0.0-20190221042446-c2654d5206da
+	k8s.io/utils => k8s.io/utils v0.0.0-20190514214443-0a167cbac756
 	sigs.k8s.io/structured-merge-diff => sigs.k8s.io/structured-merge-diff v0.0.0-20190302045857-e85c7b244fd2
 )
