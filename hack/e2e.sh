@@ -16,23 +16,14 @@
 
 set -eou pipefail
 
-export CGO_ENABLED=0
+export CGO_ENABLED=1
 export GO111MODULE=on
 export GOFLAGS="-mod=vendor"
 
-TARGETS="$@"
+GINKGO_ARGS=${GINKGO_ARGS:-}
+TEST_ARGS=${TEST_ARGS:-}
+DOCKER_REGISTRY=${DOCKER_REGISTRY:-}
 
-echo "Running reimport.py"
-cmd="reimport3.py ${REPO_PKG} ${TARGETS}"
-$cmd
-echo
-
-echo "Running goimports:"
-cmd="goimports -w ${TARGETS}"
+echo "Running e2e tests:"
+cmd="ginkgo -r --v -race --progress --trace --noisyPendings=false ${GINKGO_ARGS} test -- --docker-registry=${DOCKER_REGISTRY} ${TEST_ARGS}"
 echo $cmd; $cmd
-echo
-
-echo "Running gofmt:"
-cmd="gofmt -s -w ${TARGETS}"
-echo $cmd; $cmd
-echo
