@@ -8,6 +8,7 @@ spec:
     service:
       name: my-database-service
       port: 5432
+      scheme: postgresql
   secret:
     name: my-database-credentials-secret
   # type field is optional. you can keep it empty.
