@@ -16,7 +16,7 @@
 
 set -eou pipefail
 
-export CGO_ENABLED=0
+export CGO_ENABLED=1
 export GO111MODULE=on
 export GOFLAGS="-mod=vendor"
 
