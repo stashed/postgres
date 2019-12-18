@@ -2,13 +2,13 @@
 title: PostgreSQL | Stash
 description: Backup and restore standalone PostgreSQL database using Stash
 menu:
-  product_stash_{{ .version }}:
+  docs_{{ .version }}:
     identifier: standalone-postgres-{{ .subproject_version }}
     name: Standalone PostgreSQL
     parent: stash-postgres-guides-{{ .subproject_version }}
     weight: 10
 product_name: stash
-menu_name: product_stash_{{ .version }}
+menu_name: docs_{{ .version }}
 section_menu_id: stash-addons
 ---
 
