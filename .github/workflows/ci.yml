@@ -14,6 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
+
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
@@ -28,7 +34,7 @@ jobs:
 
     - name: Run checks
       run: |
-        sudo apt-get -qq update
+        sudo apt-get -qq update || true
         sudo apt-get install -y bzr
         make ci
 
@@ -45,6 +51,7 @@ jobs:
       id: kind
       uses: engineerd/setup-kind@v0.1.0
       with:
+        version: v0.6.1
         config: hack/kubernetes/kind.yaml
 
     - name: Prepare cluster for testing
@@ -54,8 +61,6 @@ jobs:
         USERNAME: 1gtm
         REGISTRY_SECRET: regcred
       run: |
-        export KUBECONFIG="$(kind get kubeconfig-path)"
-        echo
         echo "waiting for nodes to be ready ..."
         kubectl wait --for=condition=Ready nodes --all --timeout=5m
         kubectl get nodes
@@ -71,7 +76,6 @@ jobs:
 
     - name: Install CRDs
       run: |
-        export KUBECONFIG="$(kind get kubeconfig-path)"
         kubectl apply -f https://github.com/stashed/stash/raw/master/api/crds/stash.appscode.com_functions.yaml
         kubectl apply -f https://github.com/stashed/stash/raw/master/api/crds/stash.appscode.com_tasks.yaml
         kubectl wait --for=condition=NamesAccepted crds --all --timeout=5m

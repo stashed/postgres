@@ -1,3 +1,19 @@
+/*
+Copyright The Stash Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package util
 
 import (
@@ -10,8 +26,8 @@ import (
 	"stash.appscode.dev/stash/apis"
 	api_v1beta1 "stash.appscode.dev/stash/apis/stash/v1beta1"
 	cs "stash.appscode.dev/stash/client/clientset/versioned"
-	"stash.appscode.dev/stash/pkg/restic"
 
+	"github.com/appscode/go/log"
 	"github.com/appscode/go/types"
 	"github.com/pkg/errors"
 	core "k8s.io/api/core/v1"
@@ -19,6 +35,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/reference"
 	core_util "kmodules.xyz/client-go/core/v1"
 	"kmodules.xyz/client-go/meta"
@@ -26,18 +43,12 @@ import (
 	store "kmodules.xyz/objectstore-api/api/v1"
 	v1 "kmodules.xyz/offshoot-api/api/v1"
 	oc_cs "kmodules.xyz/openshift/client/clientset/versioned"
+	prober "kmodules.xyz/prober/probe"
 	wapi "kmodules.xyz/webhook-runtime/apis/workload/v1"
 )
 
 var (
 	ServiceName string
-)
-
-const (
-	CallerWebhook       = "webhook"
-	CallerController    = "controller"
-	PushgatewayLocalURL = "http://localhost:56789"
-	DefaultHost         = "host-0"
 )
 
 type RepoLabelData struct {
@@ -52,27 +63,27 @@ func GetHostName(target interface{}) (string, error) {
 	// target nil for cluster backup
 	var targetRef api_v1beta1.TargetRef
 	if target == nil {
-		return DefaultHost, nil
+		return apis.DefaultHost, nil
 	}
 
 	// read targetRef field from BackupTarget or RestoreTarget
 	switch t := target.(type) {
 	case *api_v1beta1.BackupTarget:
 		if t == nil {
-			return DefaultHost, nil
+			return apis.DefaultHost, nil
 		}
 		targetRef = t.Ref
 	case *api_v1beta1.RestoreTarget:
 		if t == nil {
-			return DefaultHost, nil
+			return apis.DefaultHost, nil
 		}
 
 		// if replicas or volumeClaimTemplate is specified then  restore is done via job.
 		// in this case, we need to know the ordinal to use as host suffix.
 		// stash operator sets desired ordinal as 'POD_ORDINAL' env while creating the job.
 		if t.Replicas != nil || len(t.VolumeClaimTemplates) != 0 {
-			if os.Getenv(KeyPodOrdinal) != "" {
-				return "host-" + os.Getenv(KeyPodOrdinal), nil
+			if os.Getenv(apis.KeyPodOrdinal) != "" {
+				return "host-" + os.Getenv(apis.KeyPodOrdinal), nil
 			}
 			return "", fmt.Errorf("'target.replicas' or 'target.volumeClaimTemplate' has been specified in RestoreSession" +
 				" but 'POD_ORDINAL' env not found")
@@ -85,7 +96,7 @@ func GetHostName(target interface{}) (string, error) {
 	case apis.KindStatefulSet:
 		// for StatefulSet, host name is 'host-<pod ordinal>'. stash operator set pod's name as 'POD_NAME' env
 		// in the sidecar/init-container through downward api. we have to parse the pod name to get ordinal.
-		podName := os.Getenv(KeyPodName)
+		podName := os.Getenv(apis.KeyPodName)
 		if podName == "" {
 			return "", fmt.Errorf("missing 'POD_NAME' env in StatefulSet: %s", apis.KindStatefulSet)
 		}
@@ -95,25 +106,14 @@ func GetHostName(target interface{}) (string, error) {
 	case apis.KindDaemonSet:
 		// for DaemonSet, host name is the node name. stash operator set the respective node name as 'NODE_NAME' env
 		// in the sidecar/init-container through downward api.
-		nodeName := os.Getenv(KeyNodeName)
+		nodeName := os.Getenv(apis.KeyNodeName)
 		if nodeName == "" {
 			return "", fmt.Errorf("missing 'NODE_NAME' env for DaemonSet: %s", apis.KindDaemonSet)
 		}
 		return nodeName, nil
 	default:
-		return DefaultHost, nil
+		return apis.DefaultHost, nil
 	}
-}
-
-func GetBackupHostName(stashClient cs.Interface, backupConfigName, namespace string) (string, error) {
-	backupConfig, err := stashClient.StashV1beta1().BackupConfigurations(namespace).Get(backupConfigName, metav1.GetOptions{})
-	if err != nil {
-		return "", err
-	}
-	if backupConfig.Spec.Target != nil {
-		return GetHostName(backupConfig.Spec.Target)
-	}
-	return restic.DefaultHost, nil
 }
 
 func GetRestoreHostName(stashClient cs.Interface, restoreSessionName, namespace string) (string, error) {
@@ -124,7 +124,7 @@ func GetRestoreHostName(stashClient cs.Interface, restoreSessionName, namespace 
 	if restoreSession.Spec.Target != nil {
 		return GetHostName(restoreSession.Spec.Target)
 	}
-	return restic.DefaultHost, nil
+	return apis.DefaultHost, nil
 }
 
 func PushgatewayURL() string {
@@ -135,9 +135,9 @@ func PushgatewayURL() string {
 func BackupModel(kind string) string {
 	switch kind {
 	case apis.KindDeployment, apis.KindReplicaSet, apis.KindReplicationController, apis.KindStatefulSet, apis.KindDaemonSet, apis.KindDeploymentConfig:
-		return ModelSidecar
+		return apis.ModelSidecar
 	default:
-		return ModelCronJob
+		return apis.ModelCronJob
 	}
 }
 
@@ -152,7 +152,7 @@ func GetRepoNameAndSnapshotID(snapshotName string) (repoName, snapshotId string,
 		return
 	}
 	snapshotId = tokens[len(tokens)-1]
-	if len(snapshotId) != SnapshotIDLength {
+	if len(snapshotId) != apis.SnapshotIDLength {
 		err = errors.New("invalid snapshot name")
 		return
 	}
@@ -229,7 +229,7 @@ func ExtractDataFromRepositoryLabel(labels map[string]string) (data RepoLabelDat
 }
 
 func AttachLocalBackend(podSpec core.PodSpec, localSpec store.LocalSpec) core.PodSpec {
-	volume, mount := localSpec.ToVolumeAndMount(LocalVolumeName)
+	volume, mount := localSpec.ToVolumeAndMount(apis.LocalVolumeName)
 	podSpec.Volumes = core_util.UpsertVolume(podSpec.Volumes, volume)
 	for i := range podSpec.InitContainers {
 		podSpec.InitContainers[i].VolumeMounts = core_util.UpsertVolumeMount(podSpec.InitContainers[i].VolumeMounts, mount)
@@ -326,7 +326,7 @@ func (wc *WorkloadClients) IsTargetExist(target api_v1beta1.TargetRef, namespace
 			return true
 		}
 	case apis.KindReplicaSet:
-		if _, err := wc.KubeClient.AppsV1().StatefulSets(namespace).Get(target.Name, metav1.GetOptions{}); err == nil {
+		if _, err := wc.KubeClient.AppsV1().ReplicaSets(namespace).Get(target.Name, metav1.GetOptions{}); err == nil {
 			return true
 		}
 	case apis.KindDeploymentConfig:
@@ -383,7 +383,7 @@ func HasStashContainer(w *wapi.Workload) bool {
 func HasStashSidecar(containers []core.Container) bool {
 	// check if the workload has stash sidecar container
 	for _, c := range containers {
-		if c.Name == StashContainer {
+		if c.Name == apis.StashContainer {
 			return true
 		}
 	}
@@ -393,7 +393,7 @@ func HasStashSidecar(containers []core.Container) bool {
 func HasStashInitContainer(containers []core.Container) bool {
 	// check if the workload has stash init-container
 	for _, c := range containers {
-		if c.Name == StashInitContainer {
+		if c.Name == apis.StashInitContainer {
 			return true
 		}
 	}
@@ -414,7 +414,7 @@ func GetWorkloadReference(w *wapi.Workload) (*core.ObjectReference, error) {
 }
 
 // UpsertInterimVolume create a PVC according to InterimVolumeTemplate and attach it to the respective pod
-func UpsertInterimVolume(kubeClient kubernetes.Interface, podSpec core.PodSpec, interimVolumeTemplate *core.PersistentVolumeClaim, ref *core.ObjectReference) (core.PodSpec, error) {
+func UpsertInterimVolume(kubeClient kubernetes.Interface, podSpec core.PodSpec, interimVolumeTemplate *core.PersistentVolumeClaim, namespace string, owner *metav1.OwnerReference) (core.PodSpec, error) {
 	// if no InterimVolumeTemplate is provided then nothing to do
 	if interimVolumeTemplate == nil {
 		return podSpec, nil
@@ -422,15 +422,15 @@ func UpsertInterimVolume(kubeClient kubernetes.Interface, podSpec core.PodSpec, 
 
 	// Use BackupConfiguration/RestoreSession name as prefix of the interim volume
 	pvcMeta := metav1.ObjectMeta{
-		Name:      fmt.Sprintf("%s-%s", interimVolumeTemplate.Name, ref.Name),
-		Namespace: ref.Namespace,
+		Name:      fmt.Sprintf("%s-%s", interimVolumeTemplate.Name, owner.Name),
+		Namespace: namespace,
 	}
 
 	// create the interim pvc
 	createdPVC, _, err := core_util.CreateOrPatchPVC(kubeClient, pvcMeta, func(in *core.PersistentVolumeClaim) *core.PersistentVolumeClaim {
 		// Set BackupConfiguration/RestoreSession as owner of the PVC so that it get deleted when the respective
 		// BackupConfiguration/RestoreSession is deleted.
-		core_util.EnsureOwnerReference(&in.ObjectMeta, ref)
+		core_util.EnsureOwnerReference(&in.ObjectMeta, owner)
 		in.Spec = interimVolumeTemplate.Spec
 		return in
 	})
@@ -456,4 +456,105 @@ func UpsertInterimVolume(kubeClient kubernetes.Interface, podSpec core.PodSpec, 
 		},
 	}
 	return AttachPVC(podSpec, volumes, volumeMounts), nil
+}
+
+// xref: https://kubernetes.io/docs/reference/kubectl/overview/#resource-types
+func ResourceKindShortForm(kind string) string {
+	switch kind {
+	case apis.KindDeployment:
+		return "deploy"
+	case apis.KindReplicationController:
+		return "rc"
+	case apis.KindDaemonSet:
+		return "ds"
+	case apis.KindStatefulSet:
+		return "sts"
+	case apis.KindPersistentVolumeClaim:
+		return "pvc"
+	case apis.KindPod:
+		return "po"
+	case apis.KindAppBinding:
+		return "app"
+	default:
+		return strings.ToLower(kind)
+	}
+}
+
+func ExecuteHook(config *rest.Config, hook interface{}, hookType, podName, namespace string) error {
+	var hookErr error
+	log.Infof("Executing %s hooks.........\n", hookType)
+
+	switch h := hook.(type) {
+	case *api_v1beta1.BackupHooks:
+		if hookType == apis.PreBackupHook {
+			hookErr = prober.RunProbe(config, h.PreBackup, podName, namespace)
+		} else {
+			err := prober.RunProbe(config, h.PostBackup, podName, namespace)
+			if err != nil {
+				hookErr = fmt.Errorf(err.Error() + ". Warning: The actual backup process may be succeeded." +
+					" Hence, backup data might be present in the backend even if the overall BackupSession phase is 'Failed'")
+			}
+		}
+	case *api_v1beta1.RestoreHooks:
+		if hookType == apis.PreRestoreHook {
+			hookErr = prober.RunProbe(config, h.PreRestore, podName, namespace)
+		} else {
+			err := prober.RunProbe(config, h.PostRestore, podName, namespace)
+			if err != nil {
+				hookErr = fmt.Errorf(err.Error() + ". Warning: The actual restore process may be succeeded." +
+					" Hence, the restored data might be present in the target even if the overall RestoreSession phase is 'Failed'")
+			}
+		}
+	default:
+		return fmt.Errorf("unknown hook type")
+	}
+
+	if hookErr != nil {
+		return hookErr
+	}
+
+	log.Infof("Successfully executed %s hook.\n", hookType)
+	return nil
+}
+
+func HookExecutorContainer(name string, shiblings []core.Container, invokerType, invokerName, targetKind, targetName string) core.Container {
+	hookExecutor := core.Container{
+		Name:  name,
+		Image: "${STASH_DOCKER_REGISTRY:=appscode}/${STASH_DOCKER_IMAGE:=stash}:${STASH_IMAGE_TAG:=latest}",
+		Args: []string{
+			"run-hook",
+			"--backupsession=${BACKUP_SESSION:=}",
+			"--restoresession=${RESTORE_SESSION:=}",
+			"--invoker-type=" + invokerType,
+			"--invoker-name=" + invokerName,
+			"--target-kind=" + targetKind,
+			"--target-name=" + targetName,
+			"--hook-type=${HOOK_TYPE:=}",
+			"--hostname=${HOSTNAME:=}",
+			"--output-dir=${outputDir:=}",
+			"--metrics-enabled=true",
+			fmt.Sprintf("--metrics-pushgateway-url=%s", PushgatewayURL()),
+			"--prom-job-name=${PROMETHEUS_JOB_NAME:=}",
+		},
+		Env: []core.EnvVar{
+			{
+				Name: apis.KeyPodName,
+				ValueFrom: &core.EnvVarSource{
+					FieldRef: &core.ObjectFieldSelector{
+						FieldPath: "metadata.name",
+					},
+				},
+			},
+		},
+	}
+	// now, upsert the volumeMounts of the sibling containers
+	// multiple containers may have same volume mounted on different directory
+	// in such cae, we will give priority to the last one.
+	var mounts []core.VolumeMount
+	for _, c := range shiblings {
+		mounts = append(mounts, c.VolumeMounts...)
+	}
+	hookExecutor.VolumeMounts = core_util.UpsertVolumeMount(hookExecutor.VolumeMounts, mounts...)
+
+	return hookExecutor
 }
