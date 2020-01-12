@@ -7,7 +7,7 @@
 ```console
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install appscode/stash-postgres --name=stash-postgres-11.1 --version=11.1
+helm install stash-postgres-11.1 appscode/stash-postgres -n kube-system --version=11.1
 ```
 
 ## Introduction
@@ -35,7 +35,7 @@ helm repo update
 - Install the chart with the release name `stash-postgres-11.1` run the following command,
 
 ```console
-helm install appscode/stash-postgres --name=stash-postgres-11.1 --version=11.1
+helm install stash-postgres-11.1 appscode/stash-postgres -n kube-system --version=11.1
 ```
 
 The above commands installs `Functions` and `Task` crds that are necessary to backup PostgreSQL database 11.1 using Stash.
@@ -45,7 +45,7 @@ The above commands installs `Functions` and `Task` crds that are necessary to ba
 To uninstall/delete the `stash-postgres-11.1` run the following command,
 
 ```console
-helm delete stash-postgres-11.1
+helm uninstall stash-postgres-11.1 -n kube-system
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -67,5 +67,5 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 For example:
 
 ```console
-helm install --name stash-postgres-11.1 --set docker.registry=my-registry appscode/stash-postgres
+helm install stash-postgres-11.1 appscode/stash-postgres -n kube-system --set docker.registry=my-registry
 ```
