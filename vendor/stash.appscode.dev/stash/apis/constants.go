@@ -34,6 +34,7 @@ const (
 	RepositoryBucket     = "REPOSITORY_BUCKET"
 	RepositoryPrefix     = "REPOSITORY_PREFIX"
 	RepositoryEndpoint   = "REPOSITORY_ENDPOINT"
+	RepositoryRegion     = "REPOSITORY_REGION"
 
 	Hostname       = "HOSTNAME"
 	SourceHostname = "SOURCE_HOSTNAME"
@@ -96,6 +97,10 @@ const (
 )
 
 const (
+	PrefixStashBackup         = "stash-backup"
+	PrefixStashRestore        = "stash-restore"
+	PrefixStashVolumeSnapshot = "stash-vs"
+
 	StashContainer       = "stash"
 	StashInitContainer   = "stash-init"
 	LocalVolumeName      = "stash-local"
@@ -144,4 +149,26 @@ const (
 	CallerController    = "controller"
 	PushgatewayLocalURL = "http://localhost:56789"
 	DefaultHost         = "host-0"
+)
+
+// Prometheus metrics related constants
+const (
+	PromJobStashBackup  = "stash-backup"
+	PromJobStashRestore = "stash-restore"
+)
+
+// RBAC related constants
+const (
+	KindRole        = "Role"
+	KindClusterRole = "ClusterRole"
+
+	StashBackupJobClusterRole            = "stash-backup-job"
+	StashRestoreJobClusterRole           = "stash-restore-job"
+	StashCronJobClusterRole              = "stash-cron-job"
+	StashSidecarClusterRole              = "stash-sidecar"
+	StashRestoreInitContainerClusterRole = "stash-restore-init-container"
+
+	StashVolumeSnapshotterClusterRole      = "stash-vs-job"
+	StashVolumeSnapshotRestorerClusterRole = "stash-vs-restorer-job"
+	StashStorageClassReaderClusterRole     = "stash-sc-reader"
 )
