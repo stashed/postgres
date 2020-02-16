@@ -51,7 +51,7 @@ jobs:
       id: kind
       uses: engineerd/setup-kind@v0.1.0
       with:
-        version: v0.6.1
+        version: v0.7.0
         config: hack/kubernetes/kind.yaml
 
     - name: Prepare cluster for testing
@@ -67,7 +67,7 @@ jobs:
         echo
         echo "installing local-path provisioner ..."
         kubectl delete storageclass --all
-        kubectl apply -f https://github.com/rancher/local-path-provisioner/raw/v0.0.11/deploy/local-path-storage.yaml
+        kubectl apply -f https://github.com/rancher/local-path-provisioner/raw/v0.0.12/deploy/local-path-storage.yaml
         kubectl wait --for=condition=Ready pods -n local-path-storage --all --timeout=5m
         kubectl apply -f hack/kubernetes/storageclass/standard.yaml
         echo
@@ -76,11 +76,11 @@ jobs:
 
     - name: Install CRDs
       run: |
-        kubectl apply -f https://github.com/stashed/stash/raw/master/api/crds/stash.appscode.com_functions.yaml
-        kubectl apply -f https://github.com/stashed/stash/raw/master/api/crds/stash.appscode.com_tasks.yaml
+        kubectl apply -f https://github.com/stashed/apimachinery/raw/master/api/crds/stash.appscode.com_functions.yaml
+        kubectl apply -f https://github.com/stashed/apimachinery/raw/master/api/crds/stash.appscode.com_tasks.yaml
         kubectl wait --for=condition=NamesAccepted crds --all --timeout=5m
 
     - name: Test charts
       run: |
-        export KUBECONFIG="$(kind get kubeconfig-path)"
+        export KUBECONFIG=$HOME/.kube/config
         make ct
