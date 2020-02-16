@@ -7,9 +7,10 @@ require (
 	github.com/spf13/cobra v0.0.5
 	k8s.io/apimachinery v0.16.5-beta.1
 	k8s.io/client-go v12.0.0+incompatible
-	kmodules.xyz/client-go v0.0.0-20200116162153-e083ae16abca
+	kmodules.xyz/client-go v0.0.0-20200216080917-08714f78f885
 	kmodules.xyz/custom-resources v0.0.0-20191130062942-f41b54f62419
-	stash.appscode.dev/stash v0.9.0-rc.5.0.20200214063951-acb1e6e35cd6
+	kmodules.xyz/offshoot-api v0.0.0-20200216080509-45ee6418d1c1
+	stash.appscode.dev/apimachinery v0.9.0-rc.6
 )
 
 replace (

@@ -19,8 +19,7 @@ package pkg
 import (
 	"flag"
 
-	"stash.appscode.dev/stash/client/clientset/versioned/scheme"
-	"stash.appscode.dev/stash/pkg/util"
+	"stash.appscode.dev/apimachinery/client/clientset/versioned/scheme"
 
 	"github.com/appscode/go/flags"
 	v "github.com/appscode/go/version"
@@ -28,6 +27,7 @@ import (
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"
 	"kmodules.xyz/client-go/logs"
 	"kmodules.xyz/client-go/tools/cli"
+	"kmodules.xyz/client-go/tools/pushgateway"
 )
 
 func NewRootCmd() *cobra.Command {
@@ -45,7 +45,7 @@ func NewRootCmd() *cobra.Command {
 	}
 	rootCmd.PersistentFlags().AddGoFlagSet(flag.CommandLine)
 	logs.ParseFlags()
-	rootCmd.PersistentFlags().StringVar(&util.ServiceName, "service-name", "stash-operator", "Stash service name.")
+	rootCmd.PersistentFlags().StringVar(&pushgateway.ServiceName, "service-name", "stash-operator", "Stash service name.")
 	rootCmd.PersistentFlags().BoolVar(&cli.EnableAnalytics, "enable-analytics", cli.EnableAnalytics, "Send analytical events to Google Analytics")
 
 	rootCmd.AddCommand(v.NewCmdVersion())
