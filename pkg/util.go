@@ -21,7 +21,7 @@ import (
 	"os/exec"
 	"time"
 
-	"stash.appscode.dev/stash/pkg/restic"
+	"stash.appscode.dev/apimachinery/pkg/restic"
 
 	"github.com/appscode/go/log"
 	"k8s.io/client-go/kubernetes"
