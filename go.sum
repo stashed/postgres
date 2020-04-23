@@ -36,6 +36,8 @@ github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdko
 github.com/Rican7/retry v0.1.0/go.mod h1:FgOROf8P5bebcC1DS0PdOQiqGUridaZvikzUmkFW6gg=
 github.com/appscode/go v0.0.0-20191119085241-0887d8ec2ecc h1:Q5jwbRq/a1Tien+Is8Zn6HMBRgE13+UOQ9mTvrIuvuE=
 github.com/appscode/go v0.0.0-20191119085241-0887d8ec2ecc/go.mod h1:OawnOmAL4ZX3YaPdN+8HTNwBveT1jMsqP74moa9XUbE=
+github.com/appscode/go v0.0.0-20200323182826-54e98e09185a h1:cZ80NKoLRaW1PVCWXAJE+YFkBAmLZ8BnrJmH0ClY1Gs=
+github.com/appscode/go v0.0.0-20200323182826-54e98e09185a/go.mod h1:lIcm8Z6VPuvcw/a3EeOWcG6R3I13iHMLYbtVP7TKufY=
 github.com/appscode/osm v0.13.0/go.mod h1:4UxQXV4+RFLd0r6olIFLwsZnCcevBFIzsE88w1+9SOk=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e h1:QEF07wC0T1rKkctt1RINW/+RMTVmiwxETico2l3gxJA=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
@@ -624,8 +626,8 @@ kmodules.xyz/client-go v0.0.0-20191127054604-26981530831d/go.mod h1:OFxuKCiVR+MY
 kmodules.xyz/client-go v0.0.0-20191211192817-f1dcd02124ba/go.mod h1:OFxuKCiVR+MYlR2a08FkfaF+IbXkLe0xBetu2LTUuGI=
 kmodules.xyz/client-go v0.0.0-20200116162153-e083ae16abca h1:WErv3VRRePgp4oszIHgrFnxIaIHyfP9+930B99B8BBM=
 kmodules.xyz/client-go v0.0.0-20200116162153-e083ae16abca/go.mod h1:OFxuKCiVR+MYlR2a08FkfaF+IbXkLe0xBetu2LTUuGI=
-kmodules.xyz/client-go v0.0.0-20200216080917-08714f78f885 h1:1v803gTRPSfjMYwW3YXoxs36gQ9YVe/1qWixPfLZ6bM=
-kmodules.xyz/client-go v0.0.0-20200216080917-08714f78f885/go.mod h1:OFxuKCiVR+MYlR2a08FkfaF+IbXkLe0xBetu2LTUuGI=
+kmodules.xyz/client-go v0.0.0-20200305091010-36ee6a593ed3 h1:Z+CECj6xED/x7OYd1hnQqFDPx9ou0Ixa5K69vqY7S4c=
+kmodules.xyz/client-go v0.0.0-20200305091010-36ee6a593ed3/go.mod h1:OFxuKCiVR+MYlR2a08FkfaF+IbXkLe0xBetu2LTUuGI=
 kmodules.xyz/constants v0.0.0-20191024095500-cd4313df4aa6/go.mod h1:DbiFk1bJ1KEO94t1SlAn7tzc+Zz95rSXgyUKa2nzPmY=
 kmodules.xyz/crd-schema-fuzz v0.0.0-20191129174258-81f984340891/go.mod h1:9NXNZ4xhqof0WngtIuo4vl+WoCQpLJEJcyuEo3mPpiM=
 kmodules.xyz/custom-resources v0.0.0-20191130062942-f41b54f62419 h1:o6KD8XMxdyRR3rqScTsWvcufFDT7vQBnYXpHUp6UtRg=
@@ -650,4 +652,6 @@ sigs.k8s.io/yaml v1.1.0 h1:4A07+ZFc2wgJwo8YNlQpr1rVlgUDlxXHhPJciaPY5gs=
 sigs.k8s.io/yaml v1.1.0/go.mod h1:UJmg0vDUVViEyp3mgSv9WPwZCDxu4rQW1olrI1uml+o=
 stash.appscode.dev/apimachinery v0.9.0-rc.6 h1:rYp77PiYd05HwAtqbhVJFvmeGRZzcbOOMr6Pmh3zKKw=
 stash.appscode.dev/apimachinery v0.9.0-rc.6/go.mod h1:jLzf4kBtDJ1VeMuHm6PGPCR6is2cCfMO62FMrOwcig4=
+stash.appscode.dev/installer v0.9.0-rc.6.0.20200423190045-ab599e16e362 h1:3PXapNtpCXtSzDOntagI8dlb+pl8Jk5Grq5vFKkd9VQ=
+stash.appscode.dev/installer v0.9.0-rc.6.0.20200423190045-ab599e16e362/go.mod h1:omw5JB5rQwBtKdZlhbNjX+E/xP0ksE9Y1W8WPsHdY9A=
 vbom.ml/util v0.0.0-20160121211510-db5cfe13f5cc/go.mod h1:so/NYdZXCz+E3ZpW0uAoCj6uzU2+8OWDFv/HxUSs7kI=
