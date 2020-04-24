@@ -1,0 +1,37 @@
+properties:
+  backup:
+    properties:
+      args:
+        type: string
+    required:
+    - args
+    type: object
+  fullnameOverride:
+    type: string
+  image:
+    properties:
+      registry:
+        type: string
+      repository:
+        type: string
+      tag:
+        type: string
+    required:
+    - registry
+    - repository
+    - tag
+    type: object
+  nameOverride:
+    type: string
+  restore:
+    properties:
+      args:
+        type: string
+    required:
+    - args
+    type: object
+required:
+- backup
+- image
+- restore
+type: object

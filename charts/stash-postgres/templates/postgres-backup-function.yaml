@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "stash-postgres.labels" . | nindent 4 }}
 spec:
-  image: {{ .Values.docker.registry }}/{{ .Values.docker.image }}:{{- .Values.docker.tag }}
+  image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{- .Values.image.tag }}
   args:
   - backup-pg
   # setup information
@@ -19,7 +19,7 @@ spec:
   - --enable-cache=${ENABLE_CACHE:=true}
   - --max-connections=${MAX_CONNECTIONS:=0} # 0 indicates use default connection limit
   - --hostname=${HOSTNAME:=}
-  - --pg-args=${pgArgs:={{ .Values.backup.pgArgs }}} # optional arguments pass to pgdump command
+  - --pg-args=${args:={{ .Values.backup.args }}} # optional arguments pass to pgdump command
   # target information
   - --namespace=${NAMESPACE:=default}
   - --appbinding=${TARGET_NAME:=}
