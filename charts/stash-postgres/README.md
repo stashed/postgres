@@ -59,8 +59,8 @@ The following table lists the configurable parameters of the `stash-postgres` ch
 | `docker.registry` | Docker registry used to pull respective images                                                                                   | `stashed`        |
 | `docker.image`    | Docker image used to backup/restore PosegreSQL database                                                                          | `stash-postgres` |
 | `docker.tag`      | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `10.6`           |
-| `backup.pgArgs`   | Optional arguments to pass to `pgdump` command  during bakcup process                                                            |                  |
-| `restore.pgArgs`  | Optional arguments to pass to `psql` command during restore process                                                              |                  |
+| `backup.args`   | Optional arguments to pass to `pgdump` command  during bakcup process                                                            |                  |
+| `restore.args`  | Optional arguments to pass to `psql` command during restore process                                                              |                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
