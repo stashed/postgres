@@ -20,6 +20,12 @@ REPO     := $(notdir $(shell pwd))
 BIN      := stash-postgres
 COMPRESS ?= no
 
+# Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
+CRD_OPTIONS          ?= "crd:trivialVersions=true,preserveUnknownFields=false"
+# https://github.com/appscodelabs/gengo-builder
+CODE_GENERATOR_IMAGE ?= appscode/gengo:release-1.16
+API_GROUPS           ?= installer:v1alpha1
+
 # Where to push the docker image.
 REGISTRY ?= stashed
 
@@ -71,9 +77,9 @@ TAG              := $(VERSION)_$(OS)_$(ARCH)
 TAG_PROD         := $(TAG)
 TAG_DBG          := $(VERSION)-dbg_$(OS)_$(ARCH)
 
-GO_VERSION       ?= 1.13.6
+GO_VERSION       ?= 1.14.2
 BUILD_IMAGE      ?= appscode/golang-dev:$(GO_VERSION)
-CHART_TEST_IMAGE ?= quay.io/helmpack/chart-testing:v3.0.0-beta.1
+CHART_TEST_IMAGE ?= quay.io/helmpack/chart-testing:v3.0.0-rc.1
 
 OUTBIN = bin/$(OS)_$(ARCH)/$(BIN)
 ifeq ($(OS),windows)
@@ -134,8 +140,134 @@ version:
 	@echo ::set-output name=commit_hash::$(commit_hash)
 	@echo ::set-output name=commit_timestamp::$(commit_timestamp)
 
-gen:
-	@true
+.PHONY: clientset
+clientset:
+	@docker run --rm 	                                          \
+		-u $$(id -u):$$(id -g)                                    \
+		-v /tmp:/.cache                                           \
+		-v $$(pwd):$(DOCKER_REPO_ROOT)                            \
+		-w $(DOCKER_REPO_ROOT)                                    \
+		--env HTTP_PROXY=$(HTTP_PROXY)                            \
+		--env HTTPS_PROXY=$(HTTPS_PROXY)                          \
+		$(CODE_GENERATOR_IMAGE)                                   \
+		/go/src/k8s.io/code-generator/generate-groups.sh          \
+			"deepcopy"                                            \
+			$(GO_PKG)/$(REPO)/client                              \
+			$(GO_PKG)/$(REPO)/apis                                \
+			"$(API_GROUPS)"                                       \
+			--go-header-file "./hack/license/go.txt"
+
+# Generate openapi schema
+.PHONY: openapi
+openapi: $(addprefix openapi-, $(subst :,_, $(API_GROUPS)))
+	@echo "Generating api/openapi-spec/swagger.json"
+	@docker run --rm	                                 \
+		-u $$(id -u):$$(id -g)                           \
+		-v /tmp:/.cache                                  \
+		-v $$(pwd):$(DOCKER_REPO_ROOT)                   \
+		-w $(DOCKER_REPO_ROOT)                           \
+		--env HTTP_PROXY=$(HTTP_PROXY)                   \
+		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
+		--env GO111MODULE=on                             \
+		--env GOFLAGS="-mod=vendor"                      \
+		$(BUILD_IMAGE)                                   \
+		go run hack/gencrd/main.go
+
+openapi-%:
+	@echo "Generating openapi schema for $(subst _,/,$*)"
+	@docker run --rm	                                 \
+		-u $$(id -u):$$(id -g)                           \
+		-v /tmp:/.cache                                  \
+		-v $$(pwd):$(DOCKER_REPO_ROOT)                   \
+		-w $(DOCKER_REPO_ROOT)                           \
+		--env HTTP_PROXY=$(HTTP_PROXY)                   \
+		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
+		$(CODE_GENERATOR_IMAGE)                          \
+		openapi-gen                                      \
+			--v 1 --logtostderr                          \
+			--go-header-file "./hack/license/go.txt" \
+			--input-dirs "$(GO_PKG)/$(REPO)/apis/$(subst _,/,$*),k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/api/resource,k8s.io/apimachinery/pkg/runtime,k8s.io/apimachinery/pkg/util/intstr,k8s.io/apimachinery/pkg/version,k8s.io/api/core/v1,k8s.io/api/apps/v1,k8s.io/api/rbac/v1" \
+			--output-package "$(GO_PKG)/$(REPO)/apis/$(subst _,/,$*)" \
+			--report-filename /tmp/violation_exceptions.list
+
+# Generate CRD manifests
+.PHONY: gen-crds
+gen-crds:
+	@echo "Generating CRD manifests"
+	@docker run --rm	                    \
+		-u $$(id -u):$$(id -g)              \
+		-v /tmp:/.cache                     \
+		-v $$(pwd):$(DOCKER_REPO_ROOT)      \
+		-w $(DOCKER_REPO_ROOT)              \
+	    --env HTTP_PROXY=$(HTTP_PROXY)      \
+	    --env HTTPS_PROXY=$(HTTPS_PROXY)    \
+		$(CODE_GENERATOR_IMAGE)             \
+		controller-gen                      \
+			$(CRD_OPTIONS)                  \
+			paths="./apis/..."              \
+			output:crd:artifacts:config=api/crds
+
+crds_to_patch := installer.stash.appscode.com_stashpostgreses.yaml
+
+.PHONY: patch-crds
+patch-crds: $(addprefix patch-crd-, $(crds_to_patch))
+patch-crd-%: $(BUILD_DIRS)
+	@echo "patching $*"
+	@kubectl patch -f api/crds/$* -p "$$(cat hack/crd-patch.json)" --type=json --local=true -o yaml > bin/$*
+	@mv bin/$* api/crds/$*
+
+.PHONY: label-crds
+label-crds: $(BUILD_DIRS)
+	@for f in api/crds/*.yaml; do \
+		echo "applying app=stash label to $$f"; \
+		kubectl label --overwrite -f $$f --local=true -o yaml app=stash > bin/crd.yaml; \
+		mv bin/crd.yaml $$f; \
+	done
+
+.PHONY: gen-crd-protos
+gen-crd-protos: $(addprefix gen-crd-protos-, $(subst :,_, $(API_GROUPS)))
+
+gen-crd-protos-%:
+	@echo "Generating protobuf for $(subst _,/,$*)"
+	@docker run --rm                                     \
+		-u $$(id -u):$$(id -g)                           \
+		-v /tmp:/.cache                                  \
+		-v $$(pwd):$(DOCKER_REPO_ROOT)                   \
+		-w $(DOCKER_REPO_ROOT)                           \
+		--env HTTP_PROXY=$(HTTP_PROXY)                   \
+		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
+		$(CODE_GENERATOR_IMAGE)                          \
+		go-to-protobuf                                   \
+			--go-header-file "./hack/license/go.txt"     \
+			--proto-import=$(DOCKER_REPO_ROOT)/vendor    \
+			--proto-import=$(DOCKER_REPO_ROOT)/third_party/protobuf \
+			--apimachinery-packages=-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/apis/meta/v1,-k8s.io/apimachinery/pkg/apis/meta/v1beta1,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/util/intstr \
+			--packages=-k8s.io/api/core/v1,stash.appscode.dev/postgres/apis/$(subst _,/,$*)
+
+.PHONY: gen-bindata
+gen-bindata:
+	@docker run                                                 \
+	    -i                                                      \
+	    --rm                                                    \
+	    -u $$(id -u):$$(id -g)                                  \
+	    -v $$(pwd):/src                                         \
+	    -w /src/api/crds                                        \
+		-v /tmp:/.cache                                         \
+	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
+	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
+	    $(BUILD_IMAGE)                                          \
+	    go-bindata -ignore=\\.go -ignore=\\.DS_Store -mode=0644 -modtime=1573722179 -o bindata.go -pkg crds ./...
+
+.PHONY: gen-values-schema
+gen-values-schema:
+	@yq r api/crds/installer.stash.appscode.com_stashpostgreses.yaml spec.validation.openAPIV3Schema.properties.spec > /tmp/stash-postgres-values.openapiv3_schema.yaml
+	@yq d /tmp/stash-postgres-values.openapiv3_schema.yaml description > charts/stash-postgres/values.openapiv3_schema.yaml
+
+.PHONY: manifests
+manifests: gen-crds patch-crds label-crds gen-bindata gen-values-schema
+
+.PHONY: gen
+gen: clientset gen-crd-protos manifests openapi
 
 fmt: $(BUILD_DIRS)
 	@docker run                                                 \
@@ -311,7 +443,7 @@ lint: $(BUILD_DIRS)
 	    --env GO111MODULE=on                                    \
 	    --env GOFLAGS="-mod=vendor"                             \
 	    $(BUILD_IMAGE)                                          \
-	    golangci-lint run --enable $(ADDTL_LINTERS) --deadline=10m --skip-files="generated.*\.go$\" --skip-dirs-use-default
+	    golangci-lint run --enable $(ADDTL_LINTERS) --timeout=30m --skip-files="generated.*\.go$\" --skip-dirs-use-default --skip-dirs=client,vendor
 
 $(BUILD_DIRS):
 	@mkdir -p $@
@@ -333,7 +465,7 @@ verify-modules:
 .PHONY: verify-gen
 verify-gen: gen fmt
 	@if !(git diff --exit-code HEAD); then \
-		echo "files are out of date, run make gen fmt"; exit 1; \
+		echo "generated files are out of date, run make gen"; exit 1; \
 	fi
 
 .PHONY: add-license
