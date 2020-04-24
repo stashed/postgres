@@ -4,16 +4,22 @@ go 1.12
 
 require (
 	github.com/appscode/go v0.0.0-20200323182826-54e98e09185a
+	github.com/go-openapi/spec v0.19.3
+	github.com/gogo/protobuf v1.2.2-0.20190730201129-28a6bbf47e48
+	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
+	github.com/google/gofuzz v1.0.0
 	github.com/spf13/cobra v0.0.5
 	github.com/yudai/gojsondiff v1.0.0
+	k8s.io/apiextensions-apiserver v0.0.0-20191114105449-027877536833
 	k8s.io/apimachinery v0.16.5-beta.1
 	k8s.io/client-go v12.0.0+incompatible
+	k8s.io/kube-openapi v0.0.0-20191107075043-30be4d16710a
 	kmodules.xyz/client-go v0.0.0-20200305091010-36ee6a593ed3
+	kmodules.xyz/crd-schema-fuzz v0.0.0-20191129174258-81f984340891
 	kmodules.xyz/custom-resources v0.0.0-20191130062942-f41b54f62419
 	kmodules.xyz/offshoot-api v0.0.0-20200216080509-45ee6418d1c1
 	sigs.k8s.io/yaml v1.1.0
 	stash.appscode.dev/apimachinery v0.9.0-rc.6
-	stash.appscode.dev/installer v0.9.0-rc.6.0.20200423190045-ab599e16e362
 )
 
 replace (
