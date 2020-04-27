@@ -887,9 +887,6 @@
     },
     "dev.appscode.stash.postgres.apis.installer.v1alpha1.PostgresBackup": {
       "type": "object",
-      "required": [
-        "args"
-      ],
       "properties": {
         "args": {
           "type": "string"
@@ -898,9 +895,6 @@
     },
     "dev.appscode.stash.postgres.apis.installer.v1alpha1.PostgresRestore": {
       "type": "object",
-      "required": [
-        "args"
-      ],
       "properties": {
         "args": {
           "type": "string"

@@ -37,10 +37,12 @@ message ImageRef {
 }
 
 message PostgresBackup {
+  // +optional
   optional string args = 1;
 }
 
 message PostgresRestore {
+  // +optional
   optional string args = 1;
 }
 
