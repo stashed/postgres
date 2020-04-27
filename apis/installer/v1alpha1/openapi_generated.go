@@ -15510,7 +15510,6 @@ func schema_postgres_apis_installer_v1alpha1_PostgresBackup(ref common.Reference
 						},
 					},
 				},
-				Required: []string{"args"},
 			},
 		},
 	}
@@ -15529,7 +15528,6 @@ func schema_postgres_apis_installer_v1alpha1_PostgresRestore(ref common.Referenc
 						},
 					},
 				},
-				Required: []string{"args"},
 			},
 		},
 	}
