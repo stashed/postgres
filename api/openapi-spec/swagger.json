@@ -890,6 +890,9 @@
       "properties": {
         "args": {
           "type": "string"
+        },
+        "cmd": {
+          "type": "string"
         }
       }
     },

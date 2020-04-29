@@ -60,7 +60,9 @@ type ImageRef struct {
 
 type PostgresBackup struct {
 	// +optional
-	Args string `json:"args" protobuf:"bytes,1,opt,name=args"`
+	CMD string `json:"cmd" protobuf:"bytes,1,opt,name=cmd"`
+	// +optional
+	Args string `json:"args" protobuf:"bytes,2,opt,name=args"`
 }
 
 type PostgresRestore struct {
