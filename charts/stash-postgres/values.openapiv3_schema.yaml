@@ -3,6 +3,8 @@ properties:
     properties:
       args:
         type: string
+      cmd:
+        type: string
     type: object
   fullnameOverride:
     type: string
