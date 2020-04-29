@@ -17,7 +17,9 @@ image:
   tag: "10.2"
 
 backup:
-  # Arguments to pass to `pgdump` command  during bakcup process
+  # Postgres dump command, can either be: pg_dumpall  or pg_dump
+  cmd: "pg_dumpall"
+  # Arguments to pass to `backup.cmd` command during backup process
   args: ""
 restore:
   # Arguments to pass to `psql` command during restore process
