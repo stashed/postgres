@@ -15503,6 +15503,12 @@ func schema_postgres_apis_installer_v1alpha1_PostgresBackup(ref common.Reference
 			SchemaProps: spec.SchemaProps{
 				Type: []string{"object"},
 				Properties: map[string]spec.Schema{
+					"cmd": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
 					"args": {
 						SchemaProps: spec.SchemaProps{
 							Type:   []string{"string"},
