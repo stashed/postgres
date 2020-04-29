@@ -19,6 +19,7 @@ spec:
   - --enable-cache=${ENABLE_CACHE:=true}
   - --max-connections=${MAX_CONNECTIONS:=0} # 0 indicates use default connection limit
   - --hostname=${HOSTNAME:=}
+  - --backup-cmd=${backupCMD:={{ .Values.backup.cmd }}} # can specify dump command with either pg_dump or pg_dumpall
   - --pg-args=${args:={{ .Values.backup.args }}} # optional arguments pass to pgdump command
   # target information
   - --namespace=${NAMESPACE:=default}

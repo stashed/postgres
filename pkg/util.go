@@ -33,7 +33,8 @@ const (
 	PostgresPassword = "POSTGRES_PASSWORD"
 	EnvPgPassword    = "PGPASSWORD"
 	PgDumpFile       = "dumpfile.sql"
-	PgDumpCMD        = "pg_dumpall"
+	PgDumpCMD        = "pg_dump"
+	PgDumpallCMD     = "pg_dumpall"
 	PgRestoreCMD     = "psql"
 )
 
@@ -43,6 +44,7 @@ type postgresOptions struct {
 
 	namespace      string
 	appBindingName string
+	backupCMD      string
 	pgArgs         string
 	outputDir      string
 

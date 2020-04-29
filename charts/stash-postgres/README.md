@@ -51,7 +51,8 @@ The following table lists the configurable parameters of the `stash-postgres` ch
 | image.registry   | Docker registry used to pull Postgres addon image                                                                                | `stashed`        |
 | image.repository | Docker image used to backup/restore PosegreSQL database                                                                          | `stash-postgres` |
 | image.tag        | Tag of the image that is used to backup/restore PostgreSQL database. This is usually same as the database version it can backup. | `"10.6"`         |
-| backup.args      | Arguments to pass to `pgdump` command  during bakcup process                                                                     | `""`             |
+| backup.cmd       | Postgres dump command, can either be: pg_dumpall  or pg_dump                                                                     | `"pg_dumpall"`   |
+| backup.args      | Arguments to pass to `backup.cmd` command during backup process                                                                  | `""`             |
 | restore.args     | Arguments to pass to `psql` command during restore process                                                                       | `""`             |
 
 
