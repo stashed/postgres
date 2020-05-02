@@ -1,0 +1,19 @@
+project:
+  name: stash-postgres
+  shortName: stash-postgres
+  url: https://github.com/stashed/postgres
+  description: "PostgreSQL database backup/restore plugin for [Stash by AppsCode](https://stash.run)"
+  app: "necessary `Function` and `Task` definition to backup or restore PostgreSQL database 11.2 using Stash"
+repository:
+  url: https://charts.appscode.com/stable/
+  name: appscode
+chart:
+  name: stash-postgres
+  version: "11.2"
+  values: "-- generate from values file --"
+  valuesExample: "-- generate from values file --"
+prerequisites:
+- Kubernetes 1.11+
+release:
+  name: stash-postgres-11.2
+  namespace: kube-system
