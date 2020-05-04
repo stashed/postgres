@@ -17,6 +17,7 @@ limitations under the License.
 package pkg
 
 import (
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -91,6 +92,7 @@ func NewCmdBackup() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().StringVar(&opt.backupCMD, "backup-cmd", opt.pgArgs, "Backup command to take a database dump (can only be pg_dumpall or pg_dump)")
 	cmd.Flags().StringVar(&opt.pgArgs, "pg-args", opt.pgArgs, "Additional arguments")
 
 	cmd.Flags().StringVar(&masterURL, "master", masterURL, "The address of the Kubernetes API server (overrides any value in kubeconfig)")
@@ -154,11 +156,18 @@ func (opt *postgresOptions) backupPostgreSQL() (*restic.BackupOutput, error) {
 		return nil, err
 	}
 
-	// set env for pg_dump
+	// get pg backup cmd
+	// validate if given cmd is a valid dump cmd
+	pgBackupCMD := opt.backupCMD
+	if pgBackupCMD != PgDumpCMD && pgBackupCMD != PgDumpallCMD {
+		return nil, fmt.Errorf("invalid pg backup command: expected %s or %s, but instead got %s", PgDumpCMD, PgDumpallCMD, pgBackupCMD)
+	}
+
+	// set env for pg_dump/pg_dumpall
 	resticWrapper.SetEnv(EnvPgPassword, string(appBindingSecret.Data[PostgresPassword]))
 	// setup pipe command
 	opt.backupOptions.StdinPipeCommand = restic.Command{
-		Name: PgDumpCMD,
+		Name: pgBackupCMD,
 		Args: []interface{}{
 			"-U", string(appBindingSecret.Data[PostgresUser]),
 			"-h", appBinding.Spec.ClientConfig.Service.Name,
