@@ -121,6 +121,7 @@ func NewCmdRestore() *cobra.Command {
 func (opt *postgresOptions) restorePostgreSQL() (*restic.RestoreOutput, error) {
 	// apply nice, ionice settings from env
 	var err error
+
 	opt.setupOptions.Nice, err = v1.NiceSettingsFromEnv()
 	if err != nil {
 		return nil, err
@@ -140,6 +141,10 @@ func (opt *postgresOptions) restorePostgreSQL() (*restic.RestoreOutput, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// transform secret
+	appBinding.TransformSecret(opt.kubeClient, appBindingSecret.Data)
+
 
 	// init restic wrapper
 	resticWrapper, err := restic.NewResticWrapper(opt.setupOptions)
