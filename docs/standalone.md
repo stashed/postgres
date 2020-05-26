@@ -45,7 +45,7 @@ namespace/demo created
 
 This section will demonstrate how to backup PostgreSQL database. Here, we are going to deploy a PostgreSQL database using KubeDB. Then, we are going to backup this database into a GCS bucket. Finally, we are going to restore the backed up data into another PostgreSQL database.
 
-### Deploy Sample PosgreSQL Database
+### Deploy Sample PostgresQL Database
 
 Let's deploy a sample PostgreSQL database and insert some data into it.
 
@@ -184,7 +184,7 @@ spec:
   secret:
     name: my-database-credentials-secret
   # type field is optional. you can keep it empty.
-  # if you keep it emtpty then the value of TARGET_APP_RESOURCE variable
+  # if you keep it empty then the value of TARGET_APP_RESOURCE variable
   # will be set to "appbinding" during auto-backup.
   type: postgres
 ```
@@ -266,7 +266,7 @@ secret/gcs-secret created
 
 **Create Repository:**
 
-Now, crete a `Respository` using this secret. Below is the YAML of Repository crd we are going to create,
+Now, crete a `Repository` using this secret. Below is the YAML of Repository crd we are going to create,
 
 ```yaml
 apiVersion: stash.appscode.com/v1alpha1
