@@ -17,6 +17,7 @@ limitations under the License.
 package pkg
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -140,12 +141,12 @@ func (opt *postgresOptions) backupPostgreSQL() (*restic.BackupOutput, error) {
 	}
 
 	// get app binding
-	appBinding, err := opt.catalogClient.AppcatalogV1alpha1().AppBindings(opt.namespace).Get(opt.appBindingName, metav1.GetOptions{})
+	appBinding, err := opt.catalogClient.AppcatalogV1alpha1().AppBindings(opt.namespace).Get(context.TODO(), opt.appBindingName, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
 	// get secret
-	appBindingSecret, err := opt.kubeClient.CoreV1().Secrets(opt.namespace).Get(appBinding.Spec.Secret.Name, metav1.GetOptions{})
+	appBindingSecret, err := opt.kubeClient.CoreV1().Secrets(opt.namespace).Get(context.TODO(), appBinding.Spec.Secret.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
