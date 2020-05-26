@@ -21,9 +21,9 @@ BIN      := stash-postgres
 COMPRESS ?= no
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
-CRD_OPTIONS          ?= "crd:trivialVersions=true,preserveUnknownFields=false"
+CRD_OPTIONS          ?= "crd:trivialVersions=true,preserveUnknownFields=false,crdVersions={v1beta1,v1}"
 # https://github.com/appscodelabs/gengo-builder
-CODE_GENERATOR_IMAGE ?= appscode/gengo:release-1.16
+CODE_GENERATOR_IMAGE ?= appscode/gengo:release-1.18
 API_GROUPS           ?= installer:v1alpha1
 
 # Where to push the docker image.
@@ -77,7 +77,7 @@ TAG              := $(VERSION)_$(OS)_$(ARCH)
 TAG_PROD         := $(TAG)
 TAG_DBG          := $(VERSION)-dbg_$(OS)_$(ARCH)
 
-GO_VERSION       ?= 1.14.2
+GO_VERSION       ?= 1.14
 BUILD_IMAGE      ?= appscode/golang-dev:$(GO_VERSION)
 CHART_TEST_IMAGE ?= quay.io/helmpack/chart-testing:v3.0.0-rc.1
 
@@ -260,7 +260,7 @@ gen-bindata:
 
 .PHONY: gen-values-schema
 gen-values-schema:
-	@yq r api/crds/installer.stash.appscode.com_stashpostgreses.yaml spec.validation.openAPIV3Schema.properties.spec > /tmp/stash-postgres-values.openapiv3_schema.yaml
+	@yq r api/crds/installer.stash.appscode.com_stashpostgreses.v1.yaml spec.versions[0].schema.openAPIV3Schema.properties.spec > /tmp/stash-postgres-values.openapiv3_schema.yaml
 	@yq d /tmp/stash-postgres-values.openapiv3_schema.yaml description > charts/stash-postgres/values.openapiv3_schema.yaml
 
 .PHONY: gen-chart-doc
