@@ -248,11 +248,17 @@ var (
 	procCoTaskMemFree                                        = modole32.NewProc("CoTaskMemFree")
 	procRtlGetVersion                                        = modntdll.NewProc("RtlGetVersion")
 	procRtlGetNtVersionNumbers                               = modntdll.NewProc("RtlGetNtVersionNumbers")
+	procGetProcessPreferredUILanguages                       = modkernel32.NewProc("GetProcessPreferredUILanguages")
+	procGetThreadPreferredUILanguages                        = modkernel32.NewProc("GetThreadPreferredUILanguages")
+	procGetUserPreferredUILanguages                          = modkernel32.NewProc("GetUserPreferredUILanguages")
+	procGetSystemPreferredUILanguages                        = modkernel32.NewProc("GetSystemPreferredUILanguages")
 	procEnumProcesses                                        = modpsapi.NewProc("EnumProcesses")
 	procWSAStartup                                           = modws2_32.NewProc("WSAStartup")
 	procWSACleanup                                           = modws2_32.NewProc("WSACleanup")
 	procWSAIoctl                                             = modws2_32.NewProc("WSAIoctl")
 	procsocket                                               = modws2_32.NewProc("socket")
+	procsendto                                               = modws2_32.NewProc("sendto")
+	procrecvfrom                                             = modws2_32.NewProc("recvfrom")
 	procsetsockopt                                           = modws2_32.NewProc("setsockopt")
 	procgetsockopt                                           = modws2_32.NewProc("getsockopt")
 	procbind                                                 = modws2_32.NewProc("bind")
@@ -2757,30 +2763,6 @@ func rtlGetVersion(info *OsVersionInfoEx) (ret error) {
 
 func rtlGetNtVersionNumbers(majorVersion *uint32, minorVersion *uint32, buildNumber *uint32) {
 	syscall.Syscall(procRtlGetNtVersionNumbers.Addr(), 3, uintptr(unsafe.Pointer(majorVersion)), uintptr(unsafe.Pointer(minorVersion)), uintptr(unsafe.Pointer(buildNumber)))
-	return
-}
-
-func EnumProcesses(processIds []uint32, bytesReturned *uint32) (err error) {
-	var _p0 *uint32
-	if len(processIds) > 0 {
-		_p0 = &processIds[0]
-	}
-	r1, _, e1 := syscall.Syscall(procEnumProcesses.Addr(), 3, uintptr(unsafe.Pointer(_p0)), uintptr(len(processIds)), uintptr(unsafe.Pointer(bytesReturned)))
-	if r1 == 0 {
-		if e1 != 0 {
-			err = errnoErr(e1)
-		} else {
-			err = syscall.EINVAL
-		}
-	}
-	return
-}
-
-func WSAStartup(verreq uint32, data *WSAData) (sockerr error) {
-	r0, _, _ := syscall.Syscall(procWSAStartup.Addr(), 2, uintptr(verreq), uintptr(unsafe.Pointer(data)), 0)
-	if r0 != 0 {
-		sockerr = syscall.Errno(r0)
-	}
 	return
 }
 

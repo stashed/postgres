@@ -262,12 +262,6 @@ type AddKeyTransform struct {
 	Value []byte `json:"value" protobuf:"bytes,2,opt,name=value"`
 	// The string (non-binary) value to add to the Secret under the specified key.
 	StringValue *string `json:"stringValue" protobuf:"bytes,3,opt,name=stringValue"`
-	// The JSONPath expression, the result of which will be added to the Secret under the specified key.
-	// For example, given the following credentials:
-	// { "foo": { "bar": "foobar" } }
-	// and the jsonPathExpression "{.foo.bar}", the value "foobar" will be
-	// stored in the credentials Secret under the specified key.
-	JSONPathExpression *string `json:"jsonPathExpression" protobuf:"bytes,4,opt,name=jsonPathExpression"`
 }
 
 // AddKeysFromTransform specifies that Service Catalog should merge

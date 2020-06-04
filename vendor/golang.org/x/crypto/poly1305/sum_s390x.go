@@ -16,17 +16,34 @@ import (
 //go:noescape
 func updateVX(state *macState, msg []byte)
 
-// poly1305vmsl is an assembly implementation of Poly1305 that uses vector
-// instructions, including VMSL. It must only be called if the vector facility (vx) is
-// available and if VMSL is supported.
-//go:noescape
-func poly1305vmsl(out *[16]byte, m *byte, mlen uint64, key *[32]byte)
+// mac is a replacement for macGeneric that uses a larger buffer and redirects
+// calls that would have gone to updateGeneric to updateVX if the vector
+// facility is installed.
+//
+// A larger buffer is required for good performance because the vector
+// implementation has a higher fixed cost per call than the generic
+// implementation.
+type mac struct {
+	macState
 
-func sum(out *[16]byte, m []byte, key *[32]byte) {
-	if cpu.S390X.HasVX {
-		var mPtr *byte
-		if len(m) > 0 {
-			mPtr = &m[0]
+	buffer [16 * TagSize]byte // size must be a multiple of block size (16)
+	offset int
+}
+
+func (h *mac) Write(p []byte) (int, error) {
+	nn := len(p)
+	if h.offset > 0 {
+		n := copy(h.buffer[h.offset:], p)
+		if h.offset+n < len(h.buffer) {
+			h.offset += n
+			return nn, nil
+		}
+		p = p[n:]
+		h.offset = 0
+		if cpu.S390X.HasVX {
+			updateVX(&h.macState, h.buffer[:])
+		} else {
+			updateGeneric(&h.macState, h.buffer[:])
 		}
 	}
 

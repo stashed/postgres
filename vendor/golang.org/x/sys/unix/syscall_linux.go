@@ -839,6 +839,40 @@ func (sa *SockaddrTIPC) sockaddr() (unsafe.Pointer, _Socklen, error) {
 	return unsafe.Pointer(&sa.raw), SizeofSockaddrTIPC, nil
 }
 
+// SockaddrL2TPIP implements the Sockaddr interface for IPPROTO_L2TP/AF_INET sockets.
+type SockaddrL2TPIP struct {
+	Addr   [4]byte
+	ConnId uint32
+	raw    RawSockaddrL2TPIP
+}
+
+func (sa *SockaddrL2TPIP) sockaddr() (unsafe.Pointer, _Socklen, error) {
+	sa.raw.Family = AF_INET
+	sa.raw.Conn_id = sa.ConnId
+	for i := 0; i < len(sa.Addr); i++ {
+		sa.raw.Addr[i] = sa.Addr[i]
+	}
+	return unsafe.Pointer(&sa.raw), SizeofSockaddrL2TPIP, nil
+}
+
+// SockaddrL2TPIP6 implements the Sockaddr interface for IPPROTO_L2TP/AF_INET6 sockets.
+type SockaddrL2TPIP6 struct {
+	Addr   [16]byte
+	ZoneId uint32
+	ConnId uint32
+	raw    RawSockaddrL2TPIP6
+}
+
+func (sa *SockaddrL2TPIP6) sockaddr() (unsafe.Pointer, _Socklen, error) {
+	sa.raw.Family = AF_INET6
+	sa.raw.Conn_id = sa.ConnId
+	sa.raw.Scope_id = sa.ZoneId
+	for i := 0; i < len(sa.Addr); i++ {
+		sa.raw.Addr[i] = sa.Addr[i]
+	}
+	return unsafe.Pointer(&sa.raw), SizeofSockaddrL2TPIP6, nil
+}
+
 func anyToSockaddr(fd int, rsa *RawSockaddrAny) (Sockaddr, error) {
 	switch rsa.Addr.Family {
 	case AF_NETLINK:

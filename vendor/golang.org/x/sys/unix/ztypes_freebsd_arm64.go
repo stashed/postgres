@@ -394,9 +394,10 @@ type Reg struct {
 }
 
 type FpReg struct {
-	Fp_q  [512]uint8
-	Fp_sr uint32
-	Fp_cr uint32
+	Q  [32][16]uint8
+	Sr uint32
+	Cr uint32
+	_  [8]byte
 }
 
 type PtraceIoDesc struct {

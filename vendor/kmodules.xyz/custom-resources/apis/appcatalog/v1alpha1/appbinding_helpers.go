@@ -24,9 +24,11 @@ import (
 	"strconv"
 	"strings"
 
-	"k8s.io/client-go/kubernetes"
 	"kmodules.xyz/client-go/apiextensions"
-	"kmodules.xyz/custom-resources/api/crds"
+	"kmodules.xyz/custom-resources/crds"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 )
 
 func (_ AppBinding) CustomResourceDefinition() *apiextensions.CustomResourceDefinition {
@@ -121,7 +123,7 @@ func (a AppBinding) AppGroupResource() (string, string) {
 }
 
 // xref: https://github.com/kubernetes-sigs/service-catalog/blob/a204c0d26c60b42121aa608c39a179680e499d2a/pkg/controller/controller_binding.go#L605
-func (a AppBinding) TransformSecret(k8sClient kubernetes.Interface, credentials map[string][]byte) error {
+func (a AppBinding) TransformSecret(kc kubernetes.Interface, credentials map[string][]byte) error {
 	for _, t := range a.Spec.SecretTransforms {
 		switch {
 		case t.AddKey != nil:
@@ -139,7 +141,7 @@ func (a AppBinding) TransformSecret(k8sClient kubernetes.Interface, credentials 
 				delete(credentials, t.RenameKey.From)
 			}
 		case t.AddKeysFrom != nil:
-			secret, err := k8sClient.CoreV1().
+			secret, err := kc.CoreV1().
 				Secrets(t.AddKeysFrom.SecretRef.Namespace).
 				Get(context.Background(), t.AddKeysFrom.SecretRef.Name, metav1.GetOptions{})
 			if err != nil {
