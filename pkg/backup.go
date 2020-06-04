@@ -131,6 +131,7 @@ func NewCmdBackup() *cobra.Command {
 func (opt *postgresOptions) backupPostgreSQL() (*restic.BackupOutput, error) {
 	// apply nice, ionice settings from env
 	var err error
+
 	opt.setupOptions.Nice, err = v1.NiceSettingsFromEnv()
 	if err != nil {
 		return nil, err
@@ -147,6 +148,12 @@ func (opt *postgresOptions) backupPostgreSQL() (*restic.BackupOutput, error) {
 	}
 	// get secret
 	appBindingSecret, err := opt.kubeClient.CoreV1().Secrets(opt.namespace).Get(context.TODO(), appBinding.Spec.Secret.Name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+
+	// transform secret
+	err = appBinding.TransformSecret(opt.kubeClient, appBindingSecret.Data)
 	if err != nil {
 		return nil, err
 	}
