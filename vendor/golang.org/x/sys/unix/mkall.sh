@@ -50,7 +50,7 @@ if [[ "$GOOS" = "linux" ]]; then
 	# Use the Docker-based build system
 	# Files generated through docker (use $cmd so you can Ctl-C the build or run)
 	$cmd docker build --tag generate:$GOOS $GOOS
-	$cmd docker run --interactive --tty --volume $(dirname "$(readlink -f "$0")"):/build generate:$GOOS
+	$cmd docker run --interactive --tty --volume $(cd -- "$(dirname -- "$0")" && /bin/pwd):/build generate:$GOOS
 	exit
 fi
 
@@ -124,7 +124,7 @@ freebsd_arm)
 freebsd_arm64)
 	mkerrors="$mkerrors -m64"
 	mksysnum="go run mksysnum.go 'https://svn.freebsd.org/base/stable/11/sys/kern/syscalls.master'"
-	mktypes="GOARCH=$GOARCH go tool cgo -godefs"
+	mktypes="GOARCH=$GOARCH go tool cgo -godefs -- -fsigned-char"
 	;;
 netbsd_386)
 	mkerrors="$mkerrors -m32"
@@ -189,6 +189,12 @@ solaris_amd64)
 	mkerrors="$mkerrors -m64"
 	mksysnum=
 	mktypes="GOARCH=$GOARCH go tool cgo -godefs"
+	;;
+illumos_amd64)
+        mksyscall="go run mksyscall_solaris.go"
+	mkerrors=
+	mksysnum=
+	mktypes=
 	;;
 *)
 	echo 'unrecognized $GOOS_$GOARCH: ' "$GOOSARCH" 1>&2

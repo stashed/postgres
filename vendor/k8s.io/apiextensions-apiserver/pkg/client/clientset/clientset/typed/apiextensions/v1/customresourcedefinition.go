@@ -70,8 +70,7 @@ func (c *customResourceDefinitions) Get(ctx context.Context, name string, option
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
 		Do(ctx).
-		Into(result)
-	return
+		Do().
 }
 
 // List takes label and field selectors, and returns the list of CustomResourceDefinitions that match those selectors.

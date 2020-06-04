@@ -201,7 +201,7 @@ type ObjectReference struct {
 	Name string `json:"name,omitempty" protobuf:"bytes,2,opt,name=name"`
 }
 
-// ref: https://github.com/kubernetes-incubator/service-catalog/blob/37b874716ad709a175e426f5f5638322a600849f/pkg/apis/servicecatalog/v1beta1/types.go#L1397
+// ref: https://github.com/kubernetes-sigs/service-catalog/blob/37b874716ad709a175e426f5f5638322a600849f/pkg/apis/servicecatalog/v1beta1/types.go#L1397
 
 // SecretTransform is a single transformation that is applied to the
 // credentials returned from the broker before they are inserted into

@@ -10,6 +10,8 @@ require (
 	github.com/google/gofuzz v1.1.0
 	github.com/spf13/cobra v0.0.5
 	github.com/yudai/gojsondiff v1.0.0
+	golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980
+	k8s.io/api v0.18.3
 	k8s.io/apiextensions-apiserver v0.18.3
 	k8s.io/apimachinery v0.18.3
 	k8s.io/client-go v12.0.0+incompatible

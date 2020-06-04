@@ -153,7 +153,10 @@ func (opt *postgresOptions) backupPostgreSQL() (*restic.BackupOutput, error) {
 	}
 
 	// transform secret
-	appBinding.TransformSecret(opt.kubeClient, appBindingSecret.Data)
+	err = appBinding.TransformSecret(opt.kubeClient, appBindingSecret.Data)
+	if err != nil {
+		return nil, err
+	}
 
 	// init restic wrapper
 	resticWrapper, err := restic.NewResticWrapper(opt.setupOptions)
