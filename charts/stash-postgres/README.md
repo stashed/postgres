@@ -54,6 +54,7 @@ The following table lists the configurable parameters of the `stash-postgres` ch
 | backup.cmd       | Postgres dump command, can either be: pg_dumpall  or pg_dump                                                                     | `"pg_dumpall"`   |
 | backup.args      | Arguments to pass to `backup.cmd` command during backup process                                                                  | `""`             |
 | restore.args     | Arguments to pass to `psql` command during restore process                                                                       | `""`             |
+| waitTimeout      | Number of seconds to wait for the database to be ready before backup/restore process.                                            | `300`            |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
