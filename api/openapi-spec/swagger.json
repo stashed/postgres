@@ -967,7 +967,8 @@
       "required": [
         "image",
         "backup",
-        "restore"
+        "restore",
+        "waitTimeout"
       ],
       "properties": {
         "backup": {
@@ -984,6 +985,10 @@
         },
         "restore": {
           "$ref": "#/definitions/dev.appscode.stash.postgres.apis.installer.v1alpha1.PostgresRestore"
+        },
+        "waitTimeout": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },

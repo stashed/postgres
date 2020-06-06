@@ -15715,8 +15715,14 @@ func schema_postgres_apis_installer_v1alpha1_StashPostgresSpec(ref common.Refere
 							Ref: ref("stash.appscode.dev/postgres/apis/installer/v1alpha1.PostgresRestore"),
 						},
 					},
+					"waitTimeout": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"integer"},
+							Format: "int64",
+						},
+					},
 				},
-				Required: []string{"image", "backup", "restore"},
+				Required: []string{"image", "backup", "restore", "waitTimeout"},
 			},
 		},
 		Dependencies: []string{

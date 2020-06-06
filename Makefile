@@ -57,8 +57,8 @@ NEW_RESTIC_VER   := 0.9.6
 ### These variables should not need tweaking.
 ###
 
-SRC_PKGS := cmd pkg
-SRC_DIRS := $(SRC_PKGS) # directories which hold app source (not vendored)
+SRC_PKGS := api apis cmd pkg
+SRC_DIRS := $(SRC_PKGS) hack/gencrd # directories which hold app source (not vendored)
 
 DOCKER_PLATFORMS := linux/amd64 linux/arm64
 BIN_PLATFORMS    := $(DOCKER_PLATFORMS)
@@ -410,7 +410,7 @@ unit-tests: $(BUILD_DIRS)
 	        ARCH=$(ARCH)                                        \
 	        OS=$(OS)                                            \
 	        VERSION=$(VERSION)                                  \
-	        ./hack/test.sh $(SRC_DIRS)                          \
+	        ./hack/test.sh $(SRC_PKGS)                          \
 	    "
 
 .PHONY: ct

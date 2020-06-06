@@ -24,3 +24,6 @@ backup:
 restore:
   # Arguments to pass to `psql` command during restore process
   args: ""
+
+# Number of seconds to wait for the database to be ready before backup/restore process.
+waitTimeout: 300

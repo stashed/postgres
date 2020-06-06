@@ -38,6 +38,7 @@ func NewCmdRestore() *cobra.Command {
 		masterURL      string
 		kubeconfigPath string
 		opt            = postgresOptions{
+			waitTimeout: 300,
 			setupOptions: restic.SetupOptions{
 				ScratchDir:  restic.DefaultScratchDir,
 				EnableCache: false,
@@ -93,6 +94,7 @@ func NewCmdRestore() *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opt.pgArgs, "pg-args", opt.pgArgs, "Additional arguments")
+	cmd.Flags().Int32Var(&opt.waitTimeout, "wait-timeout", opt.waitTimeout, "Time limit to wait for the database to be ready")
 
 	cmd.Flags().StringVar(&masterURL, "master", masterURL, "The address of the Kubernetes API server (overrides any value in kubeconfig)")
 	cmd.Flags().StringVar(&kubeconfigPath, "kubeconfig", kubeconfigPath, "Path to kubeconfig file with authorization information (the master location is set by the master flag).")
@@ -169,7 +171,10 @@ func (opt *postgresOptions) restorePostgreSQL() (*restic.RestoreOutput, error) {
 	}
 
 	// wait for DB ready
-	waitForDBReady(appBinding.Spec.ClientConfig.Service.Name, appBinding.Spec.ClientConfig.Service.Port)
+	err = waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
+	if err != nil {
+		return nil, err
+	}
 
 	// Run dump
 	return resticWrapper.Dump(opt.dumpOptions)

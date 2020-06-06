@@ -39,6 +39,7 @@ func NewCmdBackup() *cobra.Command {
 		masterURL      string
 		kubeconfigPath string
 		opt            = postgresOptions{
+			waitTimeout: 300,
 			backupOptions: restic.BackupOptions{
 				Host:          restic.DefaultHost,
 				StdinFileName: PgDumpFile,
@@ -95,6 +96,7 @@ func NewCmdBackup() *cobra.Command {
 
 	cmd.Flags().StringVar(&opt.backupCMD, "backup-cmd", opt.pgArgs, "Backup command to take a database dump (can only be pg_dumpall or pg_dump)")
 	cmd.Flags().StringVar(&opt.pgArgs, "pg-args", opt.pgArgs, "Additional arguments")
+	cmd.Flags().Int32Var(&opt.waitTimeout, "wait-timeout", opt.waitTimeout, "Time limit to wait for the database to be ready")
 
 	cmd.Flags().StringVar(&masterURL, "master", masterURL, "The address of the Kubernetes API server (overrides any value in kubeconfig)")
 	cmd.Flags().StringVar(&kubeconfigPath, "kubeconfig", kubeconfigPath, "Path to kubeconfig file with authorization information (the master location is set by the master flag).")
@@ -186,7 +188,10 @@ func (opt *postgresOptions) backupPostgreSQL() (*restic.BackupOutput, error) {
 	}
 
 	// wait for DB ready
-	waitForDBReady(appBinding.Spec.ClientConfig.Service.Name, appBinding.Spec.ClientConfig.Service.Port)
+	err = waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
+	if err != nil {
+		return nil, err
+	}
 
 	// Run backup
 	return resticWrapper.RunBackup(opt.backupOptions)

@@ -21,6 +21,7 @@ spec:
   - --hostname=${HOSTNAME:=}
   - --backup-cmd=${backupCMD:={{ .Values.backup.cmd }}} # can specify dump command with either pg_dump or pg_dumpall
   - --pg-args=${args:={{ .Values.backup.args }}} # optional arguments pass to pgdump command
+  - --wait-timeout=${waitTimeout:={{ .Values.waitTimeout}}}
   # target information
   - --namespace=${NAMESPACE:=default}
   - --appbinding=${TARGET_NAME:=}
