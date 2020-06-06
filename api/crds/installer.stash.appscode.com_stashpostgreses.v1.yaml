@@ -66,10 +66,14 @@ spec:
                   args:
                     type: string
                 type: object
+              waitTimeout:
+                format: int64
+                type: integer
             required:
             - backup
             - image
             - restore
+            - waitTimeout
             type: object
         type: object
     served: true

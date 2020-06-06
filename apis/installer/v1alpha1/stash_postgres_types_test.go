@@ -41,7 +41,7 @@ func TestStashPostgresDefaultValues(t *testing.T) {
 }
 
 func compareStashPostgresDefaultValues() (string, error) {
-	data, err := ioutil.ReadFile("../../../../postgres/charts/stash-postgres/values.yaml")
+	data, err := ioutil.ReadFile("../../../charts/stash-postgres/values.yaml")
 	if err != nil {
 		return "", err
 	}
