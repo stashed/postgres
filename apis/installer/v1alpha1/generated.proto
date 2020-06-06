@@ -78,5 +78,7 @@ message StashPostgresSpec {
   optional PostgresBackup backup = 4;
 
   optional PostgresRestore restore = 5;
+
+  optional int64 waitTimeout = 6;
 }
 
