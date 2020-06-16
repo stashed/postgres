@@ -43,6 +43,6 @@ while IFS=/ read -r -u9 repo branch; do
         --base $branch \
         --labels automerge \
         --message "[cherry-pick] $(git show -s --format=%s)" \
-        --message "$(git show -s --format=%b)" || true
+        --message "$(git show -s --format=%b | sed --expression='/\/cherry-pick/d')" || true
     sleep 2
 done 9< <(git branch -r | grep release)
