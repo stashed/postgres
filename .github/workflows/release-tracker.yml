@@ -1,9 +1,8 @@
-name: cherry-pick
+name: release-tracker
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    types: [closed]
 
 jobs:
   build:
@@ -26,9 +25,12 @@ jobs:
           curl -fsSL https://github.com/github/hub/raw/master/script/get | bash -s 2.14.1
           sudo mv bin/hub /usr/local/bin
 
-      - name: Update release branches
+      - name: Update release tracker
+        if: |
+          github.event.action == 'closed' &&
+          github.event.pull_request.merged == true
         env:
           GITHUB_USER: 1gtm
           GITHUB_TOKEN: ${{ secrets.LGTM_GITHUB_TOKEN }}
         run: |
-          ./hack/scripts/cherry-pick.sh
+          ./hack/scripts/update-release-tracker.sh
