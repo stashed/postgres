@@ -31,8 +31,6 @@ should_cherry_pick || {
     exit 0
 }
 
-git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-
 while IFS=/ read -r -u9 repo branch; do
     git checkout $branch
     pr_branch="master-${GITHUB_SHA:0:8}"${branch#"release"}
