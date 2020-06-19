@@ -17,7 +17,7 @@
 set -eou pipefail
 
 should_cherry_pick() {
-    while IFS=$': \t' read -r -u9 marker v; do
+    while IFS=$': \r\t' read -r -u9 marker v; do
         if [ "$marker" = "/cherry-pick" ]; then
             return 0
         fi
