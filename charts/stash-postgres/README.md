@@ -12,7 +12,7 @@ $ helm install stash-postgres-10.6 appscode/stash-postgres -n kube-system --vers
 
 ## Introduction
 
-This chart deploys necessary `Function` and `Task` definition to backup or restore PostgreSQL database 10.6 using Stash on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart deploys necessary `Function` and `Task` definition to backup or restore PostgreSQL 10.6 using Stash on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ To install the chart with the release name `stash-postgres-10.6`:
 $ helm install stash-postgres-10.6 appscode/stash-postgres -n kube-system --version=10.6
 ```
 
-The command deploys necessary `Function` and `Task` definition to backup or restore PostgreSQL database 10.6 using Stash on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys necessary `Function` and `Task` definition to backup or restore PostgreSQL 10.6 using Stash on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
