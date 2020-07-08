@@ -10,11 +10,11 @@ repository:
   name: appscode
 chart:
   name: stash-postgres
-  version: "11.1"
+  version: 11.1-beta.20200708
   values: "-- generate from values file --"
   valuesExample: "-- generate from values file --"
 prerequisites:
 - Kubernetes 1.11+
 release:
-  name: stash-postgres-11.1
+  name: stash-postgres-11.1-beta.20200708
   namespace: kube-system
