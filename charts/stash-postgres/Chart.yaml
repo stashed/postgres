@@ -4,7 +4,7 @@ name: stash-postgres
 version: 10.2-beta.20200709
 appVersion: 10.2-beta.20200709
 home: https://stash.run
-icon: https://cdn.appscode.com/images/icon/stash.png
+icon: https://cdn.appscode.com/images/products/stash/addons/postgres-stash-addon.png
 sources:
 - https://github.com/stashed/postgres
 maintainers:
