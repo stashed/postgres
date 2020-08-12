@@ -16,6 +16,8 @@ spec:
     params:
     - name: outputDir
       value: /tmp/output
+    - name: secretVolume
+      value: secret-volume
   volumes:
   - name: secret-volume
     secret:
