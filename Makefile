@@ -304,6 +304,7 @@ chart-contents-%:
 	fi
 	@if [ ! -z "$(APP_VERSION)" ]; then                                                    \
 		yq w -i ./charts/$*/Chart.yaml appVersion --tag '!!str' $(APP_VERSION);            \
+		yq w -i ./charts/$*/values.yaml image.tag --tag '!!str' $(APP_VERSION);            \
 	fi
 
 fmt: $(BUILD_DIRS)
