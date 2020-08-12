@@ -19,6 +19,7 @@ package pkg
 import (
 	"fmt"
 
+	stash "stash.appscode.dev/apimachinery/client/clientset/versioned"
 	"stash.appscode.dev/apimachinery/pkg/restic"
 
 	"github.com/appscode/go/log"
@@ -41,14 +42,16 @@ const (
 
 type postgresOptions struct {
 	kubeClient    kubernetes.Interface
+	stashClient   stash.Interface
 	catalogClient appcatalog_cs.Interface
 
-	namespace      string
-	appBindingName string
-	backupCMD      string
-	pgArgs         string
-	outputDir      string
-	waitTimeout    int32
+	namespace         string
+	backupSessionName string
+	appBindingName    string
+	backupCMD         string
+	pgArgs            string
+	outputDir         string
+	waitTimeout       int32
 
 	setupOptions  restic.SetupOptions
 	backupOptions restic.BackupOptions
