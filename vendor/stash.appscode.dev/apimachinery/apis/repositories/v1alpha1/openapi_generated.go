@@ -17588,8 +17588,14 @@ func schema_apimachinery_apis_repositories_v1alpha1_SnapshotStatus(ref common.Re
 							Format: "int32",
 						},
 					},
+					"repository": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
 				},
-				Required: []string{"tree", "paths", "hostname", "username", "uid", "gid"},
+				Required: []string{"tree", "paths", "hostname", "username", "uid", "gid", "repository"},
 			},
 		},
 	}
