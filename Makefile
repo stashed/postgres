@@ -287,7 +287,6 @@ CHART_REGISTRY     ?= appscode
 CHART_REGISTRY_URL ?= https://charts.appscode.com/stable/
 CHART_VERSION      ?=
 APP_VERSION        ?= $(CHART_VERSION)
-IMAGE_TAG          ?= $(APP_VERSION)
 
 .PHONY: update-charts
 update-charts: $(shell find $$(pwd)/charts -maxdepth 1 -mindepth 1 -type d -printf 'chart-%f ')
@@ -305,9 +304,7 @@ chart-contents-%:
 	fi
 	@if [ ! -z "$(APP_VERSION)" ]; then                                                    \
 		yq w -i ./charts/$*/Chart.yaml appVersion --tag '!!str' $(APP_VERSION);            \
-	fi
-	@if [ ! -z "$(IMAGE_TAG)" ]; then                                                      \
-		yq w -i ./charts/$*/values.yaml image.tag --tag '!!str' $(IMAGE_TAG);              \
+		yq w -i ./charts/$*/values.yaml image.tag --tag '!!str' $(APP_VERSION);            \
 	fi
 
 fmt: $(BUILD_DIRS)
