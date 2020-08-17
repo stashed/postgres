@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/stashed/postgres.svg?branch=master)](https://travis-ci.org/stashed/postgres)
 [![Docker Pulls](https://img.shields.io/docker/pulls/stashed/stash-postgres.svg)](https://hub.docker.com/r/stashed/stash-postgres/)
 [![Slack](https://slack.appscode.com/badge.svg)](https://slack.appscode.com)
-[![Twitter](https://img.shields.io/twitter/follow/appscodehq.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/intent/follow?screen_name=AppsCodeHQ)
+[![Twitter](https://img.shields.io/twitter/follow/kubestash.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/intent/follow?screen_name=KubeStash)
 
 # Postgres
 
