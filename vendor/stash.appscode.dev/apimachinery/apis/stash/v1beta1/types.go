@@ -49,24 +49,24 @@ type BackupTarget struct {
 	// Alias represents the identifier of the backed up data in the repository.
 	// This will be used as `hostname` or will be used to generate the `hostname` for the restic repository.
 	// +optional
-	Alias string `json:"alias,omitempty" ,protobuf:"bytes,6,opt,name=alias" protobuf:"bytes,6,opt,name=alias"`
+	Alias string `json:"alias,omitempty" protobuf:"bytes,1,opt,name=alias"`
 	// Ref refers to the backup target
-	Ref TargetRef `json:"ref,omitempty" protobuf:"bytes,1,opt,name=ref"`
+	Ref TargetRef `json:"ref,omitempty" protobuf:"bytes,2,opt,name=ref"`
 	// Paths specify the file paths to backup
 	// +optional
-	Paths []string `json:"paths,omitempty" protobuf:"bytes,2,rep,name=paths"`
+	Paths []string `json:"paths,omitempty" protobuf:"bytes,3,rep,name=paths"`
 	// VolumeMounts specifies the volumes to mount inside stash sidecar/init container
 	// Specify the volumes that contains the target directories
 	// +optional
-	VolumeMounts []core.VolumeMount `json:"volumeMounts,omitempty" protobuf:"bytes,3,rep,name=volumeMounts"`
+	VolumeMounts []core.VolumeMount `json:"volumeMounts,omitempty" protobuf:"bytes,4,rep,name=volumeMounts"`
 	//replicas are the desired number of replicas whose data should be backed up.
 	// If unspecified, defaults to 1.
 	// +optional
-	Replicas *int32 `json:"replicas,omitempty" protobuf:"varint,4,opt,name=replicas"`
+	Replicas *int32 `json:"replicas,omitempty" protobuf:"varint,5,opt,name=replicas"`
 	// Name of the VolumeSnapshotClass used by the VolumeSnapshot. If not specified, a default snapshot class will be used if it is available.
 	// Use this field only if the "driver" field is set to "volumeSnapshotter".
 	// +optional
-	VolumeSnapshotClassName string `json:"snapshotClassName,omitempty" protobuf:"bytes,5,opt,name=snapshotClassName"`
+	VolumeSnapshotClassName string `json:"snapshotClassName,omitempty" protobuf:"bytes,6,opt,name=snapshotClassName"`
 	// Exclude specifies a list of patterns for the files to ignore during backup.
 	// Stash will ignore those files that match the specified patterns.
 	// Supported only for "Restic" driver
@@ -78,7 +78,7 @@ type RestoreTarget struct {
 	// Alias represents the identifier of the backed up data in the repository.
 	// This will be used as `sourceHost` and `targetHosts` or will be used to generate them.
 	// +optional
-	Alias string `json:"alias,omitempty" ,protobuf:"bytes,5,opt,name=alias" protobuf:"bytes,7,opt,name=alias"`
+	Alias string `json:"alias,omitempty" protobuf:"bytes,1,opt,name=alias"`
 	// Ref refers to the restore,target
 	Ref TargetRef `json:"ref,omitempty" protobuf:"bytes,2,opt,name=ref"`
 	// VolumeMounts specifies the volumes to mount inside stash sidecar/init container
@@ -90,10 +90,10 @@ type RestoreTarget struct {
 	// same Template, but individual replicas also have a consistent identity.
 	// If unspecified, defaults to 1.
 	// +optional
-	Replicas *int32 `json:"replicas,omitempty" protobuf:"varint,1,opt,name=replicas"`
+	Replicas *int32 `json:"replicas,omitempty" protobuf:"varint,4,opt,name=replicas"`
 	// volumeClaimTemplates is a list of claims that will be created while restore from VolumeSnapshot
 	// +optional
-	VolumeClaimTemplates []ofst.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty" protobuf:"bytes,4,rep,name=volumeClaimTemplates"`
+	VolumeClaimTemplates []ofst.PersistentVolumeClaim `json:"volumeClaimTemplates,omitempty" protobuf:"bytes,5,rep,name=volumeClaimTemplates"`
 	// Rules specifies different restore options for different hosts
 	// +optional
 	Rules []Rule `json:"rules,omitempty" protobuf:"bytes,6,rep,name=rules"`
