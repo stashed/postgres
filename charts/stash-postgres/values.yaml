@@ -6,7 +6,6 @@
 nameOverride: ""
 # Overrides fullname template
 fullnameOverride: ""
-
 image:
   # Docker registry used to pull Postgres addon image
   registry: stashed
@@ -14,8 +13,7 @@ image:
   repository: stash-postgres
   # Tag of the image that is used to backup/restore PostgreSQL database.
   # This is usually same as the database version it can backup.
-  tag: "9.6"
-
+  tag: 9.6-beta.20200826
 backup:
   # Postgres dump command, can either be: pg_dumpall  or pg_dump
   cmd: "pg_dumpall"
@@ -24,6 +22,5 @@ backup:
 restore:
   # Arguments to pass to `psql` command during restore process
   args: ""
-
 # Number of seconds to wait for the database to be ready before backup/restore process.
 waitTimeout: 300
