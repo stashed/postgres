@@ -1,5 +1,5 @@
 /*
-Copyright The Stash Authors.
+Copyright AppsCode Inc. and Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -69,8 +69,8 @@ func SetRestoreTargetFoundConditionToUnknown(invoker apis.RestoreInvoker, index 
 	})
 }
 
-func SetRestoreJobCreatedConditionToTrue(invoker apis.RestoreInvoker) error {
-	return invoker.SetCondition(nil, kmapi.Condition{
+func SetRestoreJobCreatedConditionToTrue(invoker apis.RestoreInvoker, tref *api_v1beta1.TargetRef) error {
+	return invoker.SetCondition(tref, kmapi.Condition{
 		Type:    apis.RestoreJobCreated,
 		Status:  kmapi.ConditionTrue,
 		Reason:  apis.RestoreJobCreationSucceeded,
@@ -78,8 +78,8 @@ func SetRestoreJobCreatedConditionToTrue(invoker apis.RestoreInvoker) error {
 	})
 }
 
-func SetRestoreJobCreatedConditionToFalse(invoker apis.RestoreInvoker, err error) error {
-	return invoker.SetCondition(nil, kmapi.Condition{
+func SetRestoreJobCreatedConditionToFalse(invoker apis.RestoreInvoker, tref *api_v1beta1.TargetRef, err error) error {
+	return invoker.SetCondition(tref, kmapi.Condition{
 		Type:    apis.RestoreJobCreated,
 		Status:  kmapi.ConditionFalse,
 		Reason:  apis.RestoreJobCreationFailed,
