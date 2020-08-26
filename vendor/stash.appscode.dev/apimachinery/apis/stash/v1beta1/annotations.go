@@ -23,6 +23,8 @@ const (
 	KeyBackupBlueprint = StashKey + "/backup-blueprint"
 	KeyTargetPaths     = StashKey + "/target-paths"
 	KeyVolumeMounts    = StashKey + "/volume-mounts"
+	KeySchedule        = StashKey + "/schedule"
+	KeyParams          = "params.stash.appscode.com"
 
 	KeyLastAppliedBackupInvoker     = StashKey + "/last-applied-backup-invoker"
 	KeyLastAppliedBackupInvokerKind = StashKey + "/last-applied-backup-invoker-kind"

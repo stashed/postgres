@@ -340,29 +340,29 @@ message BackupTarget {
   // Alias represents the identifier of the backed up data in the repository.
   // This will be used as `hostname` or will be used to generate the `hostname` for the restic repository.
   // +optional
-  optional string alias = 6;
+  optional string alias = 1;
 
   // Ref refers to the backup target
-  optional TargetRef ref = 1;
+  optional TargetRef ref = 2;
 
   // Paths specify the file paths to backup
   // +optional
-  repeated string paths = 2;
+  repeated string paths = 3;
 
   // VolumeMounts specifies the volumes to mount inside stash sidecar/init container
   // Specify the volumes that contains the target directories
   // +optional
-  repeated k8s.io.api.core.v1.VolumeMount volumeMounts = 3;
+  repeated k8s.io.api.core.v1.VolumeMount volumeMounts = 4;
 
   // replicas are the desired number of replicas whose data should be backed up.
   // If unspecified, defaults to 1.
   // +optional
-  optional int32 replicas = 4;
+  optional int32 replicas = 5;
 
   // Name of the VolumeSnapshotClass used by the VolumeSnapshot. If not specified, a default snapshot class will be used if it is available.
   // Use this field only if the "driver" field is set to "volumeSnapshotter".
   // +optional
-  optional string snapshotClassName = 5;
+  optional string snapshotClassName = 6;
 
   // Exclude specifies a list of patterns for the files to ignore during backup.
   // Stash will ignore those files that match the specified patterns.
@@ -740,7 +740,7 @@ message RestoreTarget {
   // Alias represents the identifier of the backed up data in the repository.
   // This will be used as `sourceHost` and `targetHosts` or will be used to generate them.
   // +optional
-  optional string alias = 7;
+  optional string alias = 1;
 
   // Ref refers to the restore,target
   optional TargetRef ref = 2;
@@ -755,11 +755,11 @@ message RestoreTarget {
   // same Template, but individual replicas also have a consistent identity.
   // If unspecified, defaults to 1.
   // +optional
-  optional int32 replicas = 1;
+  optional int32 replicas = 4;
 
   // volumeClaimTemplates is a list of claims that will be created while restore from VolumeSnapshot
   // +optional
-  repeated kmodules.xyz.offshoot_api.api.v1.PersistentVolumeClaim volumeClaimTemplates = 4;
+  repeated kmodules.xyz.offshoot_api.api.v1.PersistentVolumeClaim volumeClaimTemplates = 5;
 
   // Rules specifies different restore options for different hosts
   // +optional
