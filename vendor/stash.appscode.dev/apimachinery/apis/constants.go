@@ -136,6 +136,7 @@ const (
 	LabelInvokerName    = StashKey + "/invoker-name"
 	StashSecretVolume   = "stash-secret-volume"
 	StashSecretMountDir = "/etc/stash/repository/secret"
+	StashNetVolAccessor = "stash-netvol-accessor"
 
 	KeyPodName    = "POD_NAME"
 	KeyNodeName   = "NODE_NAME"
