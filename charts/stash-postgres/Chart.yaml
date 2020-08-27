@@ -1,8 +1,8 @@
 apiVersion: v1
 description: 'stash-postgres - PostgreSQL database plugin for Stash by AppsCode'
 name: stash-postgres
-version: 11.1-rc.20200827
-appVersion: 11.1-rc.20200827
+version: 11.1-v1
+appVersion: 11.1-v1
 home: https://stash.run
 icon: https://cdn.appscode.com/images/products/stash/addons/postgres-stash-addon.png
 sources:
