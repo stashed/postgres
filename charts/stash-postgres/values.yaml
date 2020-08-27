@@ -13,7 +13,7 @@ image:
   repository: stash-postgres
   # Tag of the image that is used to backup/restore PostgreSQL database.
   # This is usually same as the database version it can backup.
-  tag: v2020.08.26-rc.1
+  tag: v2020.08.27-rc.0
 backup:
   # Postgres dump command, can either be: pg_dumpall  or pg_dump
   cmd: "pg_dumpall"
