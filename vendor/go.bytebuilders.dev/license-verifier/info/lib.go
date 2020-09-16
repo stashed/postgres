@@ -1,5 +1,5 @@
 /*
-Copyright AppsCode Inc. and Contributors
+Copyright AppsCode Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,19 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package pushgateway
+package info
 
-import (
-	"fmt"
-
-	"kmodules.xyz/client-go/meta"
-)
+import "strconv"
 
 var (
-	ServiceName string
+	EnforceLicense string
+	LicenseCA      string
+
+	ProductOwnerName string
+	ProductOwnerUID  string
+
+	ProductName string
+	ProductUID  string
 )
 
-func URL() string {
-	// called by operator, returning its own namespace. Since pushgateway runs as a side-car with operator, this works!
-	return fmt.Sprintf("http://%s.%s.svc:56789", ServiceName, meta.Namespace())
+func SkipLicenseVerification() bool {
+	v, _ := strconv.ParseBool(EnforceLicense)
+	return !v
 }
