@@ -31,7 +31,7 @@ import (
 
 var SupportedProducts = []string{"stash-enterprise"}
 
-var apiServiceName string
+var licenseApiService string
 
 func NewRootCmd() *cobra.Command {
 	var rootCmd = &cobra.Command{
@@ -48,7 +48,7 @@ func NewRootCmd() *cobra.Command {
 	}
 	rootCmd.PersistentFlags().AddGoFlagSet(flag.CommandLine)
 	logs.ParseFlags()
-	rootCmd.PersistentFlags().StringVar(&apiServiceName, "apiservice", "", "Name of ApiService used to expose License endpoint")
+	rootCmd.PersistentFlags().StringVar(&licenseApiService, "license-apiservice", "", "Name of ApiService used to expose License endpoint")
 	rootCmd.PersistentFlags().BoolVar(&cli.EnableAnalytics, "enable-analytics", cli.EnableAnalytics, "Send analytical events to Google Analytics")
 
 	rootCmd.AddCommand(v.NewCmdVersion())

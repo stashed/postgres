@@ -11,7 +11,7 @@ require (
 	github.com/google/gofuzz v1.1.0
 	github.com/spf13/cobra v0.0.5
 	github.com/yudai/gojsondiff v1.0.0
-	go.bytebuilders.dev/license-verifier/kubernetes v0.2.3-0.20200915092602-8974756aacb0
+	go.bytebuilders.dev/license-verifier/kubernetes v0.3.0
 	k8s.io/api v0.18.3
 	k8s.io/apiextensions-apiserver v0.18.3
 	k8s.io/apimachinery v0.18.3

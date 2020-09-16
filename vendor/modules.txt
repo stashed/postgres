@@ -163,10 +163,10 @@ github.com/yudai/gojsondiff
 github.com/yudai/gojsondiff/formatter
 # github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82
 github.com/yudai/golcs
-# go.bytebuilders.dev/license-verifier v0.2.2
+# go.bytebuilders.dev/license-verifier v0.3.0
 go.bytebuilders.dev/license-verifier
 go.bytebuilders.dev/license-verifier/info
-# go.bytebuilders.dev/license-verifier/kubernetes v0.2.3-0.20200915092602-8974756aacb0
+# go.bytebuilders.dev/license-verifier/kubernetes v0.3.0
 go.bytebuilders.dev/license-verifier/kubernetes
 go.bytebuilders.dev/license-verifier/kubernetes/apis/licenses
 go.bytebuilders.dev/license-verifier/kubernetes/apis/licenses/v1alpha1
@@ -808,7 +808,6 @@ kmodules.xyz/client-go/openapi
 kmodules.xyz/client-go/tools/analytics
 kmodules.xyz/client-go/tools/cli
 kmodules.xyz/client-go/tools/clusterid
-kmodules.xyz/client-go/tools/pushgateway
 # kmodules.xyz/crd-schema-fuzz v0.0.0-20200521005638-2433a187de95
 kmodules.xyz/crd-schema-fuzz
 # kmodules.xyz/custom-resources v0.0.0-20200604135349-9e9f5c4fdba9

@@ -67,7 +67,7 @@ func NewCmdBackup() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			err = license.CheckLicenseEndpoint(config, apiServiceName, SupportedProducts)
+			err = license.CheckLicenseEndpoint(config, licenseApiService, SupportedProducts)
 			if err != nil {
 				return err
 			}
