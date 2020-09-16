@@ -1,9 +1,9 @@
-# cloud.google.com/go v0.49.0 => cloud.google.com/go v0.49.0
+# cloud.google.com/go v0.56.0 => cloud.google.com/go v0.49.0
 cloud.google.com/go/compute/metadata
-# github.com/Azure/go-autorest/autorest v0.9.3-0.20191028180845-3492b2aff503 => github.com/Azure/go-autorest/autorest v0.9.0
+# github.com/Azure/go-autorest/autorest v0.10.2 => github.com/Azure/go-autorest/autorest v0.9.0
 github.com/Azure/go-autorest/autorest
 github.com/Azure/go-autorest/autorest/azure
-# github.com/Azure/go-autorest/autorest/adal v0.8.1-0.20191028180845-3492b2aff503 => github.com/Azure/go-autorest/autorest/adal v0.5.0
+# github.com/Azure/go-autorest/autorest/adal v0.8.3 => github.com/Azure/go-autorest/autorest/adal v0.5.0
 github.com/Azure/go-autorest/autorest/adal
 # github.com/Azure/go-autorest/autorest/date v0.1.0 => github.com/Azure/go-autorest/autorest/date v0.1.0
 github.com/Azure/go-autorest/autorest/date
@@ -11,6 +11,8 @@ github.com/Azure/go-autorest/autorest/date
 github.com/Azure/go-autorest/logger
 # github.com/Azure/go-autorest/tracing v0.5.0 => github.com/Azure/go-autorest/tracing v0.5.0
 github.com/Azure/go-autorest/tracing
+# github.com/BurntSushi/toml v0.3.1
+github.com/BurntSushi/toml
 # github.com/NYTimes/gziphandler v1.1.1
 github.com/NYTimes/gziphandler
 # github.com/PuerkitoBio/purell v1.1.1
@@ -57,13 +59,15 @@ github.com/emicklei/go-restful/log
 github.com/evanphx/json-patch
 # github.com/fatih/structs v1.1.0
 github.com/fatih/structs
+# github.com/go-logr/logr v0.1.0
+github.com/go-logr/logr
 # github.com/go-openapi/jsonpointer v0.19.3
 github.com/go-openapi/jsonpointer
 # github.com/go-openapi/jsonreference v0.19.3
 github.com/go-openapi/jsonreference
-# github.com/go-openapi/spec v0.19.3
+# github.com/go-openapi/spec v0.19.7
 github.com/go-openapi/spec
-# github.com/go-openapi/swag v0.19.5
+# github.com/go-openapi/swag v0.19.9
 github.com/go-openapi/swag
 # github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.1
 github.com/gogo/protobuf/gogoproto
@@ -72,7 +76,7 @@ github.com/gogo/protobuf/protoc-gen-gogo/descriptor
 github.com/gogo/protobuf/sortkeys
 # github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 github.com/golang/glog
-# github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9
+# github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7
 github.com/golang/groupcache/lru
 # github.com/golang/protobuf v1.4.2 => github.com/golang/protobuf v1.3.2
 github.com/golang/protobuf/jsonpb
@@ -92,21 +96,23 @@ github.com/google/go-cmp/cmp/internal/value
 github.com/google/gofuzz
 # github.com/google/uuid v1.1.1
 github.com/google/uuid
-# github.com/googleapis/gnostic v0.3.1 => github.com/googleapis/gnostic v0.3.1
+# github.com/googleapis/gnostic v0.4.0 => github.com/googleapis/gnostic v0.3.1
 github.com/googleapis/gnostic/OpenAPIv2
 github.com/googleapis/gnostic/compiler
 github.com/googleapis/gnostic/extensions
-# github.com/gophercloud/gophercloud v0.6.0
+# github.com/gophercloud/gophercloud v0.11.0
 github.com/gophercloud/gophercloud
 github.com/gophercloud/gophercloud/openstack
 github.com/gophercloud/gophercloud/openstack/identity/v2/tenants
 github.com/gophercloud/gophercloud/openstack/identity/v2/tokens
+github.com/gophercloud/gophercloud/openstack/identity/v3/extensions/ec2tokens
+github.com/gophercloud/gophercloud/openstack/identity/v3/extensions/oauth1
 github.com/gophercloud/gophercloud/openstack/identity/v3/tokens
 github.com/gophercloud/gophercloud/openstack/utils
 github.com/gophercloud/gophercloud/pagination
 # github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 github.com/grpc-ecosystem/go-grpc-prometheus
-# github.com/hashicorp/golang-lru v0.5.3
+# github.com/hashicorp/golang-lru v0.5.4
 github.com/hashicorp/golang-lru
 github.com/hashicorp/golang-lru/simplelru
 # github.com/imdario/mergo v0.3.6 => github.com/imdario/mergo v0.3.5
@@ -117,13 +123,13 @@ github.com/inconshreveable/mousetrap
 github.com/jpillora/go-ogle-analytics
 # github.com/json-iterator/go v1.1.10
 github.com/json-iterator/go
-# github.com/mailru/easyjson v0.7.0
+# github.com/mailru/easyjson v0.7.1
 github.com/mailru/easyjson/buffer
 github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
 github.com/matttproud/golang_protobuf_extensions/pbutil
-# github.com/mitchellh/mapstructure v1.1.2
+# github.com/mitchellh/mapstructure v1.2.2
 github.com/mitchellh/mapstructure
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 github.com/modern-go/concurrent
@@ -191,11 +197,13 @@ go.etcd.io/etcd/raft/confchange
 go.etcd.io/etcd/raft/quorum
 go.etcd.io/etcd/raft/raftpb
 go.etcd.io/etcd/raft/tracker
-# go.uber.org/atomic v1.5.0
+# go.uber.org/atomic v1.6.0
 go.uber.org/atomic
-# go.uber.org/multierr v1.1.0
+# go.uber.org/multierr v1.3.0
 go.uber.org/multierr
-# go.uber.org/zap v1.10.0
+# go.uber.org/tools v0.0.0-20190618225709-2cfd321de3ee
+go.uber.org/tools/update-license
+# go.uber.org/zap v1.13.0
 go.uber.org/zap
 go.uber.org/zap/buffer
 go.uber.org/zap/internal/bufferpool
@@ -223,13 +231,13 @@ golang.org/x/net/idna
 golang.org/x/net/internal/timeseries
 golang.org/x/net/trace
 golang.org/x/net/websocket
-# golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
+# golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 golang.org/x/oauth2
 golang.org/x/oauth2/google
 golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
-# golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
+# golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 golang.org/x/sync/singleflight
 # golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1
 golang.org/x/sys/cpu
@@ -242,19 +250,37 @@ golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
 golang.org/x/text/width
-# golang.org/x/time v0.0.0-20191024005414-555d28b269f0
+# golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1
 golang.org/x/time/rate
-# golang.org/x/tools v0.0.0-20200130002326-2f3ba24bd6e7
+# golang.org/x/tools v0.0.0-20200603131246-cc40288be839
+golang.org/x/tools/go/analysis
+golang.org/x/tools/go/analysis/passes/inspect
 golang.org/x/tools/go/ast/astutil
+golang.org/x/tools/go/ast/inspector
+golang.org/x/tools/go/buildutil
 golang.org/x/tools/go/gcexportdata
 golang.org/x/tools/go/internal/gcimporter
+golang.org/x/tools/go/internal/packagesdriver
+golang.org/x/tools/go/packages
+golang.org/x/tools/go/types/objectpath
+golang.org/x/tools/go/types/typeutil
+golang.org/x/tools/internal/analysisinternal
+golang.org/x/tools/internal/event
+golang.org/x/tools/internal/event/core
+golang.org/x/tools/internal/event/keys
+golang.org/x/tools/internal/event/label
+golang.org/x/tools/internal/gocommand
+golang.org/x/tools/internal/packagesinternal
+# golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
+golang.org/x/xerrors
+golang.org/x/xerrors/internal
 # gomodules.xyz/jsonpatch/v2 v2.1.0
 gomodules.xyz/jsonpatch/v2
 # gomodules.xyz/sets v0.0.0-20200817084356-ae6e5e14ce3d
 gomodules.xyz/sets
 # gomodules.xyz/version v0.1.0
 gomodules.xyz/version
-# google.golang.org/appengine v1.6.5
+# google.golang.org/appengine v1.6.6
 google.golang.org/appengine
 google.golang.org/appengine/internal
 google.golang.org/appengine/internal/app_identity
@@ -265,9 +291,9 @@ google.golang.org/appengine/internal/modules
 google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
-# google.golang.org/genproto v0.0.0-20191115194625-c23dd37a84c9 => google.golang.org/genproto v0.0.0-20191115194625-c23dd37a84c9
+# google.golang.org/genproto v0.0.0-20200603110839-e855014d5736 => google.golang.org/genproto v0.0.0-20191115194625-c23dd37a84c9
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.26.0 => google.golang.org/grpc v1.26.0
+# google.golang.org/grpc v1.29.1 => google.golang.org/grpc v1.26.0
 google.golang.org/grpc
 google.golang.org/grpc/attributes
 google.golang.org/grpc/backoff
@@ -310,8 +336,34 @@ google.golang.org/grpc/tap
 gopkg.in/inf.v0
 # gopkg.in/natefinch/lumberjack.v2 v2.0.0
 gopkg.in/natefinch/lumberjack.v2
-# gopkg.in/yaml.v2 v2.2.8
+# gopkg.in/yaml.v2 v2.3.0
 gopkg.in/yaml.v2
+# honnef.co/go/tools v0.0.1-2019.2.3
+honnef.co/go/tools/arg
+honnef.co/go/tools/cmd/staticcheck
+honnef.co/go/tools/config
+honnef.co/go/tools/deprecated
+honnef.co/go/tools/facts
+honnef.co/go/tools/functions
+honnef.co/go/tools/go/types/typeutil
+honnef.co/go/tools/internal/cache
+honnef.co/go/tools/internal/passes/buildssa
+honnef.co/go/tools/internal/renameio
+honnef.co/go/tools/internal/sharedcheck
+honnef.co/go/tools/lint
+honnef.co/go/tools/lint/lintdsl
+honnef.co/go/tools/lint/lintutil
+honnef.co/go/tools/lint/lintutil/format
+honnef.co/go/tools/loader
+honnef.co/go/tools/printf
+honnef.co/go/tools/simple
+honnef.co/go/tools/ssa
+honnef.co/go/tools/ssautil
+honnef.co/go/tools/staticcheck
+honnef.co/go/tools/staticcheck/vrp
+honnef.co/go/tools/stylecheck
+honnef.co/go/tools/unused
+honnef.co/go/tools/version
 # k8s.io/api v0.18.3 => github.com/kmodules/api v0.18.4-0.20200524125823-c8bc107809b9
 k8s.io/api/admission/v1
 k8s.io/api/admission/v1beta1
@@ -769,6 +821,8 @@ k8s.io/component-base/metrics/testutil
 k8s.io/component-base/version
 # k8s.io/klog v1.0.0
 k8s.io/klog
+# k8s.io/klog/v2 v2.0.0
+k8s.io/klog/v2
 # k8s.io/kube-aggregator v0.18.3
 k8s.io/kube-aggregator/pkg/apis/apiregistration
 k8s.io/kube-aggregator/pkg/apis/apiregistration/v1
@@ -786,7 +840,7 @@ k8s.io/kube-openapi/pkg/util
 k8s.io/kube-openapi/pkg/util/proto
 # k8s.io/kubernetes v1.18.3 => github.com/kmodules/kubernetes v1.19.0-alpha.0.0.20200521033432-49d3646051ad
 k8s.io/kubernetes/pkg/util/hash
-# k8s.io/utils v0.0.0-20200324210504-a9aa75ae1b89
+# k8s.io/utils v0.0.0-20200414100711-2df71ebbae66
 k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/net
@@ -834,7 +888,7 @@ sigs.k8s.io/structured-merge-diff/v3/typed
 sigs.k8s.io/structured-merge-diff/v3/value
 # sigs.k8s.io/yaml v1.2.0
 sigs.k8s.io/yaml
-# stash.appscode.dev/apimachinery v0.10.1-0.20200914045248-546ceea96940
+# stash.appscode.dev/apimachinery v0.11.0
 stash.appscode.dev/apimachinery/apis
 stash.appscode.dev/apimachinery/apis/repositories
 stash.appscode.dev/apimachinery/apis/repositories/v1alpha1
