@@ -29,3 +29,4 @@ _testmain.go
 /bin
 /coverage.txt
 /dist
+/apiserver.local.config
