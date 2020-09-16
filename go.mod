@@ -11,12 +11,13 @@ require (
 	github.com/google/gofuzz v1.1.0
 	github.com/spf13/cobra v0.0.5
 	github.com/yudai/gojsondiff v1.0.0
+	go.bytebuilders.dev/license-verifier/kubernetes v0.3.0
 	k8s.io/api v0.18.3
 	k8s.io/apiextensions-apiserver v0.18.3
 	k8s.io/apimachinery v0.18.3
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20200410145947-61e04a5be9a6
-	kmodules.xyz/client-go v0.0.0-20200905112811-2e29b973ee0c
+	kmodules.xyz/client-go v0.0.0-20200915091229-7df16c29f4e8
 	kmodules.xyz/crd-schema-fuzz v0.0.0-20200521005638-2433a187de95
 	kmodules.xyz/custom-resources v0.0.0-20200604135349-9e9f5c4fdba9
 	kmodules.xyz/offshoot-api v0.0.0-20200521035628-e135bf07b226
