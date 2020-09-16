@@ -26,6 +26,7 @@ import (
 
 	"github.com/appscode/go/flags"
 	"github.com/spf13/cobra"
+	license "go.bytebuilders.dev/license-verifier/kubernetes"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -60,6 +61,10 @@ func NewCmdRestore() *cobra.Command {
 
 			// prepare client
 			config, err := clientcmd.BuildConfigFromFlags(masterURL, kubeconfigPath)
+			if err != nil {
+				return err
+			}
+			err = license.CheckLicenseEndpoint(config, licenseApiService, SupportedProducts)
 			if err != nil {
 				return err
 			}
