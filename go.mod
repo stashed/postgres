@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/appscode/go v0.0.0-20200323182826-54e98e09185a
 	github.com/codeskyblue/go-sh v0.0.0-20190412065543-76bd3d59ff27
-	github.com/go-openapi/spec v0.19.3
+	github.com/go-openapi/spec v0.19.7
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/google/gofuzz v1.1.0
@@ -22,7 +22,7 @@ require (
 	kmodules.xyz/custom-resources v0.0.0-20200604135349-9e9f5c4fdba9
 	kmodules.xyz/offshoot-api v0.0.0-20200521035628-e135bf07b226
 	sigs.k8s.io/yaml v1.2.0
-	stash.appscode.dev/apimachinery v0.10.1-0.20200914045248-546ceea96940
+	stash.appscode.dev/apimachinery v0.11.0
 )
 
 replace bitbucket.org/ww/goautoneg => gomodules.xyz/goautoneg v0.0.0-20120707110453-a547fc61f48d
