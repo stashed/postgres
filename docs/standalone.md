@@ -62,7 +62,7 @@ metadata:
   name: sample-postgres
   namespace: demo
 spec:
-  version: "11.2"
+  version: "11.9"
   storageType: Durable
   storage:
     storageClassName: "standard"
@@ -88,7 +88,7 @@ Let's check if the database is ready to use,
 ```console
 $ kubectl get pg -n demo sample-postgres
 NAME              VERSION   STATUS    AGE
-sample-postgres   11.2      Running   3m11s
+sample-postgres   11.9      Running   3m11s
 ```
 
 The database is `Running`. Verify that KubeDB has created a Secret and a Service for this database using the following commands,
@@ -133,7 +133,7 @@ metadata:
     app.kubernetes.io/instance: sample-postgres
     app.kubernetes.io/managed-by: kubedb.com
     app.kubernetes.io/name: postgres
-    app.kubernetes.io/version: "11.2"
+    app.kubernetes.io/version: "11.9"
     kubedb.com/kind: Postgres
     kubedb.com/name: sample-postgres
   name: sample-postgres
@@ -156,7 +156,7 @@ spec:
       from: POSTGRES_PASSWORD
       to: password
   type: kubedb.com/postgres
-  version: "11.2"
+  version: "11.9"
 ```
 
 Stash uses the `AppBinding` crd to connect with the target database. It requires the following two fields to set in AppBinding's `Spec` section.
@@ -207,7 +207,7 @@ Now, let's exec into the pod and create a table,
 $ kubectl exec -it -n demo sample-postgres-0 sh
 # login as "postgres" superuser.
 / # psql -U postgres
-psql (11.2)
+psql (11.9)
 Type "help" for help.
 
 # list available databases
@@ -310,7 +310,7 @@ metadata:
 spec:
   schedule: "*/5 * * * *"
   task:
-    name: postgres-backup-11.2
+    name: postgres-backup-11.9.0
   repository:
     name: gcs-repo
   target:
@@ -409,7 +409,7 @@ Now, wait for a moment. Stash will pause the BackupConfiguration. Verify that th
 ```console
 $ kubectl get backupconfiguration -n demo sample-postgres-backup
 NAME                    TASK                        SCHEDULE      PAUSED   AGE
-sample-postgres-backup  postgres-backup-11.2        */5 * * * *   true     26m
+sample-postgres-backup  postgres-backup-11.9.0      */5 * * * *   true     26m
 ```
 
 Notice the `PAUSED` column. Value `true` for this field means that the BackupConfiguration has been paused.
@@ -430,7 +430,7 @@ metadata:
   name: restored-postgres
   namespace: demo
 spec:
-  version: "11.2"
+  version: "11.9"
   storageType: Durable
   databaseSecret:
     secretName: sample-postgres-auth # use same secret as original the database
@@ -464,7 +464,7 @@ If you check the database status, you will see it is stuck in `Initializing` sta
 ```console
 $ kubectl get pg -n demo restored-postgres
 NAME                VERSION   STATUS         AGE
-restored-postgres   11.2      Initializing   3m21s
+restored-postgres   11.9      Initializing   3m21s
 ```
 
 **Create RestoreSession:**
@@ -493,7 +493,7 @@ metadata:
     kubedb.com/kind: Postgres # this label is mandatory if you are using KubeDB to deploy the database.
 spec:
   task:
-    name: postgres-restore-11.2
+    name: postgres-restore-11.9.0
   repository:
     name: gcs-repo
   target:
@@ -545,7 +545,7 @@ At first, check if the database has gone into `Running` state by the following c
 ```console
 $ kubectl get pg -n demo restored-postgres
 NAME                VERSION   STATUS    AGE
-restored-postgres   11.2      Running   2m16s
+restored-postgres   11.9      Running   2m16s
 ```
 
 Now, find out the database pod by the following command,
@@ -562,7 +562,7 @@ Now, exec into the database pod and list available tables,
 $ kubectl exec -it -n demo restored-postgres-0 sh
 # login as "postgres" superuser.
 / # psql -U postgres
-psql (11.2)
+psql (11.9)
 Type "help" for help.
 
 # list available databases
