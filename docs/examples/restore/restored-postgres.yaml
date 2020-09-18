@@ -4,7 +4,7 @@ metadata:
   name: restored-postgres
   namespace: demo
 spec:
-  version: "10.6-v2"
+  version: "10.14"
   storageType: Durable
   databaseSecret:
     secretName: sample-postgres-auth # use same secret as original the database
