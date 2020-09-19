@@ -310,7 +310,7 @@ metadata:
 spec:
   schedule: "*/5 * * * *"
   task:
-    name: postgres-backup-9.6
+    name: postgres-backup-{{< param "info.subproject_version" >}}
   repository:
     name: gcs-repo
   target:
@@ -408,7 +408,7 @@ Now, wait for a moment. Stash will pause the BackupConfiguration. Verify that th
 ```console
 $ kubectl get backupconfiguration -n demo sample-postgres-backup
 NAME                    TASK                        SCHEDULE      PAUSED   AGE
-sample-postgres-backup  postgres-backup-9.6        */5 * * * *   true     26m
+sample-postgres-backup  postgres-backup-{{< param "info.subproject_version" >}}      */5 * * * *   true     26m
 ```
 
 Notice the `PAUSED` column. Value `true` for this field means that the BackupConfiguration has been paused.
@@ -492,7 +492,7 @@ metadata:
     kubedb.com/kind: Postgres # this label is mandatory if you are using KubeDB to deploy the database.
 spec:
   task:
-    name: postgres-restore-9.6
+    name: postgres-restore-{{< param "info.subproject_version" >}}
   repository:
     name: gcs-repo
   target:
