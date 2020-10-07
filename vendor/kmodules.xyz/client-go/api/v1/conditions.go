@@ -28,7 +28,7 @@ const (
 	ConditionInitialized = "Initialized"
 	ConditionReady       = "Ready"
 	ConditionAvailable   = "Available"
-	ConditionFailure     = "Failure"
+	ConditionFailed      = "Failed"
 
 	ConditionRequestApproved = "Approved"
 	ConditionRequestDenied   = "Denied"
@@ -73,6 +73,22 @@ type Condition struct {
 	// This field may be empty.
 	// +required
 	Message string `json:"message" protobuf:"bytes,6,opt,name=message"`
+}
+
+func NewCondition(reason string, message string, generation int64, conditionStatus ...bool) Condition {
+	cs := ConditionTrue
+	if len(conditionStatus) > 0 && !conditionStatus[0] {
+		cs = ConditionFalse
+	}
+
+	return Condition{
+		Type:               reason,
+		Reason:             reason,
+		Message:            message,
+		Status:             cs,
+		LastTransitionTime: metav1.Now(),
+		ObservedGeneration: generation,
+	}
 }
 
 // HasCondition returns "true" if the desired condition provided in "condType" is present in the condition list.
@@ -135,6 +151,17 @@ func RemoveCondition(conditions []Condition, condType string) []Condition {
 func IsConditionTrue(conditions []Condition, condType string) bool {
 	for i := range conditions {
 		if conditions[i].Type == condType && conditions[i].Status == ConditionTrue {
+			return true
+		}
+	}
+	return false
+}
+
+// IsConditionFalse returns "true" if the desired condition is in false state.
+// It returns "false" if the desired condition is not in "false" state or is not in the condition list.
+func IsConditionFalse(conditions []Condition, condType string) bool {
+	for i := range conditions {
+		if conditions[i].Type == condType && conditions[i].Status == ConditionFalse {
 			return true
 		}
 	}
