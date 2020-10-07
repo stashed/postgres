@@ -3,7 +3,7 @@ module stash.appscode.dev/postgres
 go 1.12
 
 require (
-	github.com/appscode/go v0.0.0-20200323182826-54e98e09185a
+	github.com/appscode/go v0.0.0-20200928211031-cc0c23082d91
 	github.com/codeskyblue/go-sh v0.0.0-20190412065543-76bd3d59ff27
 	github.com/go-openapi/spec v0.19.3
 	github.com/gogo/protobuf v1.3.1
@@ -12,15 +12,18 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/yudai/gojsondiff v1.0.0
 	go.bytebuilders.dev/license-verifier/kubernetes v0.3.0
-	k8s.io/api v0.18.3
-	k8s.io/apiextensions-apiserver v0.18.3
-	k8s.io/apimachinery v0.18.3
+	k8s.io/api v0.18.9
+	k8s.io/apiextensions-apiserver v0.18.9
+	k8s.io/apimachinery v0.18.9
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20200410145947-61e04a5be9a6
-	kmodules.xyz/client-go v0.0.0-20200915091229-7df16c29f4e8
-	kmodules.xyz/crd-schema-fuzz v0.0.0-20200521005638-2433a187de95
-	kmodules.xyz/custom-resources v0.0.0-20200604135349-9e9f5c4fdba9
-	kmodules.xyz/offshoot-api v0.0.0-20200521035628-e135bf07b226
+	k8s.io/kubernetes v1.18.9 // indirect
+	kmodules.xyz/client-go v0.0.0-20201007024140-3223988adf40
+	kmodules.xyz/crd-schema-fuzz v0.0.0-20200922204806-c1426cd7fcf4
+	kmodules.xyz/custom-resources v0.0.0-20200922210108-70f2815a43bb
+	kmodules.xyz/objectstore-api v0.0.0-20200922210707-59bab27e5d41 // indirect
+	kmodules.xyz/offshoot-api v0.0.0-20200922211229-36acc531abab
+	kmodules.xyz/prober v0.0.0-20200922212142-743a6514664e // indirect
 	sigs.k8s.io/yaml v1.2.0
 	stash.appscode.dev/apimachinery v0.10.1-0.20200914045248-546ceea96940
 )
