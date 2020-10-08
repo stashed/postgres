@@ -148,13 +148,6 @@ spec:
       scheme: postgresql
   secret:
     name: sample-postgres-auth
-  secretTransforms:
-  - renameKey:
-      from: POSTGRES_USER
-      to: username
-  - renameKey:
-      from: POSTGRES_PASSWORD
-      to: password
   type: kubedb.com/postgres
   version: "10.6"
 ```
