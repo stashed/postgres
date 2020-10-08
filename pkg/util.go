@@ -26,18 +26,22 @@ import (
 	"github.com/codeskyblue/go-sh"
 	core "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
+	meta_util "kmodules.xyz/client-go/meta"
 	"kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
 )
 
 const (
-	PostgresUser     = "POSTGRES_USER"
-	PostgresPassword = "POSTGRES_PASSWORD"
-	EnvPgPassword    = "PGPASSWORD"
-	PgDumpFile       = "dumpfile.sql"
-	PgDumpCMD        = "pg_dump"
-	PgDumpallCMD     = "pg_dumpall"
-	PgRestoreCMD     = "psql"
+	EnvPgPassword = "PGPASSWORD"
+	PgDumpFile    = "dumpfile.sql"
+	PgDumpCMD     = "pg_dump"
+	PgDumpallCMD  = "pg_dumpall"
+	PgRestoreCMD  = "psql"
+
+	// Deprecated
+	envPostgresUser = "POSTGRES_USER"
+	// Deprecated
+	envPostgresPassword = "POSTGRES_PASSWORD"
 )
 
 type postgresOptions struct {
@@ -58,14 +62,21 @@ type postgresOptions struct {
 	dumpOptions   restic.DumpOptions
 }
 
+func must(v []byte, err error) string {
+	if err != nil {
+		panic(err)
+	}
+	return string(v)
+}
+
 func waitForDBReady(appBinding *v1alpha1.AppBinding, secret *core.Secret, waitTimeout int32) error {
 	log.Infoln("Waiting for the database to be ready.....")
 	shell := sh.NewSession()
-	shell.SetEnv(EnvPgPassword, string(secret.Data[PostgresPassword]))
+	shell.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(secret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
 	args := []interface{}{
 		fmt.Sprintf("--host=%s", appBinding.Spec.ClientConfig.Service.Name),
 		fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port),
-		fmt.Sprintf("--username=%s", secret.Data[PostgresUser]),
+		fmt.Sprintf("--username=%s", must(meta_util.GetBytesForKeys(secret.Data, core.BasicAuthUsernameKey, envPostgresUser))),
 		fmt.Sprintf("--timeout=%d", waitTimeout),
 	}
 	return shell.Command("pg_isready", args...).Run()
