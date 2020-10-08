@@ -18,7 +18,7 @@ require (
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20200410145947-61e04a5be9a6
 	k8s.io/kubernetes v1.18.9 // indirect
-	kmodules.xyz/client-go v0.0.0-20201007024140-3223988adf40
+	kmodules.xyz/client-go v0.0.0-20201008164401-74d81f261ec5
 	kmodules.xyz/crd-schema-fuzz v0.0.0-20200922204806-c1426cd7fcf4
 	kmodules.xyz/custom-resources v0.0.0-20201008012351-6d8090f759d4
 	kmodules.xyz/objectstore-api v0.0.0-20200922210707-59bab27e5d41 // indirect
