@@ -27,9 +27,11 @@ import (
 	"github.com/appscode/go/flags"
 	"github.com/spf13/cobra"
 	license "go.bytebuilders.dev/license-verifier/kubernetes"
+	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
+	meta_util "kmodules.xyz/client-go/meta"
 	appcatalog "kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
 	v1 "kmodules.xyz/offshoot-api/api/v1"
@@ -171,12 +173,12 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	}
 
 	// set env for psql
-	resticWrapper.SetEnv(EnvPgPassword, string(appBindingSecret.Data[PostgresPassword]))
+	resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
 	// setup pipe command
 	opt.dumpOptions.StdoutPipeCommand = restic.Command{
 		Name: PgRestoreCMD,
 		Args: []interface{}{
-			"-U", string(appBindingSecret.Data[PostgresUser]),
+			"-U", must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser)),
 			"-h", appBinding.Spec.ClientConfig.Service.Name,
 		},
 	}
