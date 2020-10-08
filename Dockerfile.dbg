@@ -33,6 +33,8 @@ RUN set -x                                                                      
 
 FROM {ARG_FROM}
 
+LABEL org.opencontainers.image.source https://github.com/stashed/postgres
+
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
