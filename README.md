@@ -32,7 +32,7 @@ helm delete stash-postgres-9.6
 
 To speak with us, please leave a message on [our website](https://appscode.com/contact/).
 
-To join public discussions with the KubeDB community, join us in the [AppsCode Slack team](https://appscode.slack.com/messages/C8NCX6N23/details/) channel `#stash`. To sign up, use our [Slack inviter](https://slack.appscode.com/).
+To join public discussions with the Stash community, join us in the [AppsCode Slack team](https://appscode.slack.com/messages/C8NCX6N23/details/) channel `#stash`. To sign up, use our [Slack inviter](https://slack.appscode.com/).
 
 To receive product annoucements, follow us on [Twitter](https://twitter.com/KubeStash).
 
