@@ -22,8 +22,8 @@ import (
 	stash "stash.appscode.dev/apimachinery/client/clientset/versioned"
 	"stash.appscode.dev/apimachinery/pkg/restic"
 
-	"github.com/appscode/go/log"
 	"github.com/codeskyblue/go-sh"
+	"gomodules.xyz/x/log"
 	core "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
 	meta_util "kmodules.xyz/client-go/meta"
