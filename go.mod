@@ -9,7 +9,7 @@ require (
 	github.com/NYTimes/gziphandler v1.1.1 // indirect
 	github.com/appscode/go v0.0.0-20200928211031-cc0c23082d91
 	github.com/blang/semver v3.5.1+incompatible // indirect
-	github.com/codeskyblue/go-sh v0.0.0-20190412065543-76bd3d59ff27
+	github.com/codeskyblue/go-sh v0.0.0-20200712050446-30169cf553fe
 	github.com/go-openapi/spec v0.19.8
 	github.com/go-openapi/swag v0.19.9 // indirect
 	github.com/gogo/protobuf v1.3.1
@@ -24,11 +24,9 @@ require (
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/mailru/easyjson v0.7.1 // indirect
-	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mitchellh/mapstructure v1.2.2 // indirect
 	github.com/prometheus/client_golang v1.6.0 // indirect
-	github.com/spf13/cobra v0.0.5
-	github.com/stretchr/testify v1.5.1 // indirect
+	github.com/spf13/cobra v1.1.1
 	github.com/yudai/gojsondiff v1.0.0
 	go.bytebuilders.dev/license-verifier/kubernetes v0.3.0
 	go.uber.org/atomic v1.6.0 // indirect
@@ -45,10 +43,12 @@ require (
 	k8s.io/client-go v0.18.9
 	k8s.io/kube-openapi v0.0.0-20200410145947-61e04a5be9a6
 	k8s.io/utils v0.0.0-20200414100711-2df71ebbae66 // indirect
-	kmodules.xyz/client-go v0.0.0-20201027113349-01a6d453d836
+	kmodules.xyz/client-go v0.0.0-20201105071625-0b277310b9b8
 	kmodules.xyz/crd-schema-fuzz v0.0.0-20200922204806-c1426cd7fcf4
-	kmodules.xyz/custom-resources v0.0.0-20201008012351-6d8090f759d4
-	kmodules.xyz/offshoot-api v0.0.0-20201027212804-f5e6dc573558
+	kmodules.xyz/custom-resources v0.0.0-20201105075444-3c6af51b4f79
+	kmodules.xyz/objectstore-api v0.0.0-20201105133858-cbb2af88d50a // indirect
+	kmodules.xyz/offshoot-api v0.0.0-20201105074700-8675f5f686f2
+	kmodules.xyz/prober v0.0.0-20201105074402-a243b3a27fd8 // indirect
 	sigs.k8s.io/yaml v1.2.0
 	stash.appscode.dev/apimachinery v0.11.3
 )
