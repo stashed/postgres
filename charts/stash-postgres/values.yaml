@@ -13,7 +13,7 @@ image:
   repository: stash-postgres
   # Tag of the image that is used to backup/restore PostgreSQL database.
   # This is usually same as the database version it can backup.
-  tag: 9.6.19-v1
+  tag: 9.6.19-v2
 backup:
   # Postgres dump command, can either be: pg_dumpall  or pg_dump
   cmd: "pg_dumpall"
