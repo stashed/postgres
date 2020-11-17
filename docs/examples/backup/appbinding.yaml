@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/instance: sample-postgres
     app.kubernetes.io/managed-by: kubedb.com
     app.kubernetes.io/name: postgres
-    app.kubernetes.io/version: "11.2"
+    app.kubernetes.io/version: "13.1"
     kubedb.com/kind: Postgres
     kubedb.com/name: sample-postgres
   name: sample-postgres
@@ -24,4 +24,4 @@ spec:
   secret:
     name: sample-postgres-auth
   type: kubedb.com/postgres
-  version: "11.2"
+  version: "13.1"

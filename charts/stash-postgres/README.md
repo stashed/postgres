@@ -12,7 +12,7 @@ $ helm install stash-postgres-v2020.11.06 appscode/stash-postgres -n kube-system
 
 ## Introduction
 
-This chart deploys necessary `Function` and `Task` definition to backup or restore PostgreSQL 11.2 using Stash on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart deploys necessary `Function` and `Task` definition to backup or restore PostgreSQL 13.1 using Stash on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -26,7 +26,7 @@ To install the chart with the release name `stash-postgres-v2020.11.06`:
 $ helm install stash-postgres-v2020.11.06 appscode/stash-postgres -n kube-system --version=v2020.11.06
 ```
 
-The command deploys necessary `Function` and `Task` definition to backup or restore PostgreSQL 11.2 using Stash on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys necessary `Function` and `Task` definition to backup or restore PostgreSQL 13.1 using Stash on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 

@@ -4,7 +4,7 @@ project:
   url: https://github.com/stashed/postgres
   description: "PostgreSQL database backup/restore plugin for [Stash by AppsCode](https://stash.run)"
   app: "necessary `Function` and `Task` definition to backup or restore PostgreSQL
-    11.2 using Stash"
+    13.1 using Stash"
 repository:
   url: https://charts.appscode.com/stable/
   name: appscode

@@ -10,22 +10,22 @@ Postgres backup and restore plugin for [Stash by AppsCode](https://stash.run).
 
 ## Install
 
-Install PostgreSQL 11.2 backup or restore plugin for Stash as below.
+Install PostgreSQL 13.1 backup or restore plugin for Stash as below.
 
 ```console
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install appscode/stash-postgres --name=stash-postgres-11.2 --version=11.2
+helm install appscode/stash-postgres --name=stash-postgres-13.1 --version=13.1
 ```
 
 To install catalog for all supported PostgreSQL versions, please visit [here](https://github.com/stashed/catalog).
 
 ## Uninstall
 
-Uninstall PostgreSQL 11.2 backup or restore plugin for Stash as below.
+Uninstall PostgreSQL 13.1 backup or restore plugin for Stash as below.
 
 ```console
-helm delete stash-postgres-11.2
+helm delete stash-postgres-13.1
 ```
 
 ## Support
