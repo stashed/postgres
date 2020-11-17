@@ -6,7 +6,7 @@ metadata:
 spec:
   schedule: "*/5 * * * *"
   task:
-    name: postgres-backup-12.4.0-v2
+    name: postgres-backup-12.4.0-v3
   repository:
     name: gcs-repo
   target:
