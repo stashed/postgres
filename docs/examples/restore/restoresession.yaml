@@ -7,7 +7,7 @@ metadata:
     kubedb.com/kind: Postgres # this label is mandatory if you are using KubeDB to deploy the database.
 spec:
   task:
-    name: postgres-restore-12.4.0-v2
+    name: postgres-restore-12.4.0-v3
   repository:
     name: gcs-repo
   target:
