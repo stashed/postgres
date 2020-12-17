@@ -221,6 +221,10 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 			"-h", appBinding.Spec.ClientConfig.Service.Name,
 		},
 	}
+	// if port is specified, append port in the arguments
+	if appBinding.Spec.ClientConfig.Service.Port != 0 {
+		opt.backupOptions.StdinPipeCommand.Args = append(opt.backupOptions.StdinPipeCommand.Args, fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port))
+	}
 	for _, arg := range strings.Fields(opt.pgArgs) {
 		opt.backupOptions.StdinPipeCommand.Args = append(opt.backupOptions.StdinPipeCommand.Args, arg)
 	}
