@@ -4,28 +4,30 @@
 [![Slack](https://slack.appscode.com/badge.svg)](https://slack.appscode.com)
 [![Twitter](https://img.shields.io/twitter/follow/kubestash.svg?style=social&logo=twitter&label=Follow)](https://twitter.com/intent/follow?screen_name=KubeStash)
 
+{{ $v := semver .version -}}
+
 # Postgres
 
 Postgres backup and restore plugin for [Stash by AppsCode](https://stash.run).
 
 ## Install
 
-Install PostgreSQL 9.6 backup or restore plugin for Stash as below.
+Install PostgreSQL {{ $v.Major }}.{{ $v.Minor }} backup or restore plugin for Stash as below.
 
 ```console
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install stash-postgres-11.2-v2 appscode/stash-postgres --version=11.2-v2
+helm install stash-postgres-{{ .version }} appscode/stash-postgres --version={{ .version }}
 ```
 
 To install catalog for all supported PostgreSQL versions, please visit [here](https://github.com/stashed/catalog).
 
 ## Uninstall
 
-Uninstall PostgreSQL 9.6 backup or restore plugin for Stash as below.
+Uninstall PostgreSQL {{ $v.Major }}.{{ $v.Minor }} backup or restore plugin for Stash as below.
 
 ```console
-helm delete stash-postgres-11.2-v2
+helm delete stash-postgres-{{ .version }}
 ```
 
 ## Support
