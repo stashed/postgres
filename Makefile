@@ -20,7 +20,7 @@ BIN      := stash-postgres
 COMPRESS ?= no
 
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
-CRD_OPTIONS          ?= "crd:trivialVersions=true,preserveUnknownFields=false,crdVersions={v1beta1,v1}"
+CRD_OPTIONS          ?= "crd:trivialVersions=true,preserveUnknownFields=false,crdVersions={v1}"
 # https://github.com/appscodelabs/gengo-builder
 CODE_GENERATOR_IMAGE ?= appscode/gengo:release-1.18
 API_GROUPS           ?= installer:v1alpha1
@@ -54,8 +54,8 @@ RESTIC_VER       := 0.11.0
 ### These variables should not need tweaking.
 ###
 
-SRC_PKGS := api apis cmd pkg
-SRC_DIRS := $(SRC_PKGS) hack/gencrd # directories which hold app source (not vendored)
+SRC_PKGS := apis cmd pkg
+SRC_DIRS := $(SRC_PKGS) # directories which hold app source (not vendored)
 
 DOCKER_PLATFORMS := linux/amd64 linux/arm64
 BIN_PLATFORMS    := $(DOCKER_PLATFORMS)
@@ -202,7 +202,7 @@ gen-crds:
 		controller-gen                      \
 			$(CRD_OPTIONS)                  \
 			paths="./apis/..."              \
-			output:crd:artifacts:config=api/crds
+			output:crd:artifacts:config=crds
 
 crds_to_patch := installer.stash.appscode.com_stashpostgreses.yaml
 
@@ -210,12 +210,12 @@ crds_to_patch := installer.stash.appscode.com_stashpostgreses.yaml
 patch-crds: $(addprefix patch-crd-, $(crds_to_patch))
 patch-crd-%: $(BUILD_DIRS)
 	@echo "patching $*"
-	@kubectl patch -f api/crds/$* -p "$$(cat hack/crd-patch.json)" --type=json --local=true -o yaml > bin/$*
-	@mv bin/$* api/crds/$*
+	@kubectl patch -f crds/$* -p "$$(cat hack/crd-patch.json)" --type=json --local=true -o yaml > bin/$*
+	@mv bin/$* crds/$*
 
 .PHONY: label-crds
 label-crds: $(BUILD_DIRS)
-	@for f in api/crds/*.yaml; do \
+	@for f in crds/*.yaml; do \
 		echo "applying app=stash label to $$f"; \
 		kubectl label --overwrite -f $$f --local=true -o yaml app=stash > bin/crd.yaml; \
 		mv bin/crd.yaml $$f; \
@@ -248,7 +248,7 @@ gen-bindata:
 	    --rm                                                    \
 	    -u $$(id -u):$$(id -g)                                  \
 	    -v $$(pwd):/src                                         \
-	    -w /src/api/crds                                        \
+	    -w /src/crds                                        \
 		-v /tmp:/.cache                                         \
 	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
 	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
@@ -256,9 +256,15 @@ gen-bindata:
 	    go-bindata -ignore=\\.go -ignore=\\.DS_Store -mode=0644 -modtime=1573722179 -o bindata.go -pkg crds ./...
 
 .PHONY: gen-values-schema
-gen-values-schema:
-	@yq r api/crds/installer.stash.appscode.com_stashpostgreses.v1.yaml spec.versions[0].schema.openAPIV3Schema.properties.spec > /tmp/stash-postgres-values.openapiv3_schema.yaml
-	@yq d /tmp/stash-postgres-values.openapiv3_schema.yaml description > charts/stash-postgres/values.openapiv3_schema.yaml
+gen-values-schema: $(BUILD_DIRS)
+	@for dir in charts/*/; do \
+		dir=$${dir%*/}; \
+		dir=$${dir##*/}; \
+		crd=$$(echo $$dir | tr -d '-'); \
+		yq r crds/installer.stash.appscode.com_$${crd}s.yaml spec.versions[0].schema.openAPIV3Schema.properties.spec > bin/values.openapiv3_schema.yaml; \
+		yq d bin/values.openapiv3_schema.yaml description > charts/$${dir}/values.openapiv3_schema.yaml; \
+		rm -rf bin/values.openapiv3_schema.yaml; \
+	done
 
 .PHONY: gen-chart-doc
 gen-chart-doc: gen-chart-doc-stash-postgres
@@ -276,10 +282,10 @@ gen-chart-doc-%:
 		chart-doc-gen -d ./charts/$*/doc.yaml -v ./charts/$*/values.yaml > ./charts/$*/README.md
 
 .PHONY: manifests
-manifests: gen-crds patch-crds label-crds gen-bindata gen-values-schema gen-chart-doc
+manifests: gen-crds gen-values-schema gen-chart-doc
 
 .PHONY: gen
-gen: clientset gen-crd-protos manifests openapi
+gen: clientset manifests
 
 CHART_REGISTRY     ?= appscode
 CHART_REGISTRY_URL ?= https://charts.appscode.com/stable/
