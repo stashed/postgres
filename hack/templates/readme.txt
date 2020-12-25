@@ -17,7 +17,7 @@ Install PostgreSQL {{ $v.Major }}.{{ $v.Minor }} backup or restore plugin for St
 ```console
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install stash-postgres-{{ .version }} appscode/stash-postgres --version={{ .version }}
+helm install stash-postgres-{{ .version }} appscode/stash-postgres --version={{ .version }} --namespace=kube-system
 ```
 
 To install catalog for all supported PostgreSQL versions, please visit [here](https://github.com/stashed/catalog).
@@ -27,7 +27,7 @@ To install catalog for all supported PostgreSQL versions, please visit [here](ht
 Uninstall PostgreSQL {{ $v.Major }}.{{ $v.Minor }} backup or restore plugin for Stash as below.
 
 ```console
-helm delete stash-postgres-{{ .version }}
+helm uninstall stash-postgres-{{ .version }} --namespace=kube-system
 ```
 
 ## Support
