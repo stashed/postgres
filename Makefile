@@ -266,6 +266,11 @@ gen-values-schema: $(BUILD_DIRS)
 		rm -rf bin/values.openapiv3_schema.yaml; \
 	done
 
+.PHONY: gen-readme
+gen-readme:
+	jq -n -c --arg v "$(CHART_VERSION)" '{"version":$$v}' > /tmp/data.json
+	render-gotpl --template=hack/templates/readme.txt --data=/tmp/data.json > README.md
+
 .PHONY: gen-chart-doc
 gen-chart-doc: gen-chart-doc-stash-postgres
 
