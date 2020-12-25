@@ -15,7 +15,7 @@ Install PostgreSQL 9.6 backup or restore plugin for Stash as below.
 ```console
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install stash-postgres-11.2-v2 appscode/stash-postgres --version=11.2-v2
+helm install stash-postgres-11.2-v1 appscode/stash-postgres --version=11.2-v1 --namespace=kube-system
 ```
 
 To install catalog for all supported PostgreSQL versions, please visit [here](https://github.com/stashed/catalog).
@@ -25,7 +25,7 @@ To install catalog for all supported PostgreSQL versions, please visit [here](ht
 Uninstall PostgreSQL 9.6 backup or restore plugin for Stash as below.
 
 ```console
-helm delete stash-postgres-11.2-v2
+helm uninstall stash-postgres-11.2-v1 --namespace=kube-system
 ```
 
 ## Support
