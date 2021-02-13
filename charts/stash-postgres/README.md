@@ -39,7 +39,6 @@ $ helm delete stash-postgres-10.14.0-v4 -n kube-system
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
-
 ## Configuration
 
 The following table lists the configurable parameters of the `stash-postgres` chart and their default values.
