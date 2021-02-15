@@ -6,7 +6,7 @@ require (
 	github.com/codeskyblue/go-sh v0.0.0-20200712050446-30169cf553fe
 	github.com/google/gofuzz v1.1.0
 	github.com/spf13/cobra v1.1.1
-	go.bytebuilders.dev/license-verifier/kubernetes v0.6.1
+	go.bytebuilders.dev/license-verifier/kubernetes v0.7.0
 	gomodules.xyz/x v0.0.0-20201105065653-91c568df6331
 	k8s.io/api v0.18.9
 	k8s.io/apimachinery v0.18.9
