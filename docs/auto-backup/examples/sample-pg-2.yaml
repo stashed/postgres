@@ -1,10 +1,10 @@
 apiVersion: kubedb.com/v1alpha2
 kind: Postgres
 metadata:
-  name: sample-postgres
+  name: sample-postgres-2
   namespace: demo
 spec:
-  version: "11.2-v1"
+  version: "10.6-v2"
   storageType: Durable
   storage:
     storageClassName: "standard"
