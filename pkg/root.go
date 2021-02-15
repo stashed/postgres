@@ -29,7 +29,7 @@ import (
 	"kmodules.xyz/client-go/tools/cli"
 )
 
-var SupportedProducts = []string{"stash-enterprise"}
+var SupportedProducts = []string{"stash-enterprise", "kubedb-ext-stash"}
 
 var licenseApiService string
 
