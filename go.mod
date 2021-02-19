@@ -11,11 +11,11 @@ require (
 	k8s.io/api v0.18.9
 	k8s.io/apimachinery v0.18.9
 	k8s.io/client-go v0.18.9
-	kmodules.xyz/client-go v0.0.0-20210213000708-f480974ce46d
-	kmodules.xyz/custom-resources v0.0.0-20201124062543-bd8d35c21b0c
-	kmodules.xyz/offshoot-api v0.0.0-20201105074700-8675f5f686f2
+	kmodules.xyz/client-go v0.0.0-20210218100652-8f345ddfe801
+	kmodules.xyz/custom-resources v0.0.0-20210218144958-579bf8307d65
+	kmodules.xyz/offshoot-api v0.0.0-20210218144050-e1d794cb382a
 	kmodules.xyz/schema-checker v0.1.0
-	stash.appscode.dev/apimachinery v0.11.8
+	stash.appscode.dev/apimachinery v0.11.10-0.20210219134546-33840ed82608
 )
 
 replace bitbucket.org/ww/goautoneg => gomodules.xyz/goautoneg v0.0.0-20120707110453-a547fc61f48d
