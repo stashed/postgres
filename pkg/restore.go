@@ -176,7 +176,7 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	// set env for psql
 	resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
 	// setup pipe command
-	opt.dumpOptions.StdoutPipeCommand = restic.Command{
+	restoreCommand := restic.Command{
 		Name: PgRestoreCMD,
 		Args: []interface{}{
 			"-U", must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser)),
@@ -185,11 +185,24 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	}
 	// if port is specified, append port in the arguments
 	if appBinding.Spec.ClientConfig.Service.Port != 0 {
-		opt.dumpOptions.StdoutPipeCommand.Args = append(opt.dumpOptions.StdoutPipeCommand.Args, fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port))
+		restoreCommand.Args = append(restoreCommand.Args, fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port))
 	}
 	for _, arg := range strings.Fields(opt.pgArgs) {
-		opt.dumpOptions.StdoutPipeCommand.Args = append(opt.dumpOptions.StdoutPipeCommand.Args, arg)
+		restoreCommand.Args = append(restoreCommand.Args, arg)
 	}
+
+	// The backed up sql file contains command to alter the password of "postgres" user of current database with backed up database's
+	// password. The auth secret referred in the AppBinding contains the credential of the new database. When the restore process
+	// alter the password of current database with backed up one, the subsequent connections fail and overall database restore also fail.
+	// So, we are going to use "sed" to remove the password altering line from the sql file.
+	passwordOverwriteRemover := restic.Command{
+		Name: SedCMD,
+		Args: []interface{}{sedArgs},
+	}
+
+	// The backup process should follow the following pipeline: restic restore | sed <args> | psql -f dumpfile.sql .
+	// Add the commands to stdout pipe. The restic command will be automatically added at the beginning of this pipe.
+	opt.dumpOptions.StdoutPipeCommands = append(opt.dumpOptions.StdoutPipeCommands, passwordOverwriteRemover, restoreCommand)
 
 	// wait for DB ready
 	err = waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
