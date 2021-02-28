@@ -42,6 +42,8 @@ const (
 	envPostgresUser = "POSTGRES_USER"
 	// Deprecated
 	envPostgresPassword = "POSTGRES_PASSWORD"
+	SedCMD              = "sed"
+	sedArgs             = "/ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION BYPASSRLS PASSWORD/d"
 )
 
 type postgresOptions struct {

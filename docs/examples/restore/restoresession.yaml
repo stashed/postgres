@@ -4,7 +4,7 @@ metadata:
   name: sample-postgres-restore
   namespace: demo
   labels:
-    kubedb.com/kind: Postgres # this label is mandatory if you are using KubeDB to deploy the database.
+    app.kubernetes.io/name: postgreses.kubedb.com # this label is mandatory if you are using KubeDB to deploy the database.
 spec:
   task:
     name: postgres-restore-12.4.0-v4
