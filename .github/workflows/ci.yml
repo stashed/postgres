@@ -75,13 +75,14 @@ jobs:
           kubectl wait --for=condition=Ready nodes --all --timeout=5m
           kubectl get nodes
           echo
-          echo "create docker-registry secret"
-          kubectl create secret docker-registry ${REGISTRY_SECRET} --namespace=kube-system --docker-server=https://index.docker.io/v1/ --docker-username=${USERNAME} --docker-password=${DOCKER_TOKEN}
-
-      - name: Install CRDs
-        run: |
-          kubectl apply -f https://github.com/stashed/apimachinery/raw/master/crds/stash.appscode.com_functions.yaml
-          kubectl apply -f https://github.com/stashed/apimachinery/raw/master/crds/stash.appscode.com_tasks.yaml
+          echo "install helm 3"
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+          echo "install stash-crds chart"
+          helm repo add appscode https://charts.appscode.com/stable/
+          helm repo update
+          helm install stash-crds appscode/stash-crds
+          helm install kubedb-crds appscode/kubedb-crds
+          helm install kmodules-crds appscode/kmodules-crds
           kubectl wait --for=condition=NamesAccepted crds --all --timeout=5m
 
       - name: Test charts
