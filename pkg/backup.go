@@ -213,8 +213,7 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 
 	// set env for pg_dump/pg_dumpall
 	resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
-	// setup pipe command
-	opt.backupOptions.StdinPipeCommand = restic.Command{
+	dumpCommand := restic.Command{
 		Name: pgBackupCMD,
 		Args: []interface{}{
 			"-U", must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser)),
@@ -223,11 +222,13 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 	}
 	// if port is specified, append port in the arguments
 	if appBinding.Spec.ClientConfig.Service.Port != 0 {
-		opt.backupOptions.StdinPipeCommand.Args = append(opt.backupOptions.StdinPipeCommand.Args, fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port))
+		dumpCommand.Args = append(dumpCommand.Args, fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port))
 	}
 	for _, arg := range strings.Fields(opt.pgArgs) {
-		opt.backupOptions.StdinPipeCommand.Args = append(opt.backupOptions.StdinPipeCommand.Args, arg)
+		dumpCommand.Args = append(dumpCommand.Args, arg)
 	}
+	// add the dump command into  stdin pipe commands
+	opt.backupOptions.StdinPipeCommands = append(opt.backupOptions.StdinPipeCommands, dumpCommand)
 
 	// wait for DB ready
 	err = waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
