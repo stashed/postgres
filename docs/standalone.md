@@ -56,7 +56,7 @@ Let's deploy a sample PostgreSQL database and insert some data into it.
 Below is the YAML of a sample Postgres crd that we are going to create for this tutorial:
 
 ```yaml
-apiVersion: kubedb.com/v1alpha1
+apiVersion: kubedb.com/v1alpha2
 kind: Postgres
 metadata:
   name: sample-postgres
@@ -132,10 +132,7 @@ metadata:
     app.kubernetes.io/component: database
     app.kubernetes.io/instance: sample-postgres
     app.kubernetes.io/managed-by: kubedb.com
-    app.kubernetes.io/name: postgres
-    app.kubernetes.io/version: 9.6.19
-    kubedb.com/kind: Postgres
-    kubedb.com/name: sample-postgres
+    app.kubernetes.io/name: postgreses.kubedb.com
   name: sample-postgres
   namespace: demo
 spec:
@@ -416,7 +413,7 @@ Now, we have to deploy the restored database similarly as we have deployed the o
 Below is the YAML for `Postgres` crd we are going deploy to initialize from backup,
 
 ```yaml
-apiVersion: kubedb.com/v1alpha1
+apiVersion: kubedb.com/v1alpha2
 kind: Postgres
 metadata:
   name: restored-postgres
@@ -424,8 +421,8 @@ metadata:
 spec:
   version: "9.6.19"
   storageType: Durable
-  databaseSecret:
-    secretName: sample-postgres-auth # use same secret as original the database
+  authSecret:
+    name: sample-postgres-auth # use same secret as original the database
   storage:
     storageClassName: "standard"
     accessModes:
@@ -434,15 +431,14 @@ spec:
       requests:
         storage: 1Gi
   init:
-    stashRestoreSession:
-      name: sample-postgres-restore
+    waitForInitialRestore: true
   terminationPolicy: Delete
 ```
 
 Here,
 
 - `spec.databaseSecret.secretName` specifies the name of the database secret of the original database. You must use the same secret in the restored database. Otherwise, the restore process will fail.
-- `spec.init.stashRestoreSession.name` specifies the `RestoreSession` crd name that we are going to use to restore this database.
+- `spec.init.waitForInitialRestore` tells KubeDB to wait for the first restore to complete before marking the database as ready.
 
 Let's create the above database,
 
@@ -482,7 +478,7 @@ metadata:
   name: sample-postgres-restore
   namespace: demo
   labels:
-    kubedb.com/kind: Postgres # this label is mandatory if you are using KubeDB to deploy the database.
+    app.kubernetes.io/name: postgreses.kubedb.com # this label is mandatory if you are using KubeDB to deploy the database.
 spec:
   task:
     name: postgres-restore-{{< param "info.subproject_version" >}}
@@ -499,13 +495,13 @@ spec:
 
 Here,
 
-- `metadata.labels` specifies a `kubedb.com/kind: Postgres` label that is used by KubeDB to watch this `RestoreSession`.
+- `metadata.labels` specifies a `app.kubernetes.io/name: postgreses.kubedb.com` label that is used by KubeDB to watch this `RestoreSession`.
 - `spec.task.name` specifies the name of the `Task` crd that specifies the Functions and their execution order to restore a PostgreSQL database.
 - `spec.repository.name` specifies the `Repository` crd that holds the backend information where our backed up data has been stored.
 - `spec.target.ref` refers to the AppBinding crd for the `restored-postgres` database where the backed up data will be restored.
 - `spec.rules` specifies that we are restoring from the latest backup snapshot of the original database.
 
-> **Warning:** Label `kubedb.com/kind: Postgres` is mandatory if you are using KubeDB to deploy the database. Otherwise, the database will be stuck in `Initializing` state.
+> **Warning:** Label `app.kubernetes.io/name: postgreses.kubedb.com` is mandatory if you are using KubeDB to deploy the database. Otherwise, the database will be stuck in `Initializing` state.
 
 Let's create the `RestoreSession` crd we have shown above,
 
