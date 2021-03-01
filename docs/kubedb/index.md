@@ -3,7 +3,7 @@ title: PostgreSQL | Stash
 description: Backup and restore standalone PostgreSQL database using Stash
 menu:
   docs_{{ .version }}:
-    identifier: standalone-postgres-{{ .subproject_version }}
+    identifier: standalone-postgres-{{ .subproject_version }}-kubedb
     name: Standalone PostgreSQL
     parent: stash-postgres-guides-{{ .subproject_version }}
     weight: 10
@@ -23,7 +23,7 @@ Stash 0.9.0+ supports backup and restoration of PostgreSQL databases. This guide
 - At first, you need to have a Kubernetes cluster, and the `kubectl` command-line tool must be configured to communicate with your cluster. If you do not already have a cluster, you can create one by using Minikube.
 - Install Stash in your cluster following the steps [here](/docs/setup/README.md).
 - Install PostgreSQL addon for Stash following the steps [here](/docs/addons/postgres/setup/install.md)
-- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/latest/setup/install/). This step is optional. You can deploy your database using any method you want. We are using KubeDB because KubeDB simplifies many of the difficult or tedious management tasks of running a production grade databases on private and public clouds.
+- Install [KubeDB](https://kubedb.com) in your cluster following the steps [here](https://kubedb.com/docs/latest/setup/install/). This step is optional. You can deploy your database using any method you want. We are using KubeDB because KubeDB simplifies many of the difficult or tedious management tasks of running production-grade databases on private and public clouds.
 - If you are not familiar with how Stash backup and restore PostgreSQL databases, please check the following guide [here](/docs/addons/postgres/overview.md):
 
 You have to be familiar with following custom resources:
@@ -34,9 +34,9 @@ You have to be familiar with following custom resources:
 - [BackupConfiguration](/docs/concepts/crds/backupconfiguration.md)
 - [RestoreSession](/docs/concepts/crds/restoresession.md)
 
-To keep things isolated, we are going to use a separate namespace called `demo` throughout this tutorial. Create `demo` namespace if you haven't created yet.
+To keep things isolated, we are going to use a separate namespace called `demo` throughout this tutorial. Create the `demo` namespace if you haven't created it already.
 
-```console
+```bash
 $ kubectl create ns demo
 namespace/demo created
 ```
@@ -45,9 +45,9 @@ namespace/demo created
 
 ## Backup PostgreSQL
 
-This section will demonstrate how to backup PostgreSQL database. Here, we are going to deploy a PostgreSQL database using KubeDB. Then, we are going to backup this database into a GCS bucket. Finally, we are going to restore the backed up data into another PostgreSQL database.
+This section will demonstrate how to backup a PostgreSQL database. Here, we are going to deploy a PostgreSQL database using KubeDB. Then, we are going to backup this database into a GCS bucket. Finally, we are going to restore the backed-up data into another PostgreSQL database.
 
-### Deploy Sample PostgresQL Database
+### Deploy Sample PostgreSQL Database
 
 Let's deploy a sample PostgreSQL database and insert some data into it.
 
@@ -62,12 +62,12 @@ metadata:
   name: sample-postgres
   namespace: demo
 spec:
-  version: "13.1"
+  version: "11.2-v1"
   storageType: Durable
   storage:
     storageClassName: "standard"
     accessModes:
-      - ReadWriteOnce
+    - ReadWriteOnce
     resources:
       requests:
         storage: 1Gi
@@ -76,8 +76,8 @@ spec:
 
 Create the above `Postgres` crd,
 
-```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/backup/postgres.yaml
+```bash
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/kubedb/examples/backup/postgres.yaml
 postgres.kubedb.com/sample-postgres created
 ```
 
@@ -85,49 +85,48 @@ KubeDB will deploy a PostgreSQL database according to the above specification. I
 
 Let's check if the database is ready to use,
 
-```console
-$ kubectl get pg -n demo sample-postgres
-NAME              VERSION   STATUS    AGE
-sample-postgres   13.1      Running   3m11s
+```bash
+❯ kubectl get pg -n demo sample-postgres
+NAME              VERSION   STATUS   AGE
+sample-postgres   11.2-v1   Ready    50s
 ```
 
-The database is `Running`. Verify that KubeDB has created a Secret and a Service for this database using the following commands,
+The database is `Ready`. Verify that KubeDB has created a Secret and a Service for this database using the following commands,
 
-```console
-$ kubectl get secret -n demo -l=kubedb.com/name=sample-postgres
-NAME                   TYPE     DATA   AGE
-sample-postgres-auth   Opaque   2      27h
+```bash
+❯ kubectl get secret -n demo -l=app.kubernetes.io/instance=sample-postgres
+NAME                   TYPE                       DATA   AGE
+sample-postgres-auth   kubernetes.io/basic-auth   2      2m42s
 
-$ kubectl get service -n demo -l=kubedb.com/name=sample-postgres
-NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-sample-postgres            ClusterIP   10.106.147.155   <none>        5432/TCP   22h
-sample-postgres-replicas   ClusterIP   10.96.231.122    <none>        5432/TCP   22h
+
+❯ kubectl get service -n demo -l=app.kubernetes.io/instance=sample-postgres
+NAME                   TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)    AGE
+sample-postgres        ClusterIP   10.96.242.0   <none>        5432/TCP   3m9s
+sample-postgres-pods   ClusterIP   None          <none>        5432/TCP   3m9s
 ```
 
-Here, we have to use service `sample-postgres` and secret `sample-postgres-auth` to connect with the database. KubeDB creates an [AppBinding](/docs/concepts/crds/appbinding.md) crd that holds the necessary information to connect with the database.
+Here, we have to use the service `sample-postgres` and secret `sample-postgres-auth` to connect with the database. KubeDB creates an [AppBinding](/docs/concepts/crds/appbinding.md) crd that holds the necessary information to connect with the database.
 
 **Verify AppBinding:**
 
 Verify that the `AppBinding` has been created successfully using the following command,
 
-```console
-$ kubectl get appbindings -n demo
-NAME              AGE
-sample-postgres   20m
+```bash
+❯ kubectl get appbindings -n demo
+NAME              TYPE                  VERSION   AGE
+sample-postgres   kubedb.com/postgres   11.2      3m54s
 ```
 
 Let's check the YAML of the above `AppBinding`,
 
-```console
-$ kubectl get appbindings -n demo sample-postgres -o yaml
+```bash
+❯ kubectl get appbindings -n demo sample-postgres -o yaml
 ```
 
 ```yaml
 apiVersion: appcatalog.appscode.com/v1alpha1
 kind: AppBinding
 metadata:
-  creationTimestamp: "2019-09-25T11:32:33Z"
-  generation: 1
   labels:
     app.kubernetes.io/component: database
     app.kubernetes.io/instance: sample-postgres
@@ -135,6 +134,7 @@ metadata:
     app.kubernetes.io/name: postgreses.kubedb.com
   name: sample-postgres
   namespace: demo
+  ...
 spec:
   clientConfig:
     service:
@@ -157,9 +157,9 @@ Stash uses the `AppBinding` crd to connect with the target database. It requires
 
 **Creating AppBinding Manually:**
 
-If you deploy PostgreSQL database without KubeDB, you have to create the AppBinding crd manually in the same namespace as the service and secret of the database.
+If you deploy the PostgreSQL database without KubeDB, you have to create the AppBinding crd manually in the same namespace as the service and secret of the database.
 
-The following YAML shows a minimal AppBinding specification that you have to create if you deploy PostgreSQL database without KubeDB.
+The following YAML shows a minimal AppBinding specification that you have to create if you deploy the PostgreSQL database without KubeDB.
 
 ```yaml
 apiVersion: appcatalog.appscode.com/v1alpha1
@@ -181,20 +181,49 @@ spec:
   type: postgres
 ```
 
+Stash expects your database secret to have `username` and `password` keys. If your database secret has different keys, you can map them to the Stash recommended keys using `secretTransformation` section of the AppBinding. An example of such transformation is shown below,
+
+```yaml
+apiVersion: appcatalog.appscode.com/v1alpha1
+kind: AppBinding
+metadata:
+  name: my-custom-appbinding
+  namespace: my-database-namespace
+spec:
+  clientConfig:
+    service:
+      name: my-database-service
+      port: 5432
+      scheme: postgresql
+  secret:
+    name: my-database-credentials-secret
+  secretTransforms:
+  - renameKey:
+      from: POSTGRES_USER
+      to: username
+  - renameKey:
+      from: POSTGRES_PASSWORD
+      to: password
+  type: postgres
+```
+
+>The `secretTransforms` does not modify your original database Secret. Stash just uses those transformations to obtain the desired keys from the original Secret.
+
 **Insert Sample Data:**
 
 Now, we are going to exec into the database pod and create some sample data. At first, find out the database pod using the following command,
 
-```console
-$ kubectl get pods -n demo --selector="kubedb.com/name=sample-postgres"
+```bash
+❯ kubectl get pods -n demo --selector="app.kubernetes.io/instance=sample-postgres"
 NAME                READY   STATUS    RESTARTS   AGE
-sample-postgres-0   1/1     Running   0          8m58s
+sample-postgres-0   1/1     Running   0          18m
 ```
 
 Now, let's exec into the pod and create a table,
 
-```console
-$ kubectl exec -it -n demo sample-postgres-0 sh
+```bash
+❯ kubectl exec -it -n demo sample-postgres-0 -- sh
+
 # login as "postgres" superuser.
 / # psql -U postgres
 psql (13.1)
@@ -212,24 +241,41 @@ postgres=# \l
            |          |          |            |            | postgres=CTc/postgres
 (3 rows)
 
-# connect to "postgres" database
-postgres=# \c postgres
-You are now connected to database "postgres" as user "postgres".
+# create a database named "demo"
+postgres=# create database demo;
+CREATE DATABASE
 
-# create a table
-postgres=# CREATE TABLE COMPANY( NAME TEXT NOT NULL, EMPLOYEE INT NOT NULL);
+# verify that the "demo" database has been created
+postgres=# \l
+                                 List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges   
+-----------+----------+----------+------------+------------+-----------------------
+ demo      | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+(4 rows)
+
+# connect to the "demo" database
+postgres=# \c demo
+You are now connected to database "demo" as user "postgres".
+
+# create a sample table
+demo=# CREATE TABLE COMPANY( NAME TEXT NOT NULL, EMPLOYEE INT NOT NULL);
 CREATE TABLE
 
-# list tables
-postgres=# \d
+# verify that the table has been created
+demo=# \d
           List of relations
- Schema |  Name   | Type  |  Owner
+ Schema |  Name   | Type  |  Owner   
 --------+---------+-------+----------
  public | company | table | postgres
 (1 row)
 
 # quit from the database
-postgres=# \q
+demo=# \q
 
 # exit from the pod
 / # exit
@@ -239,13 +285,13 @@ Now, we are ready to backup this sample database.
 
 ### Prepare Backend
 
-We are going to store our backed up data into a GCS bucket. At first, we need to create a secret with GCS credentials then we need to create a `Repository` crd. If you want to use a different backend, please read the respective backend configuration doc from [here](/docs/guides/latest/backends/overview.md).
+We are going to store our backed-up data into a GCS bucket. At first, we need to create a secret with GCS credentials then we need to create a `Repository` crd. If you want to use a different backend, please read the respective backend configuration doc from [here](/docs/guides/latest/backends/overview.md).
 
 **Create Storage Secret:**
 
 Let's create a secret called `gcs-secret` with access credentials to our desired GCS bucket,
 
-```console
+```bash
 $ echo -n 'changeit' > RESTIC_PASSWORD
 $ echo -n '<your-project-id>' > GOOGLE_PROJECT_ID
 $ cat downloaded-sa-json.key > GOOGLE_SERVICE_ACCOUNT_JSON_KEY
@@ -269,15 +315,15 @@ metadata:
 spec:
   backend:
     gcs:
-      bucket: appscode-qa
-      prefix: /demo/postgres/sample-postgres
+      bucket: stash-testing
+      prefix: demo/postgres/sample-postgres
     storageSecretName: gcs-secret
 ```
 
 Let's create the `Repository` we have shown above,
 
-```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/backup/repository.yaml
+```bash
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/kubedb/examples/backup/repository.yaml
 repository.stash.appscode.com/gcs-repo created
 ```
 
@@ -285,7 +331,7 @@ Now, we are ready to backup our database to our desired backend.
 
 ### Backup
 
-We have to create a `BackupConfiguration` targeting respective AppBinding crd of our desired database. Stash will create a CronJob to periodically backup the database.
+We have to create a `BackupConfiguration` targeting the respective AppBinding object of our desired database. Stash will create a CronJob to periodically backup the database.
 
 **Create BackupConfiguration:**
 
@@ -322,10 +368,10 @@ Here,
 - `spec.target.ref` refers to the `AppBinding` crd that was created for `sample-postgres` database.
 - `spec.retentionPolicy`  specifies the policy to follow for cleaning old snapshots.
 
-Let's create the `BackupConfiguration` crd we have shown above,
+Let's create the `BackupConfiguration` object we have shown above,
 
-```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/backup/backupconfiguration.yaml
+```bash
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/kubedb/examples/backup/backupconfiguration.yaml
 backupconfiguration.stash.appscode.com/sample-postgres-backup created
 ```
 
@@ -335,10 +381,10 @@ If everything goes well, Stash will create a CronJob with the schedule specified
 
 Verify that the CronJob has been created using the following command,
 
-```console
-$ kubectl get cronjob -n demo
-NAME                     SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-sample-postgres-backup   */5 * * * *   False     0        <none>          61s
+```bash
+❯ kubectl get cronjob -n demo
+NAME                                  SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+stash-backup-sample-postgres-backup   */5 * * * *   False     0        <none>          30s
 ```
 
 **Wait for BackupSession:**
@@ -347,37 +393,33 @@ The `sample-postgres-backup` CronJob will trigger a backup on each scheduled slo
 
 Wait for a schedule to appear. Run the following command to watch `BackupSession` crd,
 
-```console
-$ watch -n 1 kubectl get backupsession -n demo -l=stash.appscode.com/backup-configuration=sample-postgres-backup
-
-Every 1.0s: kubectl get backupsession -n demo  -l=stash.appscode.com/backup-configuration=sample-postgres-backup           workstation: Thu Aug  1 18:29:19 2019
-
+```bash
+❯ kubectl get backupsession -n demo -w
 NAME                                INVOKER-TYPE          INVOKER-NAME             PHASE       AGE
-sample-postgres-backup-1560350521   BackupConfiguration   sample-postgres-backup   Succeeded   5m45s
+sample-postgres-backup-1613390711   BackupConfiguration   sample-postgres-backup   Running     15s
+sample-postgres-backup-1613390711   BackupConfiguration   sample-postgres-backup   Succeeded   78s
 ```
 
 We can see above that the backup session has succeeded. Now, we are going to verify that the backed up data has been stored in the backend.
 
-> Note: Backup CronJob creates `BackupSession` crds with the following label `stash.appscode.com/backup-configuration=<BackupConfiguration crd name>`. We can use this label to watch only the `BackupSession` of our desired `BackupConfiguration`.
-
 **Verify Backup:**
 
-Once a backup is complete, Stash will update the respective `Repository` crd to reflect the backup completion. Check that the repository `gcs-repo` has been updated by the following command,
+Once a backup is complete, Stash will update the respective `Repository` object to reflect the backup completion. Check that the repository `gcs-repo` has been updated by the following command,
 
-```console
-$ kubectl get repository -n demo gcs-repo
+```bash
+❯ kubectl get repository -n demo gcs-repo
 NAME       INTEGRITY   SIZE        SNAPSHOT-COUNT   LAST-SUCCESSFUL-BACKUP   AGE
-gcs-repo   true        3.441 KiB   1                31s                      17m
+gcs-repo   true        1.770 KiB   1                2m                       4m16s
 ```
 
 Now, if we navigate to the GCS bucket, we are going to see backed up data has been stored in `demo/postgres/sample-postgres` directory as specified by `spec.backend.gcs.prefix` field of Repository crd.
 
 <figure align="center">
- <img alt="Backup data in GCS Bucket" src="../images/sample-postgres-backup.png">
+ <img alt="Backup data in GCS Bucket" src="/docs/kubedb/images/sample-postgres-backup.png">
   <figcaption align="center">Fig: Backup data in GCS Bucket</figcaption>
 </figure>
 
-> Note: Stash keeps all the backed up data encrypted. So, data in the backend will not make any sense until they are decrypted.
+> Note: Stash keeps all the backed-up data encrypted. So, data in the backend will not make any sense until they are decrypted.
 
 ## Restore PostgreSQL
 
@@ -389,27 +431,24 @@ At first, let's stop taking any further backup of the old database so that no ba
 
 Let's pause the `sample-postgres-backup` BackupConfiguration,
 
-```console
-$ kubectl patch backupconfiguration -n demo sample-postgres-backup --type="merge" --patch='{"spec": {"paused": true}}'
+```bash
+❯ kubectl patch backupconfiguration -n demo sample-postgres-backup --type="merge" --patch='{"spec": {"paused": true}}'
 backupconfiguration.stash.appscode.com/sample-postgres-backup patched
 ```
 
 Now, wait for a moment. Stash will pause the BackupConfiguration. Verify that the BackupConfiguration  has been paused,
 
-```console
-$ kubectl get backupconfiguration -n demo sample-postgres-backup
+```bash
+❯ kubectl get backupconfiguration -n demo sample-postgres-backup
 NAME                    TASK                        SCHEDULE      PAUSED   AGE
-sample-postgres-backup  postgres-backup-{{< param "info.subproject_version" >}}      */5 * * * *   true     26m
+sample-postgres-backup  postgres-backup-{{< param "info.subproject_version" >}}      */5 * * * *   true     5m55s
 ```
 
 Notice the `PAUSED` column. Value `true` for this field means that the BackupConfiguration has been paused.
 
 **Deploy Restored Database:**
 
-Now, we have to deploy the restored database similarly as we have deployed the original `sample-psotgres` database. However, this time there will be the following differences:
-
-- We have to use the same secret that was used in the original database. We are going to specify it using `spec.databaseSecret` field.
-- We have to specify `spec.init` section to tell KubeDB that we are going to use Stash to initialize this database from backup. KubeDB will keep the database phase to `Initializing` until Stash finishes its initialization.
+Now, we are going to deploy the restored database similarly as we have deployed the original `sample-psotgres` database.
 
 Below is the YAML for `Postgres` crd we are going deploy to initialize from backup,
 
@@ -420,55 +459,65 @@ metadata:
   name: restored-postgres
   namespace: demo
 spec:
-  version: "13.1"
+  version: "11.2-v1"
   storageType: Durable
-  authSecret:
-    name: sample-postgres-auth # use same secret as original the database
   storage:
     storageClassName: "standard"
     accessModes:
-      - ReadWriteOnce
+    - ReadWriteOnce
     resources:
       requests:
         storage: 1Gi
   init:
     waitForInitialRestore: true
   terminationPolicy: Delete
+
 ```
 
-Here,
-
-- `spec.databaseSecret.secretName` specifies the name of the database secret of the original database. You must use the same secret in the restored database. Otherwise, the restore process will fail.
-- `spec.init.waitForInitialRestore` tells KubeDB to wait for the first restore to complete before marking the database as ready.
+Notice the `init` section. Here, we have specified `waitForInitialRestore: true` which tells KubeDB to wait for the first restore to complete before marking this database as ready to use.
 
 Let's create the above database,
 
-```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/restore/restored-postgres.yaml
+```bash
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/kubedb/examples/restore/restored-postgres.yaml
 postgres.kubedb.com/restored-postgres created
 ```
 
-If you check the database status, you will see it is stuck in `Initializing` state.
+This time, the database will get stuck in the `Provisioning` state because we haven't restored the data yet.
 
-```console
-$ kubectl get pg -n demo restored-postgres
+```bash
+❯ kubectl get postgres -n demo restored-postgres
 NAME                VERSION   STATUS         AGE
-restored-postgres   13.1      Initializing   3m21s
+restored-postgres   11.2-v1   Provisioning   6m7s
 ```
+
+You can check the log from the database pod to be sure whether the database is ready to accept connections or not.
+
+```bash
+❯ kubectl logs -n demo restored-postgres-0
+....
+2021-02-15 12:36:31.087 UTC [19] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2021-02-15 12:36:31.087 UTC [19] LOG:  listening on IPv6 address "::", port 5432
+2021-02-15 12:36:31.094 UTC [19] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2021-02-15 12:36:31.121 UTC [50] LOG:  database system was shut down at 2021-02-15 12:36:31 UTC
+2021-02-15 12:36:31.126 UTC [19] LOG:  database system is ready to accept connections
+```
+
+As you can see from the above log that the database is ready to accept connections. Now, we can start restoring this database.
 
 **Create RestoreSession:**
 
-Now, we need to create a `RestoreSession` crd pointing to the AppBinding for this restored database.
+Now, we need to create a `RestoreSession` object pointing to the AppBinding for this restored database.
 
 Check AppBinding has been created for the `restored-postgres` database using the following command,
 
-```console
-$ kubectl get appbindings -n demo restored-postgres
-NAME                AGE
-restored-postgres   9m59s
+```bash
+❯ kubectl get appbindings -n demo restored-postgres
+NAME                TYPE                  VERSION   AGE
+restored-postgres   kubedb.com/postgres   11.2-v1   6m45s
 ```
 
-> If you are not using KubeDB to deploy database, create the AppBinding manually.
+> If you are not using KubeDB to deploy the database, then create the AppBinding manually.
 
 Below is the YAML for the `RestoreSession` crd that we are going to create to restore backed up data into `restored-postgres` database.
 
@@ -479,7 +528,7 @@ metadata:
   name: sample-postgres-restore
   namespace: demo
   labels:
-    app.kubernetes.io/name: postgreses.kubedb.com # this label is mandatory if you are using KubeDB to deploy the database.
+    app.kubernetes.io/name: postgreses.kubedb.com # this label is mandatory if you are using KubeDB to deploy the database.Otherwise your database will stuck in "Provisioning" state
 spec:
   task:
     name: postgres-restore-{{< param "info.subproject_version" >}}
@@ -491,7 +540,7 @@ spec:
       kind: AppBinding
       name: restored-postgres
   rules:
-    - snapshots: [latest]
+  - snapshots: [latest]
 ```
 
 Here,
@@ -502,98 +551,92 @@ Here,
 - `spec.target.ref` refers to the AppBinding crd for the `restored-postgres` database where the backed up data will be restored.
 - `spec.rules` specifies that we are restoring from the latest backup snapshot of the original database.
 
-> **Warning:** Label `app.kubernetes.io/name: postgreses.kubedb.com` is mandatory if you are using KubeDB to deploy the database. Otherwise, the database will be stuck in `Initializing` state.
+> **Warning:** Label `app.kubernetes.io/name: postgreses.kubedb.com` is mandatory if you are using KubeDB to deploy the database. Otherwise, the database will be stuck in  the`Provisioning` state.
 
 Let's create the `RestoreSession` crd we have shown above,
 
-```console
-$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/examples/restore/restoresession.yaml
+```bash
+$ kubectl apply -f https://github.com/stashed/postgres/raw/{{< param "info.subproject_version" >}}/docs/kubedb/examples/restore/restoresession.yaml
 restoresession.stash.appscode.com/sample-postgres-restore created
 ```
 
-Once, you have created the `RestoreSession` crd, Stash will create a restore job. We can watch the `RestoreSession` phase to check if the restore process has succeeded or not.
+Once, you have created the `RestoreSession` object, Stash will create a job to restore the database. We can watch the `RestoreSession` phase to check whether the restore process has succeeded or not.
 
 Run the following command to watch `RestoreSession` phase,
 
-```console
-$ watch -n 1 kubectl get restoresession -n demo sample-postgres-restore
-
-Every 1.0s: kubectl get restoresession -n demo sample-postgres-restore           workstation: Thu Aug  1 18:29:19 2019
-NAME                      REPOSITORY-NAME   PHASE       AGE
-sample-postgres-restore   gcs-repo          Succeeded   2m4s
+```bash
+❯ kubectl get restoresession -n demo -w
+NAME                      REPOSITORY   PHASE     AGE
+sample-postgres-restore   gcs-repo     Running   4s
+sample-postgres-restore   gcs-repo     Running   15s
+sample-postgres-restore   gcs-repo     Succeeded   15s
+sample-postgres-restore   gcs-repo     Succeeded   15s
 ```
 
 So, we can see from the output of the above command that the restore process succeeded.
 
 **Verify Restored Data:**
 
-In this section, we are going to verify that the desired data has been restored successfully. We are going to connect to the database and check whether the table we had created in the original database is restored or not.
+In this section, we are going to verify that the desired data has been restored successfully. We are going to connect to the database and check whether the table we had created in the original database has been restored or not.
 
-At first, check if the database has gone into `Running` state by the following command,
+At first, check if the database has gone into `Ready` state using the following command,
 
-```console
-$ kubectl get pg -n demo restored-postgres
-NAME                VERSION   STATUS    AGE
-restored-postgres   13.1      Running   2m16s
+```bash
+❯ kubectl get pg -n demo restored-postgres
+NAME                VERSION   STATUS   AGE
+restored-postgres   11.2-v1   Ready    11m
 ```
 
-Now, find out the database pod by the following command,
+Now, exec into the database pod and verify restored data.
 
-```console
-$ kubectl get pods -n demo --selector="kubedb.com/name=restored-postgres"
-NAME                  READY   STATUS    RESTARTS   AGE
-restored-postgres-0   1/1     Running   0          3m15s
-```
-
-Now, exec into the database pod and list available tables,
-
-```console
-$ kubectl exec -it -n demo restored-postgres-0 sh
+```bash
+❯ kubectl exec -it -n demo restored-postgres-0 -- /bin/sh
 # login as "postgres" superuser.
 / # psql -U postgres
 psql (13.1)
 Type "help" for help.
 
-# list available databases
+# verify that the "demo" database has been restored
 postgres=# \l
                                  List of databases
-   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges   
 -----------+----------+----------+------------+------------+-----------------------
- postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+ demo      | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
  template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
            |          |          |            |            | postgres=CTc/postgres
  template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
            |          |          |            |            | postgres=CTc/postgres
-(3 rows)
+(4 rows)
 
-# connect to "postgres" database
-postgres=# \c postgres
-You are now connected to database "postgres" as user "postgres".
+# connect to the "demo" database
+postgres=# \c demo
+You are now connected to database "demo" as user "postgres".
 
-# check the table we had created in the original database has been restored here
-postgres=# \d
+# verify that the sample table has been restored
+demo=# \d
           List of relations
- Schema |  Name   | Type  |  Owner
+ Schema |  Name   | Type  |  Owner   
 --------+---------+-------+----------
  public | company | table | postgres
 (1 row)
 
-# quit from the database
-postgres=# \q
+# disconnect from the database
+demo=# \q
 
 # exit from the pod
 / # exit
 ```
 
-So, from the above output, we can see the table `company` that we had created in the original database `sample-postgres` is restored in the restored database `restored-postgres`.
+So, from the above output, we can see the `demo` database we had created in the original database `sample-postgres` has been restored in the `restored-postgres` database.
 
 ## Cleanup
 
 To cleanup the Kubernetes resources created by this tutorial, run:
 
-```console
-kubectl delete backupconfiguration -n demo sample-postgres-backup
-kubectl delete restoresession -n demo sample-postgres-restore
-kubectl delete pg -n demo restored-postgres
-kubectl delete pg -n demo sample-postgres
+```bash
+kubectl delete -n demo backupconfiguration sample-postgres-backup
+kubectl delete -n demo restoresession sample-postgres-restore
+kubectl delete -n demo postgres sample-postgres restored-postgres
+kubectl delete -n demo repository gcs-repo
 ```
