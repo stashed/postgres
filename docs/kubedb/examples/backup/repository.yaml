@@ -6,6 +6,6 @@ metadata:
 spec:
   backend:
     gcs:
-      bucket: appscode-qa
+      bucket: stash-testing
       prefix: demo/postgres/sample-postgres
     storageSecretName: gcs-secret
