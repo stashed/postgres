@@ -1,13 +1,11 @@
 apiVersion: kubedb.com/v1alpha2
 kind: Postgres
 metadata:
-  name: restored-postgres
+  name: sample-postgres
   namespace: demo
 spec:
-  version: "9.6-v4"
+  version: "11.2-v1"
   storageType: Durable
-  authSecret:
-    name: sample-postgres-auth # use same secret as original the database
   storage:
     storageClassName: "standard"
     accessModes:
@@ -15,6 +13,4 @@ spec:
     resources:
       requests:
         storage: 1Gi
-  init:
-    waitForInitialRestore: true
   terminationPolicy: Delete
