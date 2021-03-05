@@ -19,6 +19,7 @@ package pkg
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strings"
 
@@ -173,19 +174,61 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 		return nil, err
 	}
 
-	// set env for psql
-	resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
+	if appBinding.Spec.ClientConfig.Service.Port == 0 {
+		appBinding.Spec.ClientConfig.Service.Port = 5432
+	}
+
+	userName := ""
+	if _, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]; ok {
+		certByte, ok := appBindingSecret.Data[core.TLSCertKey]
+		if !ok {
+			return nil, fmt.Errorf("can't find client cert")
+		}
+		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey), certByte, 0600); err != nil {
+			return nil, err
+		}
+
+		resticWrapper.SetEnv(EnvPGSSLCERT, filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey))
+		keyByte, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]
+		if !ok {
+			return nil, fmt.Errorf("can't find client private key")
+		}
+
+		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey), keyByte, 0600); err != nil {
+			return nil, err
+		}
+		resticWrapper.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
+
+		//TODO: this one is hard coded here but need to change later
+		userName = DefaultPostgresUser
+	} else {
+		// set env for pg_dump/pg_dumpall
+		resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
+		userName = must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser))
+
+	}
+
+	if appBinding.Spec.ClientConfig.CABundle != nil {
+		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey), appBinding.Spec.ClientConfig.CABundle, 0600); err != nil {
+			return nil, err
+		}
+		resticWrapper.SetEnv(EnvPGSSLROOTCERT, filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey))
+
+	}
+	pgSSlmode, err := getSSLMODE(appBinding)
+	if err != nil {
+		return nil, err
+	}
+	resticWrapper.SetEnv(EnvPGSSLMODE, pgSSlmode)
+
 	// setup pipe command
 	restoreCommand := restic.Command{
 		Name: PgRestoreCMD,
 		Args: []interface{}{
-			"-U", must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser)),
-			"-h", appBinding.Spec.ClientConfig.Service.Name,
+			fmt.Sprintf("--host=%s", appBinding.Spec.ClientConfig.Service.Name),
+			fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port),
+			fmt.Sprintf("--username=%s", userName),
 		},
-	}
-	// if port is specified, append port in the arguments
-	if appBinding.Spec.ClientConfig.Service.Port != 0 {
-		restoreCommand.Args = append(restoreCommand.Args, fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port))
 	}
 	for _, arg := range strings.Fields(opt.pgArgs) {
 		restoreCommand.Args = append(restoreCommand.Args, arg)
@@ -205,11 +248,12 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	opt.dumpOptions.StdoutPipeCommands = append(opt.dumpOptions.StdoutPipeCommands, passwordOverwriteRemover, restoreCommand)
 
 	// wait for DB ready
-	err = waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
+	err = opt.waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
 	if err != nil {
 		return nil, err
 	}
 
 	// Run dump
+
 	return resticWrapper.Dump(opt.dumpOptions, targetRef)
 }
