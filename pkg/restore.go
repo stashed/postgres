@@ -28,11 +28,9 @@ import (
 	"github.com/spf13/cobra"
 	license "go.bytebuilders.dev/license-verifier/kubernetes"
 	"gomodules.xyz/x/flags"
-	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	meta_util "kmodules.xyz/client-go/meta"
 	appcatalog "kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
 	v1 "kmodules.xyz/offshoot-api/api/v1"
@@ -166,26 +164,23 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	if err != nil {
 		return nil, err
 	}
+	if appBinding.Spec.ClientConfig.Service.Port == 0 {
+		appBinding.Spec.ClientConfig.Service.Port = 5432
+	}
 
-	// init restic wrapper
-	resticWrapper, err := restic.NewResticWrapper(opt.setupOptions)
+	resticWrapper, userName, err := opt.GetResticWrapperWithPGConnectorVariables(appBinding, appBindingSecret)
 	if err != nil {
 		return nil, err
 	}
 
-	// set env for psql
-	resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
 	// setup pipe command
 	restoreCommand := restic.Command{
 		Name: PgRestoreCMD,
 		Args: []interface{}{
-			"-U", must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser)),
-			"-h", appBinding.Spec.ClientConfig.Service.Name,
+			fmt.Sprintf("--host=%s", appBinding.Spec.ClientConfig.Service.Name),
+			fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port),
+			fmt.Sprintf("--username=%s", userName),
 		},
-	}
-	// if port is specified, append port in the arguments
-	if appBinding.Spec.ClientConfig.Service.Port != 0 {
-		restoreCommand.Args = append(restoreCommand.Args, fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port))
 	}
 	for _, arg := range strings.Fields(opt.pgArgs) {
 		restoreCommand.Args = append(restoreCommand.Args, arg)
@@ -205,11 +200,12 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	opt.dumpOptions.StdoutPipeCommands = append(opt.dumpOptions.StdoutPipeCommands, passwordOverwriteRemover, restoreCommand)
 
 	// wait for DB ready
-	err = waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
+	err = opt.waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
 	if err != nil {
 		return nil, err
 	}
 
 	// Run dump
+
 	return resticWrapper.Dump(opt.dumpOptions, targetRef)
 }
