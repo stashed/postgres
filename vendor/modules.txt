@@ -155,7 +155,7 @@ golang.org/x/oauth2/google
 golang.org/x/oauth2/internal
 golang.org/x/oauth2/jws
 golang.org/x/oauth2/jwt
-# golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f
+# golang.org/x/sys v0.0.0-20210112080510-489259a85091
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
@@ -440,7 +440,7 @@ k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/pointer
 k8s.io/utils/trace
-# kmodules.xyz/client-go v0.0.0-20210218100652-8f345ddfe801
+# kmodules.xyz/client-go v0.0.0-20210220080427-fd7308e30bb4
 kmodules.xyz/client-go
 kmodules.xyz/client-go/api/v1
 kmodules.xyz/client-go/apiextensions
@@ -454,7 +454,7 @@ kmodules.xyz/client-go/meta
 kmodules.xyz/client-go/tools/analytics
 kmodules.xyz/client-go/tools/cli
 kmodules.xyz/client-go/tools/clusterid
-# kmodules.xyz/custom-resources v0.0.0-20210218144958-579bf8307d65
+# kmodules.xyz/custom-resources v0.0.0-20210222235834-b3f8dc56b6a3
 kmodules.xyz/custom-resources/apis/appcatalog
 kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1
 kmodules.xyz/custom-resources/client/clientset/versioned
@@ -463,11 +463,11 @@ kmodules.xyz/custom-resources/client/clientset/versioned/typed/appcatalog/v1alph
 kmodules.xyz/custom-resources/crds
 # kmodules.xyz/objectstore-api v0.0.0-20210218144135-bfabb80e0362
 kmodules.xyz/objectstore-api/api/v1
-# kmodules.xyz/offshoot-api v0.0.0-20210218144050-e1d794cb382a
+# kmodules.xyz/offshoot-api v0.0.0-20210220080828-fae1f6c66a89
 kmodules.xyz/offshoot-api/api/v1
 # kmodules.xyz/prober v0.0.0-20210218144026-43e923722d81
 kmodules.xyz/prober/api/v1
-# kmodules.xyz/schema-checker v0.1.0
+# kmodules.xyz/schema-checker v0.1.2
 kmodules.xyz/schema-checker
 # sigs.k8s.io/structured-merge-diff/v3 v3.0.0
 sigs.k8s.io/structured-merge-diff/v3/value
