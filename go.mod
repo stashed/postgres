@@ -11,10 +11,10 @@ require (
 	k8s.io/api v0.18.9
 	k8s.io/apimachinery v0.18.9
 	k8s.io/client-go v0.18.9
-	kmodules.xyz/client-go v0.0.0-20210218100652-8f345ddfe801
-	kmodules.xyz/custom-resources v0.0.0-20210218144958-579bf8307d65
-	kmodules.xyz/offshoot-api v0.0.0-20210218144050-e1d794cb382a
-	kmodules.xyz/schema-checker v0.1.0
+	kmodules.xyz/client-go v0.0.0-20210220080427-fd7308e30bb4
+	kmodules.xyz/custom-resources v0.0.0-20210222235834-b3f8dc56b6a3
+	kmodules.xyz/offshoot-api v0.0.0-20210220080828-fae1f6c66a89
+	kmodules.xyz/schema-checker v0.1.2
 	stash.appscode.dev/apimachinery v0.11.10-0.20210219134546-33840ed82608
 )
 
