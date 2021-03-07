@@ -30,11 +30,9 @@ import (
 	"github.com/spf13/cobra"
 	license "go.bytebuilders.dev/license-verifier/kubernetes"
 	"gomodules.xyz/x/flags"
-	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	meta_util "kmodules.xyz/client-go/meta"
 	appcatalog "kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
 	v1 "kmodules.xyz/offshoot-api/api/v1"
@@ -198,12 +196,6 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 		return nil, err
 	}
 
-	// init restic wrapper
-	resticWrapper, err := restic.NewResticWrapper(opt.setupOptions)
-	if err != nil {
-		return nil, err
-	}
-
 	// get pg backup cmd
 	// validate if given cmd is a valid dump cmd
 	pgBackupCMD := opt.backupCMD
@@ -211,18 +203,22 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 		return nil, fmt.Errorf("invalid pg backup command: expected %s or %s, but instead got %s", PgDumpCMD, PgDumpallCMD, pgBackupCMD)
 	}
 
+	if appBinding.Spec.ClientConfig.Service.Port == 0 {
+		appBinding.Spec.ClientConfig.Service.Port = 5432
+	}
+
+	resticWrapper, userName, err := opt.GetResticWrapperWithPGConnectorVariables(appBinding, appBindingSecret)
+	if err != nil {
+		return nil, err
+	}
 	// set env for pg_dump/pg_dumpall
-	resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
 	dumpCommand := restic.Command{
 		Name: pgBackupCMD,
 		Args: []interface{}{
-			"-U", must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser)),
-			"-h", appBinding.Spec.ClientConfig.Service.Name,
+			fmt.Sprintf("--host=%s", appBinding.Spec.ClientConfig.Service.Name),
+			fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port),
+			fmt.Sprintf("--username=%s", userName),
 		},
-	}
-	// if port is specified, append port in the arguments
-	if appBinding.Spec.ClientConfig.Service.Port != 0 {
-		dumpCommand.Args = append(dumpCommand.Args, fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port))
 	}
 	for _, arg := range strings.Fields(opt.pgArgs) {
 		dumpCommand.Args = append(dumpCommand.Args, arg)
@@ -231,7 +227,7 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 	opt.backupOptions.StdinPipeCommands = append(opt.backupOptions.StdinPipeCommands, dumpCommand)
 
 	// wait for DB ready
-	err = waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
+	err = opt.waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
 	if err != nil {
 		return nil, err
 	}
