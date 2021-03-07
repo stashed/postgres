@@ -151,3 +151,53 @@ func getSSLMODE(appBinding *v1alpha1.AppBinding) (string, error) {
 
 	return strings.TrimSpace(temps[1]), nil
 }
+
+func (opt *postgresOptions) GetResticWrapperWithPGConnectorVariables(appBinding *v1alpha1.AppBinding, appBindingSecret *core.Secret) (resticWrapper *restic.ResticWrapper, userName string, err error) {
+	userName = ""
+	resticWrapper, err = restic.NewResticWrapper(opt.setupOptions)
+	if err != nil {
+		return nil, userName, err
+	}
+	if _, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]; ok {
+		certByte, ok := appBindingSecret.Data[core.TLSCertKey]
+		if !ok {
+			return nil, userName, fmt.Errorf("can't find client cert")
+		}
+		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey), certByte, 0600); err != nil {
+			return nil, userName, err
+		}
+
+		resticWrapper.SetEnv(EnvPGSSLCERT, filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey))
+		keyByte, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]
+		if !ok {
+			return nil, userName, fmt.Errorf("can't find client private key")
+		}
+
+		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey), keyByte, 0600); err != nil {
+			return nil, userName, err
+		}
+		resticWrapper.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
+
+		//TODO: this one is hard coded here but need to change later
+		userName = DefaultPostgresUser
+	} else {
+		// set env for pg_dump/pg_dumpall
+		resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
+		userName = must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser))
+
+	}
+
+	if appBinding.Spec.ClientConfig.CABundle != nil {
+		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey), appBinding.Spec.ClientConfig.CABundle, 0600); err != nil {
+			return nil, userName, err
+		}
+		resticWrapper.SetEnv(EnvPGSSLROOTCERT, filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey))
+
+	}
+	pgSSlmode, err := getSSLMODE(appBinding)
+	if err != nil {
+		return nil, userName, err
+	}
+	resticWrapper.SetEnv(EnvPGSSLMODE, pgSSlmode)
+	return resticWrapper, userName, nil
+}

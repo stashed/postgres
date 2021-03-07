@@ -19,7 +19,6 @@ package pkg
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
 
@@ -29,11 +28,9 @@ import (
 	"github.com/spf13/cobra"
 	license "go.bytebuilders.dev/license-verifier/kubernetes"
 	"gomodules.xyz/x/flags"
-	core "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
-	meta_util "kmodules.xyz/client-go/meta"
 	appcatalog "kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
 	v1 "kmodules.xyz/offshoot-api/api/v1"
@@ -167,59 +164,14 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	if err != nil {
 		return nil, err
 	}
-
-	// init restic wrapper
-	resticWrapper, err := restic.NewResticWrapper(opt.setupOptions)
-	if err != nil {
-		return nil, err
-	}
-
 	if appBinding.Spec.ClientConfig.Service.Port == 0 {
 		appBinding.Spec.ClientConfig.Service.Port = 5432
 	}
 
-	userName := ""
-	if _, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]; ok {
-		certByte, ok := appBindingSecret.Data[core.TLSCertKey]
-		if !ok {
-			return nil, fmt.Errorf("can't find client cert")
-		}
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey), certByte, 0600); err != nil {
-			return nil, err
-		}
-
-		resticWrapper.SetEnv(EnvPGSSLCERT, filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey))
-		keyByte, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]
-		if !ok {
-			return nil, fmt.Errorf("can't find client private key")
-		}
-
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey), keyByte, 0600); err != nil {
-			return nil, err
-		}
-		resticWrapper.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
-
-		//TODO: this one is hard coded here but need to change later
-		userName = DefaultPostgresUser
-	} else {
-		// set env for pg_dump/pg_dumpall
-		resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
-		userName = must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser))
-
-	}
-
-	if appBinding.Spec.ClientConfig.CABundle != nil {
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey), appBinding.Spec.ClientConfig.CABundle, 0600); err != nil {
-			return nil, err
-		}
-		resticWrapper.SetEnv(EnvPGSSLROOTCERT, filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey))
-
-	}
-	pgSSlmode, err := getSSLMODE(appBinding)
+	resticWrapper, userName, err := opt.GetResticWrapperWithPGConnectorVariables(appBinding, appBindingSecret)
 	if err != nil {
 		return nil, err
 	}
-	resticWrapper.SetEnv(EnvPGSSLMODE, pgSSlmode)
 
 	// setup pipe command
 	restoreCommand := restic.Command{
