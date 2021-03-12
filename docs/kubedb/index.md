@@ -62,7 +62,7 @@ metadata:
   name: sample-postgres
   namespace: demo
 spec:
-  version: "11.2-v1"
+  version: "11.11"
   storageType: Durable
   storage:
     storageClassName: "standard"
@@ -88,7 +88,7 @@ Let's check if the database is ready to use,
 ```bash
 ❯ kubectl get pg -n demo sample-postgres
 NAME              VERSION   STATUS   AGE
-sample-postgres   11.2-v1   Ready    50s
+sample-postgres   11.11   Ready    50s
 ```
 
 The database is `Ready`. Verify that KubeDB has created a Secret and a Service for this database using the following commands,
@@ -469,7 +469,7 @@ metadata:
   name: restored-postgres
   namespace: demo
 spec:
-  version: "11.2-v1"
+  version: "11.11"
   storageType: Durable
   storage:
     storageClassName: "standard"
@@ -498,7 +498,7 @@ This time, the database will get stuck in the `Provisioning` state because we ha
 ```bash
 ❯ kubectl get postgres -n demo restored-postgres
 NAME                VERSION   STATUS         AGE
-restored-postgres   11.2-v1   Provisioning   6m7s
+restored-postgres   11.11   Provisioning   6m7s
 ```
 
 You can check the log from the database pod to be sure whether the database is ready to accept connections or not.
@@ -524,7 +524,7 @@ Check AppBinding has been created for the `restored-postgres` database using the
 ```bash
 ❯ kubectl get appbindings -n demo restored-postgres
 NAME                TYPE                  VERSION   AGE
-restored-postgres   kubedb.com/postgres   11.2-v1   6m45s
+restored-postgres   kubedb.com/postgres   11.11   6m45s
 ```
 
 > If you are not using KubeDB to deploy the database, then create the AppBinding manually.
@@ -589,7 +589,7 @@ At first, check if the database has gone into `Ready` state using the following 
 ```bash
 ❯ kubectl get pg -n demo restored-postgres
 NAME                VERSION   STATUS   AGE
-restored-postgres   11.2-v1   Ready    11m
+restored-postgres   11.11   Ready    11m
 ```
 
 Now, exec into the database pod and verify restored data.

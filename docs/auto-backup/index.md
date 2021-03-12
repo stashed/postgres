@@ -142,7 +142,7 @@ metadata:
   annotations:
     stash.appscode.com/backup-blueprint: postgres-backup-template
 spec:
-  version: "11.2-v1"
+  version: "11.11"
   storageType: Durable
   storage:
     storageClassName: "standard"
@@ -311,7 +311,7 @@ metadata:
     stash.appscode.com/backup-blueprint: postgres-backup-template
     stash.appscode.com/schedule: "*/3 * * * *"
 spec:
-  version: "11.2-v1"
+  version: "11.11"
   storageType: Durable
   storage:
     storageClassName: "standard"
@@ -481,7 +481,7 @@ metadata:
     stash.appscode.com/backup-blueprint: postgres-backup-template
     params.stash.appscode.com/args: --no-owner --clean
 spec:
-  version: "11.2-v1"
+  version: "11.11"
   storageType: Durable
   storage:
     storageClassName: "standard"
