@@ -88,8 +88,8 @@ spec:
       prefix: stash-backup/${TARGET_NAMESPACE}/${TARGET_APP_RESOURCE}/${TARGET_NAME}
     storageSecretName: gcs-secret
   # ============== Blueprint for BackupConfiguration =================
-  task:
-    name: postgres-backup-11.9.0-v4
+  # task: # Uncomment if you are not using KubeDB
+  #   name: postgres-backup-11.9.0-v4
   schedule: "*/5 * * * *"
   retentionPolicy:
     name: 'keep-last-5'
@@ -232,8 +232,6 @@ spec:
       apiVersion: appcatalog.appscode.com/v1alpha1
       kind: AppBinding
       name: sample-postgres-1
-  task:
-    name: postgres-backup-{{< param "info.subproject_version" >}}
   tempDir: {}
 status:
   conditions:
@@ -403,8 +401,6 @@ spec:
       apiVersion: appcatalog.appscode.com/v1alpha1
       kind: AppBinding
       name: sample-postgres-2
-  task:
-    name: postgres-backup-{{< param "info.subproject_version" >}}
   tempDir: {}
 status:
   conditions:
@@ -576,7 +572,6 @@ spec:
       kind: AppBinding
       name: sample-postgres-3
   task:
-    name: postgres-backup-{{< param "info.subproject_version" >}}
     params:
     - name: args
       value: --no-owner --clean

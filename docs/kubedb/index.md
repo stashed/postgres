@@ -145,6 +145,15 @@ spec:
       scheme: postgresql
   secret:
     name: sample-postgres-auth
+  parameters:
+    apiVersion: appcatalog.appscode.com/v1alpha1
+    kind: StashAddon
+    stash:
+      addon:
+        backupTask:
+          name: postgres-backup-{{< param "info.subproject_version" >}}
+        restoreTask:
+          name: postgres-restore-{{< param "info.subproject_version" >}}
   type: kubedb.com/postgres
   version: "11.2"
 ```
@@ -153,6 +162,7 @@ Stash uses the `AppBinding` crd to connect with the target database. It requires
 
 - `spec.clientConfig.service.name` specifies the name of the service that connects to the database.
 - `spec.secret` specifies the name of the secret that holds necessary credentials to access the database.
+- `spec.parameters.stash` specifies the Stash Addons that will be used to backup and restore this database.
 - `spec.type` specifies the types of the app that this AppBinding is pointing to. KubeDB generated AppBinding follows the following format: `<app group>/<app resource type>`.
 
 **Creating AppBinding Manually:**
@@ -345,8 +355,8 @@ metadata:
   namespace: demo
 spec:
   schedule: "*/5 * * * *"
-  task:
-    name: postgres-backup-{{< param "info.subproject_version" >}}
+  # task: # Uncomment if you are not using KubeDB
+  #   name: postgres-backup-{{< param "info.subproject_version" >}}
   repository:
     name: gcs-repo
   target:
@@ -527,11 +537,9 @@ kind: RestoreSession
 metadata:
   name: sample-postgres-restore
   namespace: demo
-  labels:
-    app.kubernetes.io/name: postgreses.kubedb.com # this label is mandatory if you are using KubeDB to deploy the database.Otherwise your database will stuck in "Provisioning" state
 spec:
-  task:
-    name: postgres-restore-{{< param "info.subproject_version" >}}
+  # task: # Uncomment if you are not using KubeDB
+  #   name: postgres-restore-{{< param "info.subproject_version" >}}
   repository:
     name: gcs-repo
   target:
@@ -545,13 +553,10 @@ spec:
 
 Here,
 
-- `metadata.labels` specifies a `app.kubernetes.io/name: postgreses.kubedb.com` label that is used by KubeDB to watch this `RestoreSession`.
 - `spec.task.name` specifies the name of the `Task` crd that specifies the Functions and their execution order to restore a PostgreSQL database.
 - `spec.repository.name` specifies the `Repository` crd that holds the backend information where our backed up data has been stored.
 - `spec.target.ref` refers to the AppBinding crd for the `restored-postgres` database where the backed up data will be restored.
 - `spec.rules` specifies that we are restoring from the latest backup snapshot of the original database.
-
-> **Warning:** Label `app.kubernetes.io/name: postgreses.kubedb.com` is mandatory if you are using KubeDB to deploy the database. Otherwise, the database will be stuck in  the`Provisioning` state.
 
 Let's create the `RestoreSession` crd we have shown above,
 
