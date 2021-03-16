@@ -31,23 +31,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Prepare Host
-        run: |
-          sudo apt-get -qq update || true
-          sudo apt-get install -y bzr
-          # install yq
-          curl -fsSL -o yq https://github.com/mikefarah/yq/releases/download/3.3.0/yq_linux_amd64
-          chmod +x yq
-          sudo mv yq /usr/local/bin/yq
-          # install kubectl
-          curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.0/bin/linux/amd64/kubectl
-          chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
-          # install codespan schema checker
-          curl -fsSL -o codespan-schema-checker https://github.com/kmodules/codespan-schema-checker/releases/download/v0.0.1/codespan-schema-checker-linux-amd64
-          chmod +x codespan-schema-checker
-          sudo mv codespan-schema-checker /usr/local/bin/codespan-schema-checker
-
       - name: Run checks
         run: |
           make ci
@@ -60,36 +43,3 @@ jobs:
         run: |
           docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
           make push
-
-      - name: Create Kubernetes cluster
-        id: kind
-        uses: engineerd/setup-kind@v0.5.0
-        with:
-          version: v0.10.0
-          config: hack/kubernetes/kind.yaml
-
-      - name: Prepare cluster for testing
-        id: local-path
-        run: |
-          echo "waiting for nodes to be ready ..."
-          kubectl wait --for=condition=Ready nodes --all --timeout=5m
-          kubectl get nodes
-          echo
-          echo "install helm 3"
-          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-          echo "install stash-crds chart"
-          helm repo add appscode https://charts.appscode.com/stable/
-          helm repo update
-          helm install stash-crds appscode/stash-crds
-          helm install kubedb-crds appscode/kubedb-crds
-          helm install kmodules-crds appscode/kmodules-crds
-          kubectl wait --for=condition=NamesAccepted crds --all --timeout=5m
-
-      - name: Test charts
-        run: |
-          export KUBECONFIG=$HOME/.kube/config
-          make ct
-
-      - name: Check codespan schema
-        run: |
-          codespan-schema-checker --content=./docs
