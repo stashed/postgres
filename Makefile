@@ -19,12 +19,6 @@ REPO     := $(notdir $(shell pwd))
 BIN      := stash-postgres
 COMPRESS ?= no
 
-# Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
-CRD_OPTIONS          ?= "crd:trivialVersions=true,preserveUnknownFields=false,crdVersions={v1}"
-# https://github.com/appscodelabs/gengo-builder
-CODE_GENERATOR_IMAGE ?= appscode/gengo:release-1.18
-API_GROUPS           ?= installer:v1alpha1
-
 # Where to push the docker image.
 REGISTRY ?= stashed
 
@@ -54,7 +48,7 @@ RESTIC_VER       := 0.12.0
 ### These variables should not need tweaking.
 ###
 
-SRC_PKGS := apis cmd pkg
+SRC_PKGS := cmd pkg
 SRC_DIRS := $(SRC_PKGS) # directories which hold app source (not vendored)
 
 DOCKER_PLATFORMS := linux/amd64 linux/arm linux/arm64
@@ -76,7 +70,6 @@ TAG_DBG          := $(VERSION)-dbg_$(OS)_$(ARCH)
 
 GO_VERSION       ?= 1.16
 BUILD_IMAGE      ?= appscode/golang-dev:$(GO_VERSION)
-CHART_TEST_IMAGE ?= quay.io/helmpack/chart-testing:v3.0.0
 
 OUTBIN = bin/$(OS)_$(ARCH)/$(BIN)
 ifeq ($(OS),windows)
@@ -137,184 +130,9 @@ version:
 	@echo ::set-output name=commit_hash::$(commit_hash)
 	@echo ::set-output name=commit_timestamp::$(commit_timestamp)
 
-.PHONY: clientset
-clientset:
-	@docker run --rm 	                                          \
-		-u $$(id -u):$$(id -g)                                    \
-		-v /tmp:/.cache                                           \
-		-v $$(pwd):$(DOCKER_REPO_ROOT)                            \
-		-w $(DOCKER_REPO_ROOT)                                    \
-		--env HTTP_PROXY=$(HTTP_PROXY)                            \
-		--env HTTPS_PROXY=$(HTTPS_PROXY)                          \
-		$(CODE_GENERATOR_IMAGE)                                   \
-		/go/src/k8s.io/code-generator/generate-groups.sh          \
-			"deepcopy"                                            \
-			$(GO_PKG)/$(REPO)/client                              \
-			$(GO_PKG)/$(REPO)/apis                                \
-			"$(API_GROUPS)"                                       \
-			--go-header-file "./hack/license/go.txt"
-
-# Generate openapi schema
-.PHONY: openapi
-openapi: $(addprefix openapi-, $(subst :,_, $(API_GROUPS)))
-	@echo "Generating api/openapi-spec/swagger.json"
-	@docker run --rm	                                 \
-		-u $$(id -u):$$(id -g)                           \
-		-v /tmp:/.cache                                  \
-		-v $$(pwd):$(DOCKER_REPO_ROOT)                   \
-		-w $(DOCKER_REPO_ROOT)                           \
-		--env HTTP_PROXY=$(HTTP_PROXY)                   \
-		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
-		--env GO111MODULE=on                             \
-		--env GOFLAGS="-mod=vendor"                      \
-		$(BUILD_IMAGE)                                   \
-		go run hack/gencrd/main.go
-
-openapi-%:
-	@echo "Generating openapi schema for $(subst _,/,$*)"
-	@docker run --rm	                                 \
-		-u $$(id -u):$$(id -g)                           \
-		-v /tmp:/.cache                                  \
-		-v $$(pwd):$(DOCKER_REPO_ROOT)                   \
-		-w $(DOCKER_REPO_ROOT)                           \
-		--env HTTP_PROXY=$(HTTP_PROXY)                   \
-		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
-		$(CODE_GENERATOR_IMAGE)                          \
-		openapi-gen                                      \
-			--v 1 --logtostderr                          \
-			--go-header-file "./hack/license/go.txt" \
-			--input-dirs "$(GO_PKG)/$(REPO)/apis/$(subst _,/,$*),k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/api/resource,k8s.io/apimachinery/pkg/runtime,k8s.io/apimachinery/pkg/util/intstr,k8s.io/apimachinery/pkg/version,k8s.io/api/core/v1,k8s.io/api/apps/v1,k8s.io/api/rbac/v1" \
-			--output-package "$(GO_PKG)/$(REPO)/apis/$(subst _,/,$*)" \
-			--report-filename /tmp/violation_exceptions.list
-
-# Generate CRD manifests
-.PHONY: gen-crds
-gen-crds:
-	@echo "Generating CRD manifests"
-	@docker run --rm	                    \
-		-u $$(id -u):$$(id -g)              \
-		-v /tmp:/.cache                     \
-		-v $$(pwd):$(DOCKER_REPO_ROOT)      \
-		-w $(DOCKER_REPO_ROOT)              \
-	    --env HTTP_PROXY=$(HTTP_PROXY)      \
-	    --env HTTPS_PROXY=$(HTTPS_PROXY)    \
-		$(CODE_GENERATOR_IMAGE)             \
-		controller-gen                      \
-			$(CRD_OPTIONS)                  \
-			paths="./apis/..."              \
-			output:crd:artifacts:config=crds
-
-crds_to_patch := installer.stash.appscode.com_stashpostgreses.yaml
-
-.PHONY: patch-crds
-patch-crds: $(addprefix patch-crd-, $(crds_to_patch))
-patch-crd-%: $(BUILD_DIRS)
-	@echo "patching $*"
-	@kubectl patch -f crds/$* -p "$$(cat hack/crd-patch.json)" --type=json --local=true -o yaml > bin/$*
-	@mv bin/$* crds/$*
-
-.PHONY: label-crds
-label-crds: $(BUILD_DIRS)
-	@for f in crds/*.yaml; do \
-		echo "applying app=stash label to $$f"; \
-		kubectl label --overwrite -f $$f --local=true -o yaml app=stash > bin/crd.yaml; \
-		mv bin/crd.yaml $$f; \
-	done
-
-.PHONY: gen-crd-protos
-gen-crd-protos: $(addprefix gen-crd-protos-, $(subst :,_, $(API_GROUPS)))
-
-gen-crd-protos-%:
-	@echo "Generating protobuf for $(subst _,/,$*)"
-	@docker run --rm                                     \
-		-u $$(id -u):$$(id -g)                           \
-		-v /tmp:/.cache                                  \
-		-v $$(pwd):$(DOCKER_REPO_ROOT)                   \
-		-w $(DOCKER_REPO_ROOT)                           \
-		--env HTTP_PROXY=$(HTTP_PROXY)                   \
-		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
-		$(CODE_GENERATOR_IMAGE)                          \
-		go-to-protobuf                                   \
-			--go-header-file "./hack/license/go.txt"     \
-			--proto-import=$(DOCKER_REPO_ROOT)/vendor    \
-			--proto-import=$(DOCKER_REPO_ROOT)/third_party/protobuf \
-			--apimachinery-packages=-k8s.io/apimachinery/pkg/api/resource,-k8s.io/apimachinery/pkg/apis/meta/v1,-k8s.io/apimachinery/pkg/apis/meta/v1beta1,-k8s.io/apimachinery/pkg/runtime,-k8s.io/apimachinery/pkg/runtime/schema,-k8s.io/apimachinery/pkg/util/intstr \
-			--packages=-k8s.io/api/core/v1,stash.appscode.dev/postgres/apis/$(subst _,/,$*)
-
-.PHONY: gen-bindata
-gen-bindata:
-	@docker run                                                 \
-	    -i                                                      \
-	    --rm                                                    \
-	    -u $$(id -u):$$(id -g)                                  \
-	    -v $$(pwd):/src                                         \
-	    -w /src/crds                                        \
-		-v /tmp:/.cache                                         \
-	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
-	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
-	    $(BUILD_IMAGE)                                          \
-	    go-bindata -ignore=\\.go -ignore=\\.DS_Store -mode=0644 -modtime=1573722179 -o bindata.go -pkg crds ./...
-
-.PHONY: gen-values-schema
-gen-values-schema: $(BUILD_DIRS)
-	@for dir in charts/*/; do \
-		dir=$${dir%*/}; \
-		dir=$${dir##*/}; \
-		crd=$$(echo $$dir | tr -d '-'); \
-		yq r crds/installer.stash.appscode.com_$${crd}s.yaml spec.versions[0].schema.openAPIV3Schema.properties.spec > bin/values.openapiv3_schema.yaml; \
-		yq d bin/values.openapiv3_schema.yaml description > charts/$${dir}/values.openapiv3_schema.yaml; \
-		rm -rf bin/values.openapiv3_schema.yaml; \
-	done
-
-.PHONY: gen-readme
-gen-readme:
-	@jq -n -c --arg v "$(CHART_VERSION)" '{"version":$$v}' > /tmp/data.json
-	@render-gotpl --template=hack/templates/readme.txt --data=/tmp/data.json > README.md
-
-.PHONY: gen-chart-doc
-gen-chart-doc: gen-chart-doc-stash-postgres
-
-gen-chart-doc-%:
-	@echo "Generate $* chart docs"
-	@docker run --rm 	                                 \
-		-u $$(id -u):$$(id -g)                           \
-		-v /tmp:/.cache                                  \
-		-v $$(pwd):$(DOCKER_REPO_ROOT)                   \
-		-w $(DOCKER_REPO_ROOT)                           \
-		--env HTTP_PROXY=$(HTTP_PROXY)                   \
-		--env HTTPS_PROXY=$(HTTPS_PROXY)                 \
-		$(BUILD_IMAGE)                                   \
-		chart-doc-gen -d ./charts/$*/doc.yaml -v ./charts/$*/values.yaml > ./charts/$*/README.md
-
-.PHONY: manifests
-manifests: gen-crds gen-values-schema gen-chart-doc
-
 .PHONY: gen
-gen: clientset manifests
-
-CHART_REGISTRY     ?= appscode
-CHART_REGISTRY_URL ?= https://charts.appscode.com/stable/
-CHART_VERSION      ?=
-APP_VERSION        ?= $(CHART_VERSION)
-
-.PHONY: update-charts
-update-charts: $(shell find $$(pwd)/charts -maxdepth 1 -mindepth 1 -type d -printf 'chart-%f ')
-
-chart-%:
-	@$(MAKE) chart-contents-$* gen-chart-doc-$* --no-print-directory
-
-chart-contents-%:
-	@yq w -i ./charts/$*/doc.yaml repository.name --tag '!!str' $(CHART_REGISTRY)
-	@yq w -i ./charts/$*/doc.yaml repository.url --tag '!!str' $(CHART_REGISTRY_URL)
-	@if [ ! -z "$(CHART_VERSION)" ]; then                                                  \
-		yq w -i ./charts/$*/Chart.yaml version --tag '!!str' $(CHART_VERSION);             \
-		yq w -i ./charts/$*/doc.yaml chart.version --tag '!!str' $(CHART_VERSION);         \
-		yq w -i ./charts/$*/doc.yaml release.name --tag '!!str' $(BIN)-$(CHART_VERSION);   \
-	fi
-	@if [ ! -z "$(APP_VERSION)" ]; then                                                    \
-		yq w -i ./charts/$*/Chart.yaml appVersion --tag '!!str' $(APP_VERSION);            \
-		yq w -i ./charts/$*/values.yaml image.tag --tag '!!str' $(APP_VERSION);            \
-	fi
+gen:
+	@true
 
 fmt: $(BUILD_DIRS)
 	@docker run                                                 \
@@ -442,32 +260,6 @@ unit-tests: $(BUILD_DIRS)
 	        OS=$(OS)                                            \
 	        VERSION=$(VERSION)                                  \
 	        ./hack/test.sh $(SRC_PKGS)                          \
-	    "
-
-.PHONY: ct
-ct: $(BUILD_DIRS)
-	@docker run                                                 \
-	    -i                                                      \
-	    --rm                                                    \
-	    -v $$(pwd):/src                                         \
-	    -w /src                                                 \
-	    --net=host                                              \
-	    -v $(HOME)/.kube:/.kube                                 \
-	    -v $(HOME)/.minikube:$(HOME)/.minikube                  \
-	    -v $(HOME)/.credentials:$(HOME)/.credentials            \
-	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin                \
-	    -v $$(pwd)/.go/bin/$(OS)_$(ARCH):/go/bin/$(OS)_$(ARCH)  \
-	    -v $$(pwd)/.go/cache:/.cache                            \
-	    --env HTTP_PROXY=$(HTTP_PROXY)                          \
-	    --env HTTPS_PROXY=$(HTTPS_PROXY)                        \
-	    --env KUBECONFIG=$(subst $(HOME),,$(KUBECONFIG))        \
-	    $(CHART_TEST_IMAGE)                                     \
-	    /bin/sh -c "                                            \
-		    kubectl -n kube-system create sa tiller;            \
-			kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller;   \
-			helm init --service-account tiller;                 \
-			kubectl wait --for=condition=Ready pods -n kube-system --all --timeout=5m;  \
-			ct lint-and-install --all;                          \
 	    "
 
 ADDTL_LINTERS   := goconst,gofmt,goimports,unparam
