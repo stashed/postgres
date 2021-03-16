@@ -31,6 +31,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+<<<<<<< HEAD
       - name: Prepare Host
         run: |
           sudo apt-get -qq update || true
@@ -44,6 +45,8 @@ jobs:
           chmod +x ./kubectl
           sudo mv ./kubectl /usr/local/bin/kubectl
 
+=======
+>>>>>>> eb1b3a0d... Move docs into stashed/docs repo + Cleanup (#723)
       - name: Run checks
         run: |
           make ci
@@ -56,6 +59,7 @@ jobs:
         run: |
           docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
           make push
+<<<<<<< HEAD
 
       - name: Create Kubernetes cluster
         id: kind
@@ -89,3 +93,5 @@ jobs:
         run: |
           export KUBECONFIG=$HOME/.kube/config
           make ct
+=======
+>>>>>>> eb1b3a0d... Move docs into stashed/docs repo + Cleanup (#723)
