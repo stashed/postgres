@@ -1,7 +1,0 @@
-To verify that all Functions are installed successfully, run:
-
-  kubectl get function.stash.appscode.com
-
-To verify that all Tasks are installed successfully, run:
-
-  kubectl get task.stash.appscode.com
