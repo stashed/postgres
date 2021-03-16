@@ -18,10 +18,6 @@ jobs:
           curl -fsSL https://github.com/github/hub/raw/master/script/get | bash -s 2.14.1
           sudo mv bin/hub /usr/local/bin
 
-      - name: Install Helm 3
-        run: |
-          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
       - name: Print version info
         id: semver
         run: |
@@ -52,29 +48,3 @@ jobs:
         run: |
           docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
           make release
-
-      - name: Clone charts repository
-        env:
-          GITHUB_USER: 1gtm
-          GITHUB_TOKEN: ${{ secrets.LGTM_GITHUB_TOKEN }}
-          CHART_REPOSITORY: ${{ secrets.CHART_REPOSITORY }}
-        run: |
-          url="https://${GITHUB_USER}:${GITHUB_TOKEN}@${CHART_REPOSITORY}.git"
-          cd $RUNNER_WORKSPACE
-          git clone $url
-          cd $(basename $CHART_REPOSITORY)
-          git config user.name "${GITHUB_USER}"
-          git config user.email "${GITHUB_USER}@appscode.com"
-
-      - name: Package
-        env:
-          GITHUB_USER: 1gtm
-          GITHUB_TOKEN: ${{ secrets.LGTM_GITHUB_TOKEN }}
-          CHART_REPOSITORY: ${{ secrets.CHART_REPOSITORY }}
-        run: |
-          cd $RUNNER_WORKSPACE/$(basename $CHART_REPOSITORY)
-          GIT_TAG=${GITHUB_REF#"refs/tags/"}
-          if [[ $GIT_TAG =~ "-alpha." ]] || [[ $GIT_TAG =~ "-beta." ]]; then
-            export REPO_DIR=testing
-          fi
-          ./hack/scripts/upload-charts.sh $GITHUB_WORKSPACE

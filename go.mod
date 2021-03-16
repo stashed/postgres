@@ -4,7 +4,9 @@ go 1.12
 
 require (
 	github.com/codeskyblue/go-sh v0.0.0-20200712050446-30169cf553fe
-	github.com/google/gofuzz v1.1.0
+	github.com/onsi/ginkgo v1.15.0 // indirect
+	github.com/onsi/gomega v1.10.5 // indirect
+	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/spf13/cobra v1.1.1
 	go.bytebuilders.dev/license-verifier/kubernetes v0.7.0
 	gomodules.xyz/x v0.0.0-20201105065653-91c568df6331
@@ -14,7 +16,6 @@ require (
 	kmodules.xyz/client-go v0.0.0-20210220080427-fd7308e30bb4
 	kmodules.xyz/custom-resources v0.0.0-20210222235834-b3f8dc56b6a3
 	kmodules.xyz/offshoot-api v0.0.0-20210220080828-fae1f6c66a89
-	kmodules.xyz/schema-checker v0.1.2
 	stash.appscode.dev/apimachinery v0.11.10
 )
 
