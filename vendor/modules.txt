@@ -455,11 +455,11 @@ kmodules.xyz/custom-resources/client/clientset/versioned
 kmodules.xyz/custom-resources/client/clientset/versioned/scheme
 kmodules.xyz/custom-resources/client/clientset/versioned/typed/appcatalog/v1alpha1
 kmodules.xyz/custom-resources/crds
-# kmodules.xyz/objectstore-api v0.0.0-20210218144135-bfabb80e0362
+# kmodules.xyz/objectstore-api v0.0.0-20210502215550-f5d0292dff17
 kmodules.xyz/objectstore-api/api/v1
 # kmodules.xyz/offshoot-api v0.0.0-20210220080828-fae1f6c66a89
 kmodules.xyz/offshoot-api/api/v1
-# kmodules.xyz/prober v0.0.0-20210218144026-43e923722d81
+# kmodules.xyz/prober v0.0.0-20210502215750-20bdd29d9c85
 kmodules.xyz/prober/api/v1
 # sigs.k8s.io/structured-merge-diff/v3 v3.0.0
 sigs.k8s.io/structured-merge-diff/v3/value
