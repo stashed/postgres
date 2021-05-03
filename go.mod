@@ -10,12 +10,15 @@ require (
 	github.com/spf13/cobra v1.1.1
 	go.bytebuilders.dev/license-verifier/kubernetes v0.8.0
 	gomodules.xyz/x v0.0.0-20201105065653-91c568df6331
-	k8s.io/api v0.18.9
-	k8s.io/apimachinery v0.18.9
-	k8s.io/client-go v0.18.9
-	kmodules.xyz/client-go v0.0.0-20210220080427-fd7308e30bb4
-	kmodules.xyz/custom-resources v0.0.0-20210222235834-b3f8dc56b6a3
-	kmodules.xyz/offshoot-api v0.0.0-20210220080828-fae1f6c66a89
+	k8s.io/api v0.21.0
+	k8s.io/apimachinery v0.21.0
+	k8s.io/client-go v0.21.0
+	k8s.io/kubernetes v1.21.0 // indirect
+	kmodules.xyz/client-go v0.0.0-20210502215034-b73197efff3f
+	kmodules.xyz/custom-resources v0.0.0-20210502220303-115fa584b8d1
+	kmodules.xyz/objectstore-api v0.0.0-20210502215550-f5d0292dff17 // indirect
+	kmodules.xyz/offshoot-api v0.0.0-20210502215616-234104e66819
+	kmodules.xyz/prober v0.0.0-20210502215750-20bdd29d9c85 // indirect
 	stash.appscode.dev/apimachinery v0.12.3
 )
 
@@ -85,7 +88,7 @@ replace github.com/prometheus/client_golang => github.com/prometheus/client_gola
 
 replace go.etcd.io/etcd => go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738
 
-replace google.golang.org/api => google.golang.org/api v0.14.0
+replace helm.sh/helm/v3 => github.com/kubepack/helm/v3 v3.1.0-rc.1.0.20210503022716-7e2d4913a125
 
 replace google.golang.org/genproto => google.golang.org/genproto v0.0.0-20191115194625-c23dd37a84c9
 
