@@ -5,22 +5,144 @@ go 1.12
 require (
 	github.com/codeskyblue/go-sh v0.0.0-20200712050446-30169cf553fe
 	github.com/spf13/cobra v1.1.1
-	go.bytebuilders.dev/license-verifier/kubernetes v0.9.0
-	gomodules.xyz/x v0.0.0-20201105065653-91c568df6331
+	go.bytebuilders.dev/license-verifier/kubernetes v0.9.1
+	gomodules.xyz/x v0.0.3
 	k8s.io/api v0.21.0
 	k8s.io/apimachinery v0.21.0
 	k8s.io/client-go v0.21.0
-	k8s.io/kubernetes v1.21.0 // indirect
-	k8s.io/utils v0.0.0-20210111153108-fddb29f9d009 // indirect
-	kmodules.xyz/client-go v0.0.0-20210503064222-c8c59295a3a5
-	kmodules.xyz/custom-resources v0.0.0-20210503065135-5267be335cb4
-	kmodules.xyz/offshoot-api v0.0.0-20210503065102-3250bbdedc8f
+	kmodules.xyz/client-go v0.0.0-20210504024435-1eb80721e9b8
+	kmodules.xyz/custom-resources v0.0.0-20210504034124-54c54fcdb690
+	kmodules.xyz/offshoot-api v0.0.0-20210504040651-7951e351f0f5
 	stash.appscode.dev/apimachinery v0.12.3
+	go.bytebuilders.dev/license-verifier v0.9.1
+	gomodules.xyz/runtime v0.2.0
+	k8s.io/apiextensions-apiserver v0.21.0
+	k8s.io/apiserver v0.21.0
+	k8s.io/cli-runtime v0.21.0
+	k8s.io/cloud-provider v0.21.0
+	k8s.io/component-base v0.21.0
+	k8s.io/kube-aggregator v0.21.0
+	k8s.io/kube-openapi v0.0.0-20210305001622-591a79e4bda7
+	k8s.io/kubectl v0.21.0
+	kmodules.xyz/crd-schema-fuzz v0.0.0-20210503192455-da44af375c4c
+	kmodules.xyz/monitoring-agent-api v0.0.0-20210504040241-261c2428d207
+	kmodules.xyz/objectstore-api v0.0.0-20210504041638-b9e00ab1eab3
+	kmodules.xyz/openshift v0.0.0-20210504040454-a3ddfc579bb7
+	kmodules.xyz/prober v0.0.0-20210504042421-eca494e828bc
+	kmodules.xyz/webhook-runtime v0.0.0-20210504042742-3a9911e3dcdc
 )
 
 replace git.apache.org/thrift.git => github.com/apache/thrift v0.13.0
 
 replace github.com/Azure/go-autorest/autorest/azure/auth => github.com/Azure/go-autorest/autorest/azure/auth v0.2.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 replace bitbucket.org/ww/goautoneg => gomodules.xyz/goautoneg v0.0.0-20120707110453-a547fc61f48d
 
@@ -129,3 +251,4 @@ replace k8s.io/utils => k8s.io/utils v0.0.0-20201110183641-67b214c5f920
 replace kmodules.xyz/resource-metadata => kmodules.xyz/resource-metadata v0.5.0
 
 replace sigs.k8s.io/application => github.com/kmodules/application v0.8.4-0.20210427030912-90eeee3bc4ad
+
