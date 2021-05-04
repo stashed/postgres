@@ -23,9 +23,9 @@ import (
 	_ "stash.appscode.dev/apimachinery/client/clientset/versioned/fake"
 	"stash.appscode.dev/postgres/pkg"
 
-	"gomodules.xyz/x/log"
 	_ "k8s.io/client-go/kubernetes/fake"
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
+	"k8s.io/klog/v2"
 	"kmodules.xyz/client-go/logs"
 )
 
@@ -38,6 +38,6 @@ func main() {
 	}
 
 	if err := pkg.NewRootCmd().Execute(); err != nil {
-		log.Fatalln("error:", err)
+		klog.Fatalln("error:", err)
 	}
 }
