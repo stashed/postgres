@@ -26,9 +26,9 @@ import (
 	"stash.appscode.dev/apimachinery/pkg/restic"
 
 	"github.com/codeskyblue/go-sh"
-	"gomodules.xyz/x/log"
 	core "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/klog/v2"
 	meta_util "kmodules.xyz/client-go/meta"
 	"kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
@@ -80,7 +80,7 @@ func must(v []byte, err error) string {
 }
 
 func (opt *postgresOptions) waitForDBReady(appBinding *v1alpha1.AppBinding, secret *core.Secret, waitTimeout int32) error {
-	log.Infoln("Waiting for the database to be ready.....")
+	klog.Infoln("Waiting for the database to be ready.....")
 	shell := sh.NewSession()
 
 	if appBinding.Spec.ClientConfig.Service.Port == 0 {
