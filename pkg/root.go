@@ -22,10 +22,10 @@ import (
 	"stash.appscode.dev/apimachinery/client/clientset/versioned/scheme"
 
 	"github.com/spf13/cobra"
+	"gomodules.xyz/kglog"
 	"gomodules.xyz/x/flags"
 	v "gomodules.xyz/x/version"
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"
-	"kmodules.xyz/client-go/logs"
 	"kmodules.xyz/client-go/tools/cli"
 )
 
@@ -47,7 +47,7 @@ func NewRootCmd() *cobra.Command {
 		},
 	}
 	rootCmd.PersistentFlags().AddGoFlagSet(flag.CommandLine)
-	logs.ParseFlags()
+	kglog.ParseFlags()
 	rootCmd.PersistentFlags().StringVar(&licenseApiService, "license-apiservice", "", "Name of ApiService used to expose License endpoint")
 	rootCmd.PersistentFlags().BoolVar(&cli.EnableAnalytics, "enable-analytics", cli.EnableAnalytics, "Send analytical events to Google Analytics")
 
