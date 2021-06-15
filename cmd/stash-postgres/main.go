@@ -23,21 +23,22 @@ import (
 	_ "stash.appscode.dev/apimachinery/client/clientset/versioned/fake"
 	"stash.appscode.dev/postgres/pkg"
 
-	"gomodules.xyz/kglog"
+	"gomodules.xyz/logs"
 	_ "k8s.io/client-go/kubernetes/fake"
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	"k8s.io/klog/v2"
 )
 
 func main() {
-	kglog.InitLogs()
-	defer kglog.FlushLogs()
+	rootCmd := pkg.NewRootCmd()
+	logs.Init(rootCmd, true)
+	defer logs.FlushLogs()
 
 	if len(os.Getenv("GOMAXPROCS")) == 0 {
 		runtime.GOMAXPROCS(runtime.NumCPU())
 	}
 
-	if err := pkg.NewRootCmd().Execute(); err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		klog.Fatalln("error:", err)
 	}
 }
