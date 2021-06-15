@@ -4,10 +4,10 @@ go 1.15
 
 require (
 	cloud.google.com/go v0.58.0 // indirect
-	github.com/codeskyblue/go-sh v0.0.0-20200712050446-30169cf553fe
 	github.com/spf13/cobra v1.1.3
 	go.bytebuilders.dev/license-verifier/kubernetes v0.9.1
 	gomodules.xyz/flags v0.1.0
+	gomodules.xyz/go-sh v0.1.0
 	gomodules.xyz/logs v0.0.2
 	gomodules.xyz/x v0.0.5
 	k8s.io/api v0.21.0
