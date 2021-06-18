@@ -128,7 +128,10 @@ func (opt *postgresOptions) waitForDBReady(appBinding *v1alpha1.AppBinding, secr
 	if err != nil {
 		return err
 	}
-	shell.SetEnv(EnvPGSSLMODE, pgSSlmode)
+	// Only set "PGSSLMODE" mode env variable, if it has been provided in the AppBinding.
+	if pgSSlmode != "" {
+		shell.SetEnv(EnvPGSSLMODE, pgSSlmode)
+	}
 
 	//shell.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(secret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
 	args := []interface{}{
@@ -142,8 +145,10 @@ func (opt *postgresOptions) waitForDBReady(appBinding *v1alpha1.AppBinding, secr
 }
 
 func getSSLMODE(appBinding *v1alpha1.AppBinding) (string, error) {
-
 	sslmodeString := appBinding.Spec.ClientConfig.Service.Query
+	if sslmodeString == "" {
+		return "", nil
+	}
 	temps := strings.Split(sslmodeString, "=")
 	if len(temps) != 2 {
 		return "", fmt.Errorf("the sslmode is not valid. please provide the valid template. the temlpate should be like this: sslmode=<your_desire_sslmode>")
@@ -198,6 +203,9 @@ func (opt *postgresOptions) GetResticWrapperWithPGConnectorVariables(appBinding 
 	if err != nil {
 		return nil, userName, err
 	}
-	resticWrapper.SetEnv(EnvPGSSLMODE, pgSSlmode)
+	// Only set "PGSSLMODE" mode env variable, if it has been provided in the AppBinding.
+	if pgSSlmode != "" {
+		resticWrapper.SetEnv(EnvPGSSLMODE, pgSSlmode)
+	}
 	return resticWrapper, userName, nil
 }
