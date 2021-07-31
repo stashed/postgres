@@ -16,7 +16,7 @@ require (
 	kmodules.xyz/client-go v0.0.0-20210719120358-dd0503cf99cf
 	kmodules.xyz/custom-resources v0.0.0-20210618003440-c6bb400da153
 	kmodules.xyz/offshoot-api v0.0.0-20210618005544-5217a24765da
-	stash.appscode.dev/apimachinery v0.14.1
+	stash.appscode.dev/apimachinery v0.15.0
 )
 
 replace bitbucket.org/ww/goautoneg => gomodules.xyz/goautoneg v0.0.0-20120707110453-a547fc61f48d
