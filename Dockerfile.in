@@ -42,5 +42,6 @@ ENV LANG   en_US.utf8
 COPY --from=0 /restic /bin/restic
 COPY bin/{ARG_OS}_{ARG_ARCH}/{ARG_BIN} /{ARG_BIN}
 
+USER nobody
 
 ENTRYPOINT ["/{ARG_BIN}"]
