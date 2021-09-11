@@ -8,14 +8,14 @@ require (
 	gomodules.xyz/flags v0.1.2
 	gomodules.xyz/go-sh v0.1.0
 	gomodules.xyz/logs v0.0.4
-	gomodules.xyz/x v0.0.7
+	gomodules.xyz/x v0.0.8
 	k8s.io/api v0.21.1
 	k8s.io/apimachinery v0.21.1
 	k8s.io/client-go v0.21.1
 	k8s.io/klog/v2 v2.8.0
-	kmodules.xyz/client-go v0.0.0-20210827153326-54ead9c6225f
-	kmodules.xyz/custom-resources v0.0.0-20210824055127-e5a3d2d6c161
-	kmodules.xyz/objectstore-api v0.0.0-20210817052835-df749235585e // indirect
+	kmodules.xyz/client-go v0.0.0-20210909114628-15cac6c74063
+	kmodules.xyz/custom-resources v0.0.0-20210829135624-c63be82e13c0
+	kmodules.xyz/objectstore-api v0.0.0-20210829122106-d39859fc2d56 // indirect
 	kmodules.xyz/offshoot-api v0.0.0-20210804100837-d0388be3e60d
 	stash.appscode.dev/apimachinery v0.15.0
 )
