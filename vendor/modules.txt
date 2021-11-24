@@ -123,12 +123,12 @@ github.com/yudai/gojsondiff
 github.com/yudai/gojsondiff/formatter
 # github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82
 github.com/yudai/golcs
-# go.bytebuilders.dev/license-verifier v0.9.6
+# go.bytebuilders.dev/license-verifier v0.9.7
 go.bytebuilders.dev/license-verifier
 go.bytebuilders.dev/license-verifier/apis/licenses
 go.bytebuilders.dev/license-verifier/apis/licenses/v1alpha1
 go.bytebuilders.dev/license-verifier/info
-# go.bytebuilders.dev/license-verifier/kubernetes v0.9.6
+# go.bytebuilders.dev/license-verifier/kubernetes v0.9.7
 ## explicit
 go.bytebuilders.dev/license-verifier/kubernetes
 # golang.org/x/crypto v0.0.0-20210314154223-e6e6c4f2bb5b
