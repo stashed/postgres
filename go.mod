@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/spf13/cobra v1.1.3
-	go.bytebuilders.dev/license-verifier/kubernetes v0.9.6
+	go.bytebuilders.dev/license-verifier/kubernetes v0.9.7
 	golang.org/x/tools v0.1.1-0.20210427153610-6397a11608ad // indirect
 	gomodules.xyz/flags v0.1.3
 	gomodules.xyz/go-sh v0.1.0
