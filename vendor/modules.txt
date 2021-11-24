@@ -123,12 +123,12 @@ github.com/yudai/gojsondiff
 github.com/yudai/gojsondiff/formatter
 # github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82
 github.com/yudai/golcs
-# go.bytebuilders.dev/license-verifier v0.9.5
+# go.bytebuilders.dev/license-verifier v0.9.6
 go.bytebuilders.dev/license-verifier
 go.bytebuilders.dev/license-verifier/apis/licenses
 go.bytebuilders.dev/license-verifier/apis/licenses/v1alpha1
 go.bytebuilders.dev/license-verifier/info
-# go.bytebuilders.dev/license-verifier/kubernetes v0.9.5
+# go.bytebuilders.dev/license-verifier/kubernetes v0.9.6
 ## explicit
 go.bytebuilders.dev/license-verifier/kubernetes
 # golang.org/x/crypto v0.0.0-20210314154223-e6e6c4f2bb5b
@@ -556,7 +556,8 @@ kmodules.xyz/custom-resources/client/clientset/versioned/typed/appcatalog/v1alph
 kmodules.xyz/custom-resources/client/clientset/versioned/typed/auditor/v1alpha1
 kmodules.xyz/custom-resources/client/clientset/versioned/typed/metrics/v1alpha1
 kmodules.xyz/custom-resources/crds
-# kmodules.xyz/objectstore-api v0.0.0-20210928135706-fdf68f88ea6e
+# kmodules.xyz/objectstore-api v0.0.0-20211116180107-8720be0c9bf7
+## explicit
 kmodules.xyz/objectstore-api/api/v1
 # kmodules.xyz/offshoot-api v0.0.0-20211103060642-3e217667cf41
 ## explicit
