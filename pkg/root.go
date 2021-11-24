@@ -22,7 +22,6 @@ import (
 	"github.com/spf13/cobra"
 	v "gomodules.xyz/x/version"
 	clientsetscheme "k8s.io/client-go/kubernetes/scheme"
-	"kmodules.xyz/client-go/tools/cli"
 )
 
 var SupportedProducts = []string{"stash-enterprise", "kubedb-ext-stash"}
@@ -36,13 +35,10 @@ func NewRootCmd() *cobra.Command {
 		Long:              `PostgreSQL backup & restore plugin for Stash by AppsCode. For more information, visit here: https://appscode.com/products/stash`,
 		DisableAutoGenTag: true,
 		PersistentPreRunE: func(c *cobra.Command, args []string) error {
-			cli.SendAnalytics(c, v.Version.Version)
-
 			return scheme.AddToScheme(clientsetscheme.Scheme)
 		},
 	}
 	rootCmd.PersistentFlags().StringVar(&licenseApiService, "license-apiservice", "", "Name of ApiService used to expose License endpoint")
-	rootCmd.PersistentFlags().BoolVar(&cli.EnableAnalytics, "enable-analytics", cli.EnableAnalytics, "Send analytical events to Google Analytics")
 
 	rootCmd.AddCommand(v.NewCmdVersion())
 	rootCmd.AddCommand(NewCmdBackup())
