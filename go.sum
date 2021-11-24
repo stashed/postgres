@@ -645,10 +645,10 @@ github.com/yvasiyarov/go-metrics v0.0.0-20140926110328-57bccd1ccd43/go.mod h1:aX
 github.com/yvasiyarov/gorelic v0.0.0-20141212073537-a9bba5b9ab50/go.mod h1:NUSPSUX/bi6SeDMUh6brw0nXpxHnc96TguQh0+r/ssA=
 github.com/yvasiyarov/newrelic_platform_go v0.0.0-20140908184405-b21fdbd4370f/go.mod h1:GlGEuHIJweS1mbCqG+7vt2nvWLzLLnRHbXz5JKd/Qbg=
 go.bytebuilders.dev/license-verifier v0.9.3/go.mod h1:GpIW0o8O0wpiBVt7IIz4z7bcPuG8nza8/bCDkaupDn8=
-go.bytebuilders.dev/license-verifier v0.9.6 h1:nT4Eplu0OQWM7Re81ZQibkYKeno6nDAwOzaz14Yvadc=
-go.bytebuilders.dev/license-verifier v0.9.6/go.mod h1:GpIW0o8O0wpiBVt7IIz4z7bcPuG8nza8/bCDkaupDn8=
-go.bytebuilders.dev/license-verifier/kubernetes v0.9.6 h1:QwiUgNug1pD4cwxLuSQmSLn1WvvNreKfBajdymoRmeM=
-go.bytebuilders.dev/license-verifier/kubernetes v0.9.6/go.mod h1:b1oIjrDuNN1T3d1ixnr020hi2i0sXlR7CIsWrhkzga4=
+go.bytebuilders.dev/license-verifier v0.9.7 h1:m7Z3cuVJYUUctCfTK6qT0IKtPVZurxq1b1bKzWjqwsE=
+go.bytebuilders.dev/license-verifier v0.9.7/go.mod h1:GpIW0o8O0wpiBVt7IIz4z7bcPuG8nza8/bCDkaupDn8=
+go.bytebuilders.dev/license-verifier/kubernetes v0.9.7 h1:TN9N9FmmxrPTQoAPJsQnHRgY00liNZgiTUyZ2QNtqyg=
+go.bytebuilders.dev/license-verifier/kubernetes v0.9.7/go.mod h1:hsNtdOrSnm5v8dwTgbKLVADNTgD+b6eaZHXiJZXoPcE=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
