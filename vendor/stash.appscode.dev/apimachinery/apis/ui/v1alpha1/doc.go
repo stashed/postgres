@@ -14,12 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1alpha1
+// Package v1alpha1 is the v1alpha1 version of the API.
 
-const (
-	ResticKey                = "restic.appscode.com"
-	LastAppliedConfiguration = ResticKey + "/last-applied-configuration"
-	VersionTag               = ResticKey + "/tag"
-	// ResourceVersion will be used to trigger restarts for ReplicaSet and RC pods
-	ResourceHash = ResticKey + "/resource-hash"
-)
+// +k8s:deepcopy-gen=package,register
+// +k8s:openapi-gen=true
+// +k8s:defaulter-gen=TypeMeta
+// +groupName=ui.stash.appscode.com
+package v1alpha1

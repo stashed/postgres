@@ -22,6 +22,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	kmapi "kmodules.xyz/client-go/api/v1"
 	stash "stash.appscode.dev/apimachinery/client/clientset/versioned"
 	"stash.appscode.dev/apimachinery/pkg/restic"
 
@@ -65,6 +66,7 @@ type postgresOptions struct {
 	backupCMD         string
 	pgArgs            string
 	outputDir         string
+	storageSecret     kmapi.ObjectReference
 	waitTimeout       int32
 
 	setupOptions  restic.SetupOptions
@@ -133,10 +135,19 @@ func (opt *postgresOptions) waitForDBReady(appBinding *v1alpha1.AppBinding, secr
 		shell.SetEnv(EnvPGSSLMODE, pgSSlmode)
 	}
 
+	hostname, err := appBinding.Hostname()
+	if err != nil {
+		return err
+	}
+
+	port, err := appBinding.Port()
+	if err != nil {
+		return err
+	}
 	//shell.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(secret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
 	args := []interface{}{
-		fmt.Sprintf("--host=%s", appBinding.Spec.ClientConfig.Service.Name),
-		fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port),
+		fmt.Sprintf("--host=%s", hostname),
+		fmt.Sprintf("--port=%d", port),
 		fmt.Sprintf("--username=%s", userName),
 		fmt.Sprintf("--timeout=%d", waitTimeout),
 	}

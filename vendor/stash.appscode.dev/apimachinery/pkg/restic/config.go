@@ -26,6 +26,7 @@ import (
 	"stash.appscode.dev/apimachinery/apis/stash/v1alpha1"
 
 	shell "gomodules.xyz/go-sh"
+	core "k8s.io/api/core/v1"
 	ofst "kmodules.xyz/offshoot-api/api/v1"
 )
 
@@ -84,11 +85,11 @@ type SetupOptions struct {
 	Endpoint       string
 	Region         string
 	Path           string
-	SecretDir      string
 	CacertFile     string
 	ScratchDir     string
 	EnableCache    bool
 	MaxConnections int64
+	StorageSecret  *core.Secret
 	Nice           *ofst.NiceSettings
 	IONice         *ofst.IONiceSettings
 }
@@ -123,6 +124,13 @@ func (w *ResticWrapper) SetEnv(key, value string) {
 	if w.sh != nil {
 		w.sh.SetEnv(key, value)
 	}
+}
+
+func (w *ResticWrapper) GetEnv(key string) string {
+	if w.sh != nil {
+		return w.sh.Env[key]
+	}
+	return ""
 }
 
 func (w *ResticWrapper) DumpEnv(path string, dumpedFile string) error {
