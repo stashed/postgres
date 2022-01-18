@@ -209,7 +209,3 @@ func getSSLMODE(appBinding *v1alpha1.AppBinding) (string, error) {
 
 	return strings.TrimSpace(temps[1]), nil
 }
-
-func (opt *postgresOptions) GetResticWrapperWithPGConnectorVariables(appBinding *v1alpha1.AppBinding, appBindingSecret *core.Secret) (resticWrapper *restic.ResticWrapper, userName string, err error) {
-	return resticWrapper, userName, nil
-}
