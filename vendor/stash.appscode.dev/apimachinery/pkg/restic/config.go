@@ -107,17 +107,34 @@ func NewResticWrapper(options SetupOptions) (*ResticWrapper, error) {
 		sh:     shell.NewSession(),
 		config: options,
 	}
+
+	err := wrapper.configure()
+	if err != nil {
+		return nil, err
+	}
+	return wrapper, nil
+}
+
+func NewResticWrapperFromShell(options SetupOptions, sh *shell.Session) (*ResticWrapper, error) {
+	wrapper := &ResticWrapper{
+		sh:     sh,
+		config: options,
+	}
+	err := wrapper.configure()
+	if err != nil {
+		return nil, err
+	}
+	return wrapper, nil
+}
+
+func (wrapper *ResticWrapper) configure() error {
 	wrapper.sh.SetDir(wrapper.config.ScratchDir)
 	wrapper.sh.ShowCMD = true
 	wrapper.sh.PipeFail = true
 	wrapper.sh.PipeStdErrors = true
 
 	// Setup restic environments
-	err := wrapper.setupEnv()
-	if err != nil {
-		return nil, err
-	}
-	return wrapper, nil
+	return wrapper.setupEnv()
 }
 
 func (w *ResticWrapper) SetEnv(key, value string) {

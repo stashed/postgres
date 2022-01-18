@@ -20,7 +20,6 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
-	"strings"
 
 	api_v1beta1 "stash.appscode.dev/apimachinery/apis/stash/v1beta1"
 	stash "stash.appscode.dev/apimachinery/client/clientset/versioned"
@@ -190,13 +189,19 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 		return nil, err
 	}
 
-	appBindingSecret, err := opt.kubeClient.CoreV1().Secrets(opt.namespace).Get(context.TODO(), appBinding.Spec.Secret.Name, metav1.GetOptions{})
+	session := opt.newSessionWrapper(PgDumpallCMD)
+
+	err = opt.setDatabaseCredentials(appBinding, session)
 	if err != nil {
 		return nil, err
 	}
 
-	// transform secret
-	err = appBinding.TransformSecret(opt.kubeClient, appBindingSecret.Data)
+	err = session.setDatabaseConnectionParameters(appBinding)
+	if err != nil {
+		return nil, err
+	}
+
+	err = session.setTLSParameters(appBinding, opt.setupOptions.ScratchDir)
 	if err != nil {
 		return nil, err
 	}
@@ -208,40 +213,15 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 		return nil, fmt.Errorf("invalid pg backup command: expected %s or %s, but instead got %s", PgDumpCMD, PgDumpallCMD, pgBackupCMD)
 	}
 
-	if appBinding.Spec.ClientConfig.Service.Port == 0 {
-		appBinding.Spec.ClientConfig.Service.Port = 5432
-	}
-
-	resticWrapper, userName, err := opt.GetResticWrapperWithPGConnectorVariables(appBinding, appBindingSecret)
+	err = session.waitForDBReady(opt.waitTimeout)
 	if err != nil {
 		return nil, err
 	}
 
-	hostname, err := appBinding.Hostname()
-	if err != nil {
-		return nil, err
-	}
-	port, err := appBinding.Port()
-	if err != nil {
-		return nil, err
-	}
-
-	// set env for pg_dump/pg_dumpall
-	dumpCommand := restic.Command{
-		Name: pgBackupCMD,
-		Args: []interface{}{
-			fmt.Sprintf("--host=%s", hostname),
-			fmt.Sprintf("--port=%d", port),
-			fmt.Sprintf("--username=%s", userName),
-		},
-	}
-	for _, arg := range strings.Fields(opt.pgArgs) {
-		dumpCommand.Args = append(dumpCommand.Args, arg)
-	}
+	session.setUserArgs(opt.pgArgs)
 	// add the dump command into  stdin pipe commands
-	opt.backupOptions.StdinPipeCommands = append(opt.backupOptions.StdinPipeCommands, dumpCommand)
-
-	err = opt.waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
+	opt.backupOptions.StdinPipeCommands = append(opt.backupOptions.StdinPipeCommands, *session.cmd)
+	resticWrapper, err := restic.NewResticWrapperFromShell(opt.setupOptions, session.sh)
 	if err != nil {
 		return nil, err
 	}

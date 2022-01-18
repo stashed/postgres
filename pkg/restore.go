@@ -18,9 +18,7 @@ package pkg
 
 import (
 	"context"
-	"fmt"
 	"path/filepath"
-	"strings"
 
 	api_v1beta1 "stash.appscode.dev/apimachinery/apis/stash/v1beta1"
 	"stash.appscode.dev/apimachinery/pkg/restic"
@@ -158,45 +156,21 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 		return nil, err
 	}
 
-	appBindingSecret, err := opt.kubeClient.CoreV1().Secrets(opt.namespace).Get(context.TODO(), appBinding.Spec.Secret.Name, metav1.GetOptions{})
+	session := opt.newSessionWrapper(PgRestoreCMD)
+
+	err = opt.setDatabaseCredentials(appBinding, session)
 	if err != nil {
 		return nil, err
 	}
 
-	err = appBinding.TransformSecret(opt.kubeClient, appBindingSecret.Data)
-	if err != nil {
-		return nil, err
-	}
-	if appBinding.Spec.ClientConfig.Service.Port == 0 {
-		appBinding.Spec.ClientConfig.Service.Port = 5432
-	}
-
-	resticWrapper, userName, err := opt.GetResticWrapperWithPGConnectorVariables(appBinding, appBindingSecret)
+	err = session.setDatabaseConnectionParameters(appBinding)
 	if err != nil {
 		return nil, err
 	}
 
-	hostname, err := appBinding.Hostname()
+	err = session.setTLSParameters(appBinding, opt.setupOptions.ScratchDir)
 	if err != nil {
 		return nil, err
-	}
-
-	port, err := appBinding.Port()
-	if err != nil {
-		return nil, err
-	}
-
-	// setup pipe command
-	restoreCommand := restic.Command{
-		Name: PgRestoreCMD,
-		Args: []interface{}{
-			fmt.Sprintf("--host=%s", hostname),
-			fmt.Sprintf("--port=%d", port),
-			fmt.Sprintf("--username=%s", userName),
-		},
-	}
-	for _, arg := range strings.Fields(opt.pgArgs) {
-		restoreCommand.Args = append(restoreCommand.Args, arg)
 	}
 
 	// The backed up sql file contains command to alter the password of "postgres" user of current database with backed up database's
@@ -210,13 +184,18 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 
 	// The backup process should follow the following pipeline: restic restore | sed <args> | psql -f dumpfile.sql .
 	// Add the commands to stdout pipe. The restic command will be automatically added at the beginning of this pipe.
-	opt.dumpOptions.StdoutPipeCommands = append(opt.dumpOptions.StdoutPipeCommands, passwordOverwriteRemover, restoreCommand)
 
-	err = opt.waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
+	err = session.waitForDBReady(opt.waitTimeout)
 	if err != nil {
 		return nil, err
 	}
 
+	session.setUserArgs(opt.pgArgs)
+	opt.dumpOptions.StdoutPipeCommands = append(opt.dumpOptions.StdoutPipeCommands, passwordOverwriteRemover, *session.cmd)
+	resticWrapper, err := restic.NewResticWrapperFromShell(opt.setupOptions, session.sh)
+	if err != nil {
+		return nil, err
+	}
 	// Run dump
 	return resticWrapper.Dump(opt.dumpOptions, targetRef)
 }
