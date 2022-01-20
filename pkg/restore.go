@@ -107,6 +107,7 @@ func NewCmdRestore() *cobra.Command {
 	}
 
 	cmd.Flags().StringVar(&opt.pgArgs, "pg-args", opt.pgArgs, "Additional arguments")
+	cmd.Flags().StringVar(&opt.user, "user", DefaultPostgresUser, "Specifies database user (not applicable for basic authentication)")
 	cmd.Flags().Int32Var(&opt.waitTimeout, "wait-timeout", opt.waitTimeout, "Time limit to wait for the database to be ready")
 
 	cmd.Flags().StringVar(&masterURL, "master", masterURL, "The address of the Kubernetes API server (overrides any value in kubeconfig)")
@@ -191,6 +192,7 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	}
 
 	session.setUserArgs(opt.pgArgs)
+
 	opt.dumpOptions.StdoutPipeCommands = append(opt.dumpOptions.StdoutPipeCommands, passwordOverwriteRemover, *session.cmd)
 	resticWrapper, err := restic.NewResticWrapperFromShell(opt.setupOptions, session.sh)
 	if err != nil {

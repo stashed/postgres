@@ -113,8 +113,9 @@ func NewCmdBackup() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&opt.backupCMD, "backup-cmd", opt.pgArgs, "Backup command to take a database dump (can only be pg_dumpall or pg_dump)")
+	cmd.Flags().StringVar(&opt.backupCMD, "backup-cmd", PgDumpallCMD, "Backup command to take a database dump (can only be pg_dumpall or pg_dump)")
 	cmd.Flags().StringVar(&opt.pgArgs, "pg-args", opt.pgArgs, "Additional arguments")
+	cmd.Flags().StringVar(&opt.user, "user", DefaultPostgresUser, "Specifies database user (not applicable for basic authentication)")
 	cmd.Flags().Int32Var(&opt.waitTimeout, "wait-timeout", opt.waitTimeout, "Time limit to wait for the database to be ready")
 
 	cmd.Flags().StringVar(&masterURL, "master", masterURL, "The address of the Kubernetes API server (overrides any value in kubeconfig)")
@@ -189,7 +190,7 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 		return nil, err
 	}
 
-	session := opt.newSessionWrapper(PgDumpallCMD)
+	session := opt.newSessionWrapper(opt.backupCMD)
 
 	err = opt.setDatabaseCredentials(appBinding, session)
 	if err != nil {
@@ -219,6 +220,7 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 	}
 
 	session.setUserArgs(opt.pgArgs)
+
 	// add the dump command into  stdin pipe commands
 	opt.backupOptions.StdinPipeCommands = append(opt.backupOptions.StdinPipeCommands, *session.cmd)
 	resticWrapper, err := restic.NewResticWrapperFromShell(opt.setupOptions, session.sh)

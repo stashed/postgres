@@ -68,6 +68,7 @@ type postgresOptions struct {
 	appBindingName    string
 	backupCMD         string
 	pgArgs            string
+	user              string
 	outputDir         string
 	storageSecret     kmapi.ObjectReference
 	waitTimeout       int32
@@ -132,7 +133,7 @@ func (opt *postgresOptions) setDatabaseCredentials(appBinding *appcatalog.AppBin
 		session.sh.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
 
 		//TODO: this one is hard coded here but need to change later
-		userName = DefaultPostgresUser
+		userName = opt.user
 	} else {
 		// set env for pg_dump/pg_dumpall
 		session.sh.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
@@ -159,14 +160,14 @@ func (session *sessionWrapper) setDatabaseConnectionParameters(appBinding *appca
 	}
 	session.cmd.Args = append(session.cmd.Args, fmt.Sprintf("--host=%s", hostname))
 
-	if appBinding.Spec.ClientConfig.Service.Port == 0 {
-		appBinding.Spec.ClientConfig.Service.Port = 5432
-	}
-
 	port, err := appBinding.Port()
 	if err != nil {
 		return err
 	}
+	if port == 0 {
+		port = 5432
+	}
+
 	session.cmd.Args = append(session.cmd.Args, fmt.Sprintf("--port=%d", port))
 
 	return nil
