@@ -53,7 +53,7 @@ type BackupInvoker struct {
 	Driver             v1beta1.Snapshotter
 	Schedule           string
 	Paused             bool
-	Repository         string
+	Repository         kmapi.ObjectReference
 	RetentionPolicy    v1alpha1.RetentionPolicy
 	RuntimeSettings    ofst.RuntimeSettings
 	BackupHistoryLimit *int32
@@ -91,7 +91,11 @@ func ExtractBackupInvokerInfo(stashClient cs.Interface, invokerType, invokerName
 		invoker.Driver = backupBatch.Spec.Driver
 		invoker.Schedule = backupBatch.Spec.Schedule
 		invoker.Paused = backupBatch.Spec.Paused
-		invoker.Repository = backupBatch.Spec.Repository.Name
+		invoker.Repository.Name = backupBatch.Spec.Repository.Name
+		invoker.Repository.Namespace = backupBatch.Spec.Repository.Namespace
+		if invoker.Repository.Namespace == "" {
+			invoker.Repository.Namespace = backupBatch.Namespace
+		}
 		invoker.RetentionPolicy = backupBatch.Spec.RetentionPolicy
 		invoker.RuntimeSettings = backupBatch.Spec.RuntimeSettings
 		invoker.BackupHistoryLimit = backupBatch.Spec.BackupHistoryLimit
@@ -190,6 +194,7 @@ func ExtractBackupInvokerInfo(stashClient cs.Interface, invokerType, invokerName
 			// By default, return true so that nil target(i.e. cluster backup) does not get stuck here.
 			return true
 		}
+
 	case v1beta1.ResourceKindBackupConfiguration:
 		// get BackupConfiguration
 		backupConfig, err := stashClient.StashV1beta1().BackupConfigurations(namespace).Get(context.TODO(), invokerName, metav1.GetOptions{})
@@ -206,7 +211,11 @@ func ExtractBackupInvokerInfo(stashClient cs.Interface, invokerType, invokerName
 		invoker.Driver = backupConfig.Spec.Driver
 		invoker.Schedule = backupConfig.Spec.Schedule
 		invoker.Paused = backupConfig.Spec.Paused
-		invoker.Repository = backupConfig.Spec.Repository.Name
+		invoker.Repository.Name = backupConfig.Spec.Repository.Name
+		invoker.Repository.Namespace = backupConfig.Spec.Repository.Namespace
+		if invoker.Repository.Namespace == "" {
+			invoker.Repository.Namespace = backupConfig.Namespace
+		}
 		invoker.RetentionPolicy = backupConfig.Spec.RetentionPolicy
 		invoker.RuntimeSettings = backupConfig.Spec.RuntimeSettings
 		invoker.BackupHistoryLimit = backupConfig.Spec.BackupHistoryLimit
