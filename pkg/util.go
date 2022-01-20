@@ -17,6 +17,7 @@ limitations under the License.
 package pkg
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -25,12 +26,15 @@ import (
 	stash "stash.appscode.dev/apimachinery/client/clientset/versioned"
 	"stash.appscode.dev/apimachinery/pkg/restic"
 
-	"gomodules.xyz/go-sh"
+	shell "gomodules.xyz/go-sh"
 	core "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/klog/v2"
+	kmapi "kmodules.xyz/client-go/api/v1"
 	meta_util "kmodules.xyz/client-go/meta"
 	"kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
+	appcatalog "kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
 )
 
@@ -64,7 +68,9 @@ type postgresOptions struct {
 	appBindingName    string
 	backupCMD         string
 	pgArgs            string
+	user              string
 	outputDir         string
+	storageSecret     kmapi.ObjectReference
 	waitTimeout       int32
 
 	setupOptions  restic.SetupOptions
@@ -79,17 +85,35 @@ func must(v []byte, err error) string {
 	return string(v)
 }
 
-func (opt *postgresOptions) waitForDBReady(appBinding *v1alpha1.AppBinding, secret *core.Secret, waitTimeout int32) error {
-	klog.Infoln("Waiting for the database to be ready.....")
-	shell := sh.NewSession()
+type sessionWrapper struct {
+	sh  *shell.Session
+	cmd *restic.Command
+}
 
-	if appBinding.Spec.ClientConfig.Service.Port == 0 {
-		appBinding.Spec.ClientConfig.Service.Port = 5432
+func (opt *postgresOptions) newSessionWrapper(cmd string) *sessionWrapper {
+	return &sessionWrapper{
+		sh: shell.NewSession(),
+		cmd: &restic.Command{
+			Name: cmd,
+		},
+	}
+}
+
+func (opt *postgresOptions) setDatabaseCredentials(appBinding *appcatalog.AppBinding, session *sessionWrapper) error {
+	appBindingSecret, err := opt.kubeClient.CoreV1().Secrets(appBinding.Namespace).Get(context.TODO(), appBinding.Spec.Secret.Name, metav1.GetOptions{})
+	if err != nil {
+		return err
+	}
+
+	err = appBinding.TransformSecret(opt.kubeClient, appBindingSecret.Data)
+	if err != nil {
+		return err
 	}
 
 	userName := ""
-	if _, ok := secret.Data[core.TLSPrivateKeyKey]; ok {
-		certByte, ok := secret.Data[core.TLSCertKey]
+
+	if _, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]; ok {
+		certByte, ok := appBindingSecret.Data[core.TLSCertKey]
 		if !ok {
 			return fmt.Errorf("can't find client cert")
 		}
@@ -97,8 +121,8 @@ func (opt *postgresOptions) waitForDBReady(appBinding *v1alpha1.AppBinding, secr
 			return err
 		}
 
-		shell.SetEnv(EnvPGSSLCERT, filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey))
-		keyByte, ok := secret.Data[core.TLSPrivateKeyKey]
+		session.sh.SetEnv(EnvPGSSLCERT, filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey))
+		keyByte, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]
 		if !ok {
 			return fmt.Errorf("can't find client private key")
 		}
@@ -106,42 +130,72 @@ func (opt *postgresOptions) waitForDBReady(appBinding *v1alpha1.AppBinding, secr
 		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey), keyByte, 0600); err != nil {
 			return err
 		}
-		shell.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
+		session.sh.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
 
 		//TODO: this one is hard coded here but need to change later
-		userName = DefaultPostgresUser
+		userName = opt.user
 	} else {
 		// set env for pg_dump/pg_dumpall
-		shell.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(secret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
-		userName = must(meta_util.GetBytesForKeys(secret.Data, core.BasicAuthUsernameKey, envPostgresUser))
-
+		session.sh.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
+		userName = must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser))
 	}
 
-	if appBinding.Spec.ClientConfig.CABundle != nil {
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey), appBinding.Spec.ClientConfig.CABundle, 0600); err != nil {
-			return err
-		}
-		shell.SetEnv(EnvPGSSLROOTCERT, filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey))
-
-	}
 	pgSSlmode, err := getSSLMODE(appBinding)
 	if err != nil {
 		return err
 	}
 	// Only set "PGSSLMODE" mode env variable, if it has been provided in the AppBinding.
 	if pgSSlmode != "" {
-		shell.SetEnv(EnvPGSSLMODE, pgSSlmode)
+		session.sh.SetEnv(EnvPGSSLMODE, pgSSlmode)
 	}
 
-	//shell.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(secret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
-	args := []interface{}{
-		fmt.Sprintf("--host=%s", appBinding.Spec.ClientConfig.Service.Name),
-		fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port),
-		fmt.Sprintf("--username=%s", userName),
-		fmt.Sprintf("--timeout=%d", waitTimeout),
+	session.cmd.Args = append(session.cmd.Args, fmt.Sprintf("--username=%s", userName))
+	return nil
+}
+
+func (session *sessionWrapper) setDatabaseConnectionParameters(appBinding *appcatalog.AppBinding) error {
+	hostname, err := appBinding.Hostname()
+	if err != nil {
+		return err
+	}
+	session.cmd.Args = append(session.cmd.Args, fmt.Sprintf("--host=%s", hostname))
+
+	port, err := appBinding.Port()
+	if err != nil {
+		return err
+	}
+	if port == 0 {
+		port = 5432
 	}
 
-	return shell.Command("pg_isready", args...).Run()
+	session.cmd.Args = append(session.cmd.Args, fmt.Sprintf("--port=%d", port))
+
+	return nil
+}
+
+func (session *sessionWrapper) setUserArgs(args string) {
+	for _, arg := range strings.Fields(args) {
+		session.cmd.Args = append(session.cmd.Args, arg)
+	}
+}
+
+func (session *sessionWrapper) setTLSParameters(appBinding *appcatalog.AppBinding, scratchDir string) error {
+	if appBinding.Spec.ClientConfig.CABundle != nil {
+		if err := ioutil.WriteFile(filepath.Join(scratchDir, core.ServiceAccountRootCAKey), appBinding.Spec.ClientConfig.CABundle, 0600); err != nil {
+			return err
+		}
+		session.sh.SetEnv(EnvPGSSLROOTCERT, filepath.Join(scratchDir, core.ServiceAccountRootCAKey))
+
+	}
+	return nil
+}
+
+func (session *sessionWrapper) waitForDBReady(waitTimeout int32) error {
+	klog.Infoln("Waiting for the database to be ready.....")
+
+	args := append(session.cmd.Args, fmt.Sprintf("--timeout=%d", waitTimeout))
+
+	return session.sh.Command("pg_isready", args...).Run()
 }
 
 func getSSLMODE(appBinding *v1alpha1.AppBinding) (string, error) {
@@ -155,57 +209,4 @@ func getSSLMODE(appBinding *v1alpha1.AppBinding) (string, error) {
 	}
 
 	return strings.TrimSpace(temps[1]), nil
-}
-
-func (opt *postgresOptions) GetResticWrapperWithPGConnectorVariables(appBinding *v1alpha1.AppBinding, appBindingSecret *core.Secret) (resticWrapper *restic.ResticWrapper, userName string, err error) {
-	userName = ""
-	resticWrapper, err = restic.NewResticWrapper(opt.setupOptions)
-	if err != nil {
-		return nil, userName, err
-	}
-	if _, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]; ok {
-		certByte, ok := appBindingSecret.Data[core.TLSCertKey]
-		if !ok {
-			return nil, userName, fmt.Errorf("can't find client cert")
-		}
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey), certByte, 0600); err != nil {
-			return nil, userName, err
-		}
-
-		resticWrapper.SetEnv(EnvPGSSLCERT, filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey))
-		keyByte, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]
-		if !ok {
-			return nil, userName, fmt.Errorf("can't find client private key")
-		}
-
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey), keyByte, 0600); err != nil {
-			return nil, userName, err
-		}
-		resticWrapper.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
-
-		//TODO: this one is hard coded here but need to change later
-		userName = DefaultPostgresUser
-	} else {
-		// set env for pg_dump/pg_dumpall
-		resticWrapper.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
-		userName = must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser))
-
-	}
-
-	if appBinding.Spec.ClientConfig.CABundle != nil {
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey), appBinding.Spec.ClientConfig.CABundle, 0600); err != nil {
-			return nil, userName, err
-		}
-		resticWrapper.SetEnv(EnvPGSSLROOTCERT, filepath.Join(opt.setupOptions.ScratchDir, core.ServiceAccountRootCAKey))
-
-	}
-	pgSSlmode, err := getSSLMODE(appBinding)
-	if err != nil {
-		return nil, userName, err
-	}
-	// Only set "PGSSLMODE" mode env variable, if it has been provided in the AppBinding.
-	if pgSSlmode != "" {
-		resticWrapper.SetEnv(EnvPGSSLMODE, pgSSlmode)
-	}
-	return resticWrapper, userName, nil
 }

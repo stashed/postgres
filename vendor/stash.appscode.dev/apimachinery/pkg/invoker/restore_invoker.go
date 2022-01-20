@@ -68,7 +68,7 @@ type RestoreInvoker struct {
 	Labels                  map[string]string
 	Hash                    string
 	Driver                  v1beta1.Snapshotter
-	Repository              string
+	Repository              kmapi.ObjectReference
 	TargetsInfo             []RestoreTargetInfo
 	ExecutionOrder          v1beta1.ExecutionOrder
 	Hooks                   *v1beta1.RestoreHooks
@@ -106,7 +106,11 @@ func ExtractRestoreInvokerInfo(kubeClient kubernetes.Interface, stashClient cs.I
 		invoker.Labels = restoreBatch.OffshootLabels()
 		invoker.Hash = restoreBatch.GetSpecHash()
 		invoker.Driver = restoreBatch.Spec.Driver
-		invoker.Repository = restoreBatch.Spec.Repository.Name
+		invoker.Repository.Name = restoreBatch.Spec.Repository.Name
+		invoker.Repository.Namespace = restoreBatch.Spec.Repository.Namespace
+		if invoker.Repository.Namespace == "" {
+			invoker.Repository.Namespace = restoreBatch.Namespace
+		}
 		invoker.Hooks = restoreBatch.Spec.Hooks
 		invoker.ExecutionOrder = restoreBatch.Spec.ExecutionOrder
 		invoker.OwnerRef = metav1.NewControllerRef(restoreBatch, v1beta1.SchemeGroupVersion.WithKind(v1beta1.ResourceKindRestoreBatch))
@@ -310,7 +314,11 @@ func ExtractRestoreInvokerInfo(kubeClient kubernetes.Interface, stashClient cs.I
 		invoker.Labels = restoreSession.OffshootLabels()
 		invoker.Hash = restoreSession.GetSpecHash()
 		invoker.Driver = restoreSession.Spec.Driver
-		invoker.Repository = restoreSession.Spec.Repository.Name
+		invoker.Repository.Name = restoreSession.Spec.Repository.Name
+		invoker.Repository.Namespace = restoreSession.Spec.Repository.Namespace
+		if invoker.Repository.Namespace == "" {
+			invoker.Repository.Namespace = restoreSession.Namespace
+		}
 		invoker.OwnerRef = metav1.NewControllerRef(restoreSession, v1beta1.SchemeGroupVersion.WithKind(v1beta1.ResourceKindRestoreSession))
 		invoker.ObjectRef, err = reference.GetReference(stash_scheme.Scheme, restoreSession)
 		if err != nil {
