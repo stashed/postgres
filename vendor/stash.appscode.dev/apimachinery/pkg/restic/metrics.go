@@ -904,7 +904,7 @@ func backupInvokerLabels(inv invoker.BackupInvoker, userProvidedLabels []string)
 		promLabels = upsertLabel(promLabels, volumeSnapshotterLabels())
 	} else {
 		promLabels[MetricsLabelDriver] = string(api_v1beta1.ResticSnapshotter)
-		promLabels[MetricsLabelRepository] = inv.Repository
+		promLabels[MetricsLabelRepository] = inv.Repository.Name
 	}
 
 	return promLabels, nil
@@ -925,7 +925,7 @@ func restoreInvokerLabels(inv invoker.RestoreInvoker, userProvidedLabels []strin
 		promLabels = upsertLabel(promLabels, volumeSnapshotterLabels())
 	} else {
 		promLabels[MetricsLabelDriver] = string(api_v1beta1.ResticSnapshotter)
-		promLabels[MetricsLabelRepository] = inv.Repository
+		promLabels[MetricsLabelRepository] = inv.Repository.Name
 	}
 
 	return promLabels, nil
@@ -940,7 +940,7 @@ func repoMetricLabels(clientConfig *rest.Config, i invoker.BackupInvoker, userPr
 	if err != nil {
 		return nil, err
 	}
-	repository, err := stashClient.StashV1alpha1().Repositories(i.ObjectMeta.Namespace).Get(context.TODO(), i.Repository, metav1.GetOptions{})
+	repository, err := stashClient.StashV1alpha1().Repositories(i.Repository.Namespace).Get(context.TODO(), i.Repository.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
