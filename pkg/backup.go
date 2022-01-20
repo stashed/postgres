@@ -20,7 +20,6 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
-	"strings"
 
 	api_v1beta1 "stash.appscode.dev/apimachinery/apis/stash/v1beta1"
 	stash "stash.appscode.dev/apimachinery/client/clientset/versioned"
@@ -60,7 +59,7 @@ func NewCmdBackup() *cobra.Command {
 		Short:             "Takes a backup of Postgres DB",
 		DisableAutoGenTag: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			flags.EnsureRequiredFlags(cmd, "appbinding", "provider", "secret-dir")
+			flags.EnsureRequiredFlags(cmd, "appbinding", "provider", "storage-secret-name", "storage-secret-namespace")
 
 			// prepare client
 			config, err := clientcmd.BuildConfigFromFlags(masterURL, kubeconfigPath)
@@ -114,8 +113,9 @@ func NewCmdBackup() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&opt.backupCMD, "backup-cmd", opt.pgArgs, "Backup command to take a database dump (can only be pg_dumpall or pg_dump)")
+	cmd.Flags().StringVar(&opt.backupCMD, "backup-cmd", PgDumpallCMD, "Backup command to take a database dump (can only be pg_dumpall or pg_dump)")
 	cmd.Flags().StringVar(&opt.pgArgs, "pg-args", opt.pgArgs, "Additional arguments")
+	cmd.Flags().StringVar(&opt.user, "user", DefaultPostgresUser, "Specifies database user (not applicable for basic authentication)")
 	cmd.Flags().Int32Var(&opt.waitTimeout, "wait-timeout", opt.waitTimeout, "Time limit to wait for the database to be ready")
 
 	cmd.Flags().StringVar(&masterURL, "master", masterURL, "The address of the Kubernetes API server (overrides any value in kubeconfig)")
@@ -123,13 +123,14 @@ func NewCmdBackup() *cobra.Command {
 	cmd.Flags().StringVar(&opt.namespace, "namespace", "default", "Namespace of Backup/Restore Session")
 	cmd.Flags().StringVar(&opt.backupSessionName, "backupsession", opt.backupSessionName, "Name of the Backup Session")
 	cmd.Flags().StringVar(&opt.appBindingName, "appbinding", opt.appBindingName, "Name of the app binding")
+	cmd.Flags().StringVar(&opt.storageSecret.Name, "storage-secret-name", opt.storageSecret.Name, "Name of the storage secret")
+	cmd.Flags().StringVar(&opt.storageSecret.Namespace, "storage-secret-namespace", opt.storageSecret.Namespace, "Namespace of the storage secret")
 
 	cmd.Flags().StringVar(&opt.setupOptions.Provider, "provider", opt.setupOptions.Provider, "Backend provider (i.e. gcs, s3, azure etc)")
 	cmd.Flags().StringVar(&opt.setupOptions.Bucket, "bucket", opt.setupOptions.Bucket, "Name of the cloud bucket/container (keep empty for local backend)")
 	cmd.Flags().StringVar(&opt.setupOptions.Endpoint, "endpoint", opt.setupOptions.Endpoint, "Endpoint for s3/s3 compatible backend or REST server URL")
 	cmd.Flags().StringVar(&opt.setupOptions.Region, "region", opt.setupOptions.Region, "Region for s3/s3 compatible backend")
 	cmd.Flags().StringVar(&opt.setupOptions.Path, "path", opt.setupOptions.Path, "Directory inside the bucket where backup will be stored")
-	cmd.Flags().StringVar(&opt.setupOptions.SecretDir, "secret-dir", opt.setupOptions.SecretDir, "Directory where storage secret has been mounted")
 	cmd.Flags().StringVar(&opt.setupOptions.ScratchDir, "scratch-dir", opt.setupOptions.ScratchDir, "Temporary directory")
 	cmd.Flags().BoolVar(&opt.setupOptions.EnableCache, "enable-cache", opt.setupOptions.EnableCache, "Specify whether to enable caching for restic")
 	cmd.Flags().Int64Var(&opt.setupOptions.MaxConnections, "max-connections", opt.setupOptions.MaxConnections, "Specify maximum concurrent connections for GCS, Azure and B2 backend")
@@ -152,6 +153,11 @@ func NewCmdBackup() *cobra.Command {
 }
 
 func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*restic.BackupOutput, error) {
+	var err error
+	opt.setupOptions.StorageSecret, err = opt.kubeClient.CoreV1().Secrets(opt.storageSecret.Namespace).Get(context.TODO(), opt.storageSecret.Name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
 	// if any pre-backup actions has been assigned to it, execute them
 	actionOptions := api_util.ActionOptions{
 		StashClient:       opt.stashClient,
@@ -160,7 +166,7 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 		BackupSessionName: opt.backupSessionName,
 		Namespace:         opt.namespace,
 	}
-	err := api_util.ExecutePreBackupActions(actionOptions)
+	err = api_util.ExecutePreBackupActions(actionOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -179,19 +185,24 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 		return nil, err
 	}
 
-	// get app binding
 	appBinding, err := opt.catalogClient.AppcatalogV1alpha1().AppBindings(opt.namespace).Get(context.TODO(), opt.appBindingName, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
-	// get secret
-	appBindingSecret, err := opt.kubeClient.CoreV1().Secrets(opt.namespace).Get(context.TODO(), appBinding.Spec.Secret.Name, metav1.GetOptions{})
+
+	session := opt.newSessionWrapper(opt.backupCMD)
+
+	err = opt.setDatabaseCredentials(appBinding, session)
 	if err != nil {
 		return nil, err
 	}
 
-	// transform secret
-	err = appBinding.TransformSecret(opt.kubeClient, appBindingSecret.Data)
+	err = session.setDatabaseConnectionParameters(appBinding)
+	if err != nil {
+		return nil, err
+	}
+
+	err = session.setTLSParameters(appBinding, opt.setupOptions.ScratchDir)
 	if err != nil {
 		return nil, err
 	}
@@ -203,36 +214,20 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 		return nil, fmt.Errorf("invalid pg backup command: expected %s or %s, but instead got %s", PgDumpCMD, PgDumpallCMD, pgBackupCMD)
 	}
 
-	if appBinding.Spec.ClientConfig.Service.Port == 0 {
-		appBinding.Spec.ClientConfig.Service.Port = 5432
-	}
-
-	resticWrapper, userName, err := opt.GetResticWrapperWithPGConnectorVariables(appBinding, appBindingSecret)
+	err = session.waitForDBReady(opt.waitTimeout)
 	if err != nil {
 		return nil, err
 	}
-	// set env for pg_dump/pg_dumpall
-	dumpCommand := restic.Command{
-		Name: pgBackupCMD,
-		Args: []interface{}{
-			fmt.Sprintf("--host=%s", appBinding.Spec.ClientConfig.Service.Name),
-			fmt.Sprintf("--port=%d", appBinding.Spec.ClientConfig.Service.Port),
-			fmt.Sprintf("--username=%s", userName),
-		},
-	}
-	for _, arg := range strings.Fields(opt.pgArgs) {
-		dumpCommand.Args = append(dumpCommand.Args, arg)
-	}
+
+	session.setUserArgs(opt.pgArgs)
+
 	// add the dump command into  stdin pipe commands
-	opt.backupOptions.StdinPipeCommands = append(opt.backupOptions.StdinPipeCommands, dumpCommand)
-
-	// wait for DB ready
-	err = opt.waitForDBReady(appBinding, appBindingSecret, opt.waitTimeout)
+	opt.backupOptions.StdinPipeCommands = append(opt.backupOptions.StdinPipeCommands, *session.cmd)
+	resticWrapper, err := restic.NewResticWrapperFromShell(opt.setupOptions, session.sh)
 	if err != nil {
 		return nil, err
 	}
 
-	// Run backup
 	return resticWrapper.RunBackup(opt.backupOptions, targetRef)
 
 }
