@@ -87,7 +87,7 @@ github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
 # github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369
 github.com/matttproud/golang_protobuf_extensions/pbutil
-# github.com/mitchellh/mapstructure v1.1.2
+# github.com/mitchellh/mapstructure v1.4.1
 github.com/mitchellh/mapstructure
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 github.com/modern-go/concurrent
@@ -109,9 +109,10 @@ github.com/prometheus/common/model
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
-# github.com/sergi/go-diff v1.1.0
+# github.com/sergi/go-diff v1.2.0
+## explicit
 github.com/sergi/go-diff/diffmatchpatch
-# github.com/spf13/cobra v1.1.3
+# github.com/spf13/cobra v1.2.1
 ## explicit
 github.com/spf13/cobra
 # github.com/spf13/pflag v1.0.5
@@ -179,11 +180,11 @@ gomodules.xyz/logs
 gomodules.xyz/mergo
 # gomodules.xyz/pointer v0.1.0
 gomodules.xyz/pointer
-# gomodules.xyz/sets v0.2.0
+# gomodules.xyz/sets v0.2.1
 gomodules.xyz/sets
 # gomodules.xyz/wait v0.2.0
 gomodules.xyz/wait
-# gomodules.xyz/x v0.0.8
+# gomodules.xyz/x v0.0.10
 ## explicit
 gomodules.xyz/x/version
 # google.golang.org/appengine v1.6.7
@@ -334,7 +335,7 @@ k8s.io/apimachinery/pkg/version
 k8s.io/apimachinery/pkg/watch
 k8s.io/apimachinery/third_party/forked/golang/json
 k8s.io/apimachinery/third_party/forked/golang/reflect
-# k8s.io/apiserver v0.21.1 => github.com/kmodules/apiserver v0.21.2-0.20210716212718-83e5493ac170
+# k8s.io/apiserver v0.21.1 => github.com/kmodules/apiserver v0.21.2-0.20220112070009-e3f6e88991d9
 k8s.io/apiserver/pkg/server/mux
 # k8s.io/client-go v0.21.1 => k8s.io/client-go v0.21.1
 ## explicit
@@ -507,7 +508,7 @@ k8s.io/client-go/util/homedir
 k8s.io/client-go/util/jsonpath
 k8s.io/client-go/util/keyutil
 k8s.io/client-go/util/workqueue
-# k8s.io/klog/v2 v2.8.0
+# k8s.io/klog/v2 v2.9.0
 ## explicit
 k8s.io/klog/v2
 # k8s.io/kube-aggregator v0.21.1
@@ -518,7 +519,8 @@ k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset
 k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset/scheme
 k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset/typed/apiregistration/v1
 k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset/typed/apiregistration/v1beta1
-# k8s.io/kube-openapi v0.0.0-20210305001622-591a79e4bda7 => k8s.io/kube-openapi v0.0.0-20210305001622-591a79e4bda7
+# k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e => k8s.io/kube-openapi v0.0.0-20210305001622-591a79e4bda7
+## explicit
 k8s.io/kube-openapi/pkg/common
 k8s.io/kube-openapi/pkg/util/proto
 # k8s.io/kubernetes v1.21.1 => github.com/kmodules/kubernetes v1.22.0-alpha.0.0.20210617232219-a432af45d932
@@ -528,7 +530,7 @@ k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/pointer
 k8s.io/utils/trace
-# kmodules.xyz/client-go v0.0.0-20220108081101-27afc2ac4ebe
+# kmodules.xyz/client-go v0.0.0-20220203031013-1de48437aaf3
 ## explicit
 kmodules.xyz/client-go
 kmodules.xyz/client-go/api/v1
@@ -539,7 +541,7 @@ kmodules.xyz/client-go/discovery
 kmodules.xyz/client-go/dynamic
 kmodules.xyz/client-go/meta
 kmodules.xyz/client-go/tools/clusterid
-# kmodules.xyz/custom-resources v0.0.0-20220104123914-3c036dd7c1cd
+# kmodules.xyz/custom-resources v0.0.0-20220126201139-be014631db0c
 ## explicit
 kmodules.xyz/custom-resources/apis/appcatalog
 kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1
@@ -553,9 +555,10 @@ kmodules.xyz/custom-resources/client/clientset/versioned/typed/appcatalog/v1alph
 kmodules.xyz/custom-resources/client/clientset/versioned/typed/auditor/v1alpha1
 kmodules.xyz/custom-resources/client/clientset/versioned/typed/metrics/v1alpha1
 kmodules.xyz/custom-resources/crds
-# kmodules.xyz/objectstore-api v0.0.0-20211116180107-8720be0c9bf7
+# kmodules.xyz/objectstore-api v0.0.0-20211207131029-3271069de43e
+## explicit
 kmodules.xyz/objectstore-api/api/v1
-# kmodules.xyz/offshoot-api v0.0.0-20211103060642-3e217667cf41
+# kmodules.xyz/offshoot-api v0.0.0-20211207130839-cc7187e020cf
 ## explicit
 kmodules.xyz/offshoot-api/api/v1
 # kmodules.xyz/prober v0.0.0-20210618020259-5836fb959027
@@ -643,7 +646,7 @@ stash.appscode.dev/apimachinery/pkg/util
 # helm.sh/helm/v3 => github.com/kubepack/helm/v3 v3.6.1-0.20210518225915-c3e0ce48dd1b
 # k8s.io/api => k8s.io/api v0.21.1
 # k8s.io/apimachinery => github.com/kmodules/apimachinery v0.21.2-rc.0.0.20210617231004-332981b97d2d
-# k8s.io/apiserver => github.com/kmodules/apiserver v0.21.2-0.20210716212718-83e5493ac170
+# k8s.io/apiserver => github.com/kmodules/apiserver v0.21.2-0.20220112070009-e3f6e88991d9
 # k8s.io/cli-runtime => k8s.io/cli-runtime v0.21.1
 # k8s.io/client-go => k8s.io/client-go v0.21.1
 # k8s.io/component-base => k8s.io/component-base v0.21.1
