@@ -4,20 +4,23 @@ go 1.15
 
 require (
 	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/spf13/cobra v1.1.3
+	github.com/sergi/go-diff v1.2.0 // indirect
+	github.com/spf13/cobra v1.2.1
 	go.bytebuilders.dev/license-verifier/kubernetes v0.9.7
 	golang.org/x/tools v0.1.1-0.20210427153610-6397a11608ad // indirect
 	gomodules.xyz/flags v0.1.3
 	gomodules.xyz/go-sh v0.1.0
 	gomodules.xyz/logs v0.0.6
-	gomodules.xyz/x v0.0.8
+	gomodules.xyz/x v0.0.10
 	k8s.io/api v0.21.1
 	k8s.io/apimachinery v0.21.1
 	k8s.io/client-go v0.21.1
-	k8s.io/klog/v2 v2.8.0
-	kmodules.xyz/client-go v0.0.0-20220108081101-27afc2ac4ebe
-	kmodules.xyz/custom-resources v0.0.0-20220104123914-3c036dd7c1cd
-	kmodules.xyz/offshoot-api v0.0.0-20211103060642-3e217667cf41
+	k8s.io/klog/v2 v2.9.0
+	k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e // indirect
+	kmodules.xyz/client-go v0.0.0-20220203031013-1de48437aaf3
+	kmodules.xyz/custom-resources v0.0.0-20220126201139-be014631db0c
+	kmodules.xyz/objectstore-api v0.0.0-20211207131029-3271069de43e // indirect
+	kmodules.xyz/offshoot-api v0.0.0-20211207130839-cc7187e020cf
 	stash.appscode.dev/apimachinery v0.17.1-0.20220113052814-7da4b19c88a3
 )
 
@@ -109,7 +112,7 @@ replace k8s.io/api => k8s.io/api v0.21.1
 
 replace k8s.io/apimachinery => github.com/kmodules/apimachinery v0.21.2-rc.0.0.20210617231004-332981b97d2d
 
-replace k8s.io/apiserver => github.com/kmodules/apiserver v0.21.2-0.20210716212718-83e5493ac170
+replace k8s.io/apiserver => github.com/kmodules/apiserver v0.21.2-0.20220112070009-e3f6e88991d9
 
 replace k8s.io/cli-runtime => k8s.io/cli-runtime v0.21.1
 
