@@ -156,16 +156,29 @@ const (
 )
 
 const (
-	CallerWebhook       = "webhook"
-	CallerController    = "controller"
-	PushgatewayLocalURL = "http://localhost:56789"
-	DefaultHost         = "host-0"
+	CallerWebhook    = "webhook"
+	CallerController = "controller"
+	DefaultHost      = "host-0"
 )
 
 // ==================== Prometheus metrics related constants ============
 const (
 	PromJobStashBackup  = "stash-backup"
 	PromJobStashRestore = "stash-restore"
+
+	// RepositoryMetricsPushed whether the Repository metrics for this backup session were pushed or not
+	RepositoryMetricsPushed = "RepositoryMetricsPushed"
+	// SuccessfullyPushedRepositoryMetrics indicates that the condition transitioned to this state because the repository metrics was successfully pushed to the pushgateway
+	SuccessfullyPushedRepositoryMetrics = "SuccessfullyPushedRepositoryMetrics"
+	// FailedToPushRepositoryMetrics indicates that the condition transitioned to this state because the Stash was unable to push the repository metrics to the pushgateway
+	FailedToPushRepositoryMetrics = "FailedToPushRepositoryMetrics"
+
+	// MetricsPushed whether the metrics for this backup session were pushed or not
+	MetricsPushed = "MetricsPushed"
+	// SuccessfullyPushedMetrics indicates that the condition transitioned to this state because the metrics was successfully pushed to the pushgateway
+	SuccessfullyPushedMetrics = "SuccessfullyPushedMetrics"
+	// FailedToPushMetrics indicates that the condition transitioned to this state because the Stash was unable to push the metrics to the pushgateway
+	FailedToPushMetrics = "FailedToPushMetrics"
 )
 
 // ==================== RBAC related constants ==========================
@@ -188,6 +201,12 @@ const (
 const (
 	// RepositoryFound indicates whether the respective Repository object was found or not.
 	RepositoryFound = "RepositoryFound"
+	// ValidationPassed indicates the validation conditions of the CRD are passed or not.
+	ValidationPassed = "ValidationPassed"
+	// ResourceValidationPassed indicates that the condition transitioned to this state because the CRD meets validation criteria
+	ResourceValidationPassed = "ResourceValidationPassed"
+	// ResourceValidationFailed indicates that the condition transitioned to this state because the CRD does not meet validation criteria
+	ResourceValidationFailed = "ResourceValidationFailed"
 	// BackendSecretFound indicates whether the respective backend secret was found or not.
 	BackendSecretFound = "BackendSecretFound"
 
@@ -210,6 +229,8 @@ const (
 	// This condition is particularly helpful when the restore addon require some additional operations to perform
 	// before marking the RestoreSession Succeeded/Failed.
 	RestoreCompleted = "RestoreCompleted"
+	// RestorerEnsured condition indicates whether the restore job / init-container was created or not.
+	RestorerEnsured = "RestorerEnsured"
 
 	// GlobalPreBackupHookSucceeded indicates whether the global PreBackupHook was executed successfully or not
 	GlobalPreBackupHookSucceeded = "GlobalPreBackupHookSucceeded"
@@ -219,15 +240,12 @@ const (
 	GlobalPreRestoreHookSucceeded = "GlobalPreRestoreHookSucceeded"
 	// GlobalPostRestoreHookSucceeded indicates whether the global PostRestoreHook was executed successfully or not
 	GlobalPostRestoreHookSucceeded = "GlobalPostRestoreHookSucceeded"
-
 	// BackendRepositoryInitialized indicates that whether backend repository was initialized or not
 	BackendRepositoryInitialized = "BackendRepositoryInitialized"
 	// RetentionPolicyApplied indicates that whether the retention policies were applied or not
 	RetentionPolicyApplied = "RetentionPolicyApplied"
 	// RepositoryIntegrityVerified indicates whether the repository integrity check succeeded or not
 	RepositoryIntegrityVerified = "RepositoryIntegrityVerified"
-	// RepositoryMetricsPushed whether the Repository metrics for this backup session were pushed or not
-	RepositoryMetricsPushed = "RepositoryMetricsPushed"
 )
 
 // ================== Condition Types Related Constants ===========================
@@ -312,10 +330,6 @@ const (
 	SuccessfullyVerifiedRepositoryIntegrity = "SuccessfullyVerifiedRepositoryIntegrity"
 	// FailedToVerifyRepositoryIntegrity indicates that the condition transitioned to this state because the repository has failed the integrity check
 	FailedToVerifyRepositoryIntegrity = "FailedToVerifyRepositoryIntegrity"
-	// SuccessfullyPushedRepositoryMetrics indicates that the condition transitioned to this state because the repository metrics was successfully pushed to the pushgateway
-	SuccessfullyPushedRepositoryMetrics = "SuccessfullyPushedRepositoryMetrics"
-	// FailedToPushRepositoryMetrics indicates that the condition transitioned to this state because the Stash was unable to push the repository metrics to the pushgateway
-	FailedToPushRepositoryMetrics = "FailedToPushRepositoryMetrics"
 )
 
 // ==================== Action related constants ============
