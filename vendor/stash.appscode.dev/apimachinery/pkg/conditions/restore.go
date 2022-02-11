@@ -29,7 +29,7 @@ import (
 )
 
 func SetRestoreTargetFoundConditionToTrue(inv invoker.RestoreInvoker, index int) error {
-	target := inv.TargetsInfo[index].Target
+	target := inv.GetTargetInfo()[index].Target
 	return inv.SetCondition(&target.Ref, kmapi.Condition{
 		Type:   apis.RestoreTargetFound,
 		Status: core.ConditionTrue,
@@ -43,7 +43,7 @@ func SetRestoreTargetFoundConditionToTrue(inv invoker.RestoreInvoker, index int)
 }
 
 func SetRestoreTargetFoundConditionToFalse(inv invoker.RestoreInvoker, index int) error {
-	target := inv.TargetsInfo[index].Target
+	target := inv.GetTargetInfo()[index].Target
 	return inv.SetCondition(&target.Ref, kmapi.Condition{
 		Type:   apis.RestoreTargetFound,
 		Status: core.ConditionFalse,
@@ -57,7 +57,7 @@ func SetRestoreTargetFoundConditionToFalse(inv invoker.RestoreInvoker, index int
 }
 
 func SetRestoreTargetFoundConditionToUnknown(inv invoker.RestoreInvoker, index int, err error) error {
-	target := inv.TargetsInfo[index].Target
+	target := inv.GetTargetInfo()[index].Target
 	return inv.SetCondition(&target.Ref, kmapi.Condition{
 		Type:   apis.RestoreTargetFound,
 		Status: core.ConditionUnknown,
@@ -89,8 +89,8 @@ func SetRestoreJobCreatedConditionToFalse(inv invoker.RestoreInvoker, tref *api_
 	})
 }
 
-func SetInitContainerInjectedConditionToTrue(inv invoker.RestoreInvoker, tref api_v1beta1.TargetRef) error {
-	return inv.SetCondition(&tref, kmapi.Condition{
+func SetInitContainerInjectedConditionToTrue(inv invoker.RestoreInvoker, tref *api_v1beta1.TargetRef) error {
+	return inv.SetCondition(tref, kmapi.Condition{
 		Type:    apis.StashInitContainerInjected,
 		Status:  core.ConditionTrue,
 		Reason:  apis.InitContainerInjectionSucceeded,
@@ -98,8 +98,8 @@ func SetInitContainerInjectedConditionToTrue(inv invoker.RestoreInvoker, tref ap
 	})
 }
 
-func SetInitContainerInjectedConditionToFalse(inv invoker.RestoreInvoker, tref api_v1beta1.TargetRef, err error) error {
-	return inv.SetCondition(&tref, kmapi.Condition{
+func SetInitContainerInjectedConditionToFalse(inv invoker.RestoreInvoker, tref *api_v1beta1.TargetRef, err error) error {
+	return inv.SetCondition(tref, kmapi.Condition{
 		Type:    apis.StashInitContainerInjected,
 		Status:  core.ConditionFalse,
 		Reason:  apis.InitContainerInjectionFailed,
@@ -107,8 +107,8 @@ func SetInitContainerInjectedConditionToFalse(inv invoker.RestoreInvoker, tref a
 	})
 }
 
-func SetRestoreCompletedConditionToTrue(inv invoker.RestoreInvoker, tref api_v1beta1.TargetRef, msg string) error {
-	return inv.SetCondition(&tref, kmapi.Condition{
+func SetRestoreCompletedConditionToTrue(inv invoker.RestoreInvoker, tref *api_v1beta1.TargetRef, msg string) error {
+	return inv.SetCondition(tref, kmapi.Condition{
 		Type:    apis.RestoreCompleted,
 		Status:  core.ConditionTrue,
 		Reason:  "PostRestoreTasksExecuted",
@@ -116,11 +116,47 @@ func SetRestoreCompletedConditionToTrue(inv invoker.RestoreInvoker, tref api_v1b
 	})
 }
 
-func SetRestoreCompletedConditionToFalse(inv invoker.RestoreInvoker, tref api_v1beta1.TargetRef, msg string) error {
-	return inv.SetCondition(&tref, kmapi.Condition{
+func SetRestoreCompletedConditionToFalse(inv invoker.RestoreInvoker, tref *api_v1beta1.TargetRef, msg string) error {
+	return inv.SetCondition(tref, kmapi.Condition{
 		Type:    apis.RestoreCompleted,
 		Status:  core.ConditionFalse,
 		Reason:  "PostRestoreTasksNotExecuted",
 		Message: msg,
+	})
+}
+
+func SetRestorerEnsuredToTrue(inv invoker.RestoreInvoker, tref *api_v1beta1.TargetRef, msg string) error {
+	return inv.SetCondition(tref, kmapi.Condition{
+		Type:    apis.RestorerEnsured,
+		Status:  core.ConditionTrue,
+		Reason:  "SuccessfullyEnsuredRestorerEntity",
+		Message: msg,
+	})
+}
+
+func SetRestorerEnsuredToFalse(inv invoker.RestoreInvoker, tref *api_v1beta1.TargetRef, msg string) error {
+	return inv.SetCondition(tref, kmapi.Condition{
+		Type:    apis.RestorerEnsured,
+		Status:  core.ConditionFalse,
+		Reason:  "FailedToEnsureRestorerEntity",
+		Message: msg,
+	})
+}
+
+func SetMetricsPushedConditionToFalse(inv invoker.RestoreInvoker, tref *api_v1beta1.TargetRef, err error) error {
+	return inv.SetCondition(tref, kmapi.Condition{
+		Type:    apis.MetricsPushed,
+		Status:  core.ConditionFalse,
+		Reason:  apis.FailedToPushMetrics,
+		Message: fmt.Sprintf("Failed to push metrics. Reason: %v", err.Error()),
+	})
+}
+
+func SetMetricsPushedConditionToTrue(inv invoker.RestoreInvoker, tref *api_v1beta1.TargetRef) error {
+	return inv.SetCondition(tref, kmapi.Condition{
+		Type:    apis.MetricsPushed,
+		Status:  core.ConditionTrue,
+		Reason:  apis.SuccessfullyPushedMetrics,
+		Message: "Successfully pushed metrics.",
 	})
 }
