@@ -29,7 +29,7 @@ var SupportedProducts = []string{"stash-enterprise", "kubedb-ext-stash"}
 var licenseApiService string
 
 func NewRootCmd() *cobra.Command {
-	var rootCmd = &cobra.Command{
+	rootCmd := &cobra.Command{
 		Use:               "stash-postgres",
 		Short:             `PostgreSQL backup & restore plugin for Stash by AppsCode`,
 		Long:              `PostgreSQL backup & restore plugin for Stash by AppsCode. For more information, visit here: https://appscode.com/products/stash`,
