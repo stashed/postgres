@@ -117,7 +117,7 @@ func (opt *postgresOptions) setDatabaseCredentials(appBinding *appcatalog.AppBin
 		if !ok {
 			return fmt.Errorf("can't find client cert")
 		}
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey), certByte, 0600); err != nil {
+		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSCertKey), certByte, 0o600); err != nil {
 			return err
 		}
 
@@ -127,12 +127,12 @@ func (opt *postgresOptions) setDatabaseCredentials(appBinding *appcatalog.AppBin
 			return fmt.Errorf("can't find client private key")
 		}
 
-		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey), keyByte, 0600); err != nil {
+		if err := ioutil.WriteFile(filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey), keyByte, 0o600); err != nil {
 			return err
 		}
 		session.sh.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
 
-		//TODO: this one is hard coded here but need to change later
+		// TODO: this one is hard coded here but need to change later
 		userName = opt.user
 	} else {
 		// set env for pg_dump/pg_dumpall
@@ -181,7 +181,7 @@ func (session *sessionWrapper) setUserArgs(args string) {
 
 func (session *sessionWrapper) setTLSParameters(appBinding *appcatalog.AppBinding, scratchDir string) error {
 	if appBinding.Spec.ClientConfig.CABundle != nil {
-		if err := ioutil.WriteFile(filepath.Join(scratchDir, core.ServiceAccountRootCAKey), appBinding.Spec.ClientConfig.CABundle, 0600); err != nil {
+		if err := ioutil.WriteFile(filepath.Join(scratchDir, core.ServiceAccountRootCAKey), appBinding.Spec.ClientConfig.CABundle, 0o600); err != nil {
 			return err
 		}
 		session.sh.SetEnv(EnvPGSSLROOTCERT, filepath.Join(scratchDir, core.ServiceAccountRootCAKey))
