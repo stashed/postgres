@@ -229,5 +229,4 @@ func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*
 	}
 
 	return resticWrapper.RunBackup(opt.backupOptions, targetRef)
-
 }
