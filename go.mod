@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/google/gofuzz v1.2.0 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/spf13/cobra v1.2.1
 	go.bytebuilders.dev/license-verifier/kubernetes v0.9.7
 	golang.org/x/tools v0.1.1-0.20210427153610-6397a11608ad // indirect
