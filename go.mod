@@ -3,23 +3,20 @@ module stash.appscode.dev/postgres
 go 1.15
 
 require (
-	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/spf13/cobra v1.2.1
 	go.bytebuilders.dev/license-verifier/kubernetes v0.9.7
-	golang.org/x/tools v0.1.1-0.20210427153610-6397a11608ad // indirect
 	gomodules.xyz/flags v0.1.3
 	gomodules.xyz/go-sh v0.1.0
 	gomodules.xyz/logs v0.0.6
-	gomodules.xyz/x v0.0.10
+	gomodules.xyz/x v0.0.13
 	k8s.io/api v0.21.1
 	k8s.io/apimachinery v0.21.1
 	k8s.io/client-go v0.21.1
 	k8s.io/klog/v2 v2.9.0
-	kmodules.xyz/client-go v0.0.0-20220203031013-1de48437aaf3
-	kmodules.xyz/custom-resources v0.0.0-20220208103158-61b298634e43
-	kmodules.xyz/offshoot-api v0.0.0-20211207130839-cc7187e020cf
-	stash.appscode.dev/apimachinery v0.18.0
+	kmodules.xyz/client-go v0.0.0-20220317213815-2a6d5a5784f2
+	kmodules.xyz/custom-resources v0.0.0-20220317220154-7beb809b1f5e
+	kmodules.xyz/offshoot-api v0.0.0-20220329041708-c076b2bcb0f8
+	stash.appscode.dev/apimachinery v0.19.0
 )
 
 replace bitbucket.org/ww/goautoneg => gomodules.xyz/goautoneg v0.0.0-20120707110453-a547fc61f48d
