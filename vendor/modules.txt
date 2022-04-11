@@ -156,7 +156,8 @@ gomodules.xyz/jsonpatch/v2
 # gomodules.xyz/logs v0.0.6
 ## explicit
 gomodules.xyz/logs
-# gomodules.xyz/mergo v0.3.13-0.20210702100041-9d62ff8ece4d
+# gomodules.xyz/mergo v0.3.13-0.20220214162359-48efe39fd402
+## explicit
 gomodules.xyz/mergo
 # gomodules.xyz/pointer v0.1.0
 gomodules.xyz/pointer
@@ -509,7 +510,7 @@ k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/pointer
 k8s.io/utils/trace
-# kmodules.xyz/client-go v0.0.0-20220317213815-2a6d5a5784f2
+# kmodules.xyz/client-go v0.0.0-20220404224906-af7b092cfac5
 ## explicit
 kmodules.xyz/client-go
 kmodules.xyz/client-go/api/v1
