@@ -165,6 +165,7 @@ github.com/docker/libtrust v0.0.0-20150114040149-fa567046d9b1/go.mod h1:cyGadeNE
 github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3ebgob9U8Nd0kOddGdZWjyMGR8Wziv+TBNwSE=
 github.com/dustin/go-humanize v0.0.0-20171111073723-bb3d318650d4/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
+github.com/dustin/go-humanize v1.0.1-0.20220316001817-d5090ed65664/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
 github.com/eapache/go-resiliency v1.1.0/go.mod h1:kFI+JgMyC7bLPUVY133qvEBtVayf5mFgVsvEsIPBvNs=
 github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21/go.mod h1:+020luEh2TKB4/GOp8oxxtq0Daoen/Cii55CzbTV6DU=
 github.com/eapache/queue v1.1.0/go.mod h1:6eCeP0CKFpHLu8blIFXhExK/dRa7WDZfr6jVFPTqq+I=
@@ -1097,7 +1098,6 @@ k8s.io/utils v0.0.0-20201110183641-67b214c5f920/go.mod h1:jPW/WVKK9YHAvNhRxK0md/
 kmodules.xyz/client-go v0.0.0-20210617233340-13d22e91512b/go.mod h1:A6GAK6xP5zBuWK6A/vUkkjKzcuywkms7fIxRf5wblO4=
 kmodules.xyz/client-go v0.0.0-20211107190155-5bb4090d2728/go.mod h1:ENUu8pPK19xzBkVpAJHoGCI2QRvb1SqffWRt0K2sV5I=
 kmodules.xyz/client-go v0.0.0-20220215012708-9963581d69a7/go.mod h1:sOq5P3AkZdv6D/skvUPwEG15NDYy5olwBllH/JXfhGI=
-kmodules.xyz/client-go v0.0.0-20220317213815-2a6d5a5784f2/go.mod h1:7pExIHGzUdu8ZGveYvAaXEhS4GdczoOy8z+hq6x6K9A=
 kmodules.xyz/client-go v0.0.0-20220404224906-af7b092cfac5 h1:UkXLQ5SMS98RwnJffKAU0ANXVq9AHSLabQ9NKUhkCgA=
 kmodules.xyz/client-go v0.0.0-20220404224906-af7b092cfac5/go.mod h1:7pExIHGzUdu8ZGveYvAaXEhS4GdczoOy8z+hq6x6K9A=
 kmodules.xyz/constants v0.0.0-20210218100002-2c304bfda278/go.mod h1:DbiFk1bJ1KEO94t1SlAn7tzc+Zz95rSXgyUKa2nzPmY=
@@ -1139,5 +1139,5 @@ sigs.k8s.io/yaml v1.2.0/go.mod h1:yfXDCHCao9+ENCvLSE62v9VSji2MKu5jeNfTrofGhJc=
 sigs.k8s.io/yaml v1.3.0 h1:a2VclLzOGrwOHDiV8EfBGhvjHvP46CtW5j6POvhYGGo=
 sigs.k8s.io/yaml v1.3.0/go.mod h1:GeOyir5tyXNByN85N/dRIT9es5UQNerPYEKK56eTBm8=
 sourcegraph.com/sourcegraph/appdash v0.0.0-20190731080439-ebfcffb1b5c0/go.mod h1:hI742Nqp5OhwiqlzhgfbWU4mW4yO10fP+LoT9WOswdU=
-stash.appscode.dev/apimachinery v0.19.0 h1:G4oBu55042Ewigtwz/7iICWSiamvomJD8SuFlrEm7x8=
-stash.appscode.dev/apimachinery v0.19.0/go.mod h1:vgzwLa2KFxfbcrTS3gzhJLYmx4WdZpHfW9n8a7Hzhzc=
+stash.appscode.dev/apimachinery v0.19.1-0.20220412093604-dbb9ce30b8b9 h1:83Fs+htKeWm0sbp1mXsBwerCFN4HzKmEvnYq2X1omtg=
+stash.appscode.dev/apimachinery v0.19.1-0.20220412093604-dbb9ce30b8b9/go.mod h1:Wvh/C9ZGQXWex8d6LKU8TodOriuPcirMuTnzgBQooLk=

@@ -2808,6 +2808,8 @@ spec:
                         type: string
                       name:
                         type: string
+                      namespace:
+                        type: string
                     type: object
                   replicas:
                     description: replicas are the desired number of replicas whose

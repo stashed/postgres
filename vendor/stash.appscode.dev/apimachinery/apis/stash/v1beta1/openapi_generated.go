@@ -21808,6 +21808,12 @@ func schema_apimachinery_apis_stash_v1beta1_TargetRef(ref common.ReferenceCallba
 							Format: "",
 						},
 					},
+					"namespace": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
 				},
 			},
 		},

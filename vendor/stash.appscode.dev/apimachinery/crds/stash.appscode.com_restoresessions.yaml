@@ -2792,6 +2792,8 @@ spec:
                         type: string
                       name:
                         type: string
+                      namespace:
+                        type: string
                     type: object
                   replicas:
                     description: replicas is the desired number of replicas of the
