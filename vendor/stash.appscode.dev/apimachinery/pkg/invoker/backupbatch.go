@@ -163,9 +163,14 @@ func (inv *BackupBatchInvoker) GetTargetInfo() []BackupTargetInfo {
 	return targetInfo
 }
 
-func getBackupTarget(target *v1beta1.BackupTarget, invNamspace string) *v1beta1.BackupTarget {
-	if target != nil && target.Ref.Namespace == "" {
-		target.Ref.Namespace = invNamspace
+func getBackupTarget(target *v1beta1.BackupTarget, invNamespace string) *v1beta1.BackupTarget {
+	if target == nil {
+		return &v1beta1.BackupTarget{
+			Ref: v1beta1.EmptyTargetRef(),
+		}
+	}
+	if target.Ref.Namespace == "" {
+		target.Ref.Namespace = invNamespace
 	}
 	return target
 }

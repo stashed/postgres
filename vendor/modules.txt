@@ -536,7 +536,7 @@ kmodules.xyz/custom-resources/client/clientset/versioned/typed/metrics/v1alpha1
 kmodules.xyz/custom-resources/crds
 # kmodules.xyz/objectstore-api v0.0.0-20220317220441-f1d593d0a778
 kmodules.xyz/objectstore-api/api/v1
-# kmodules.xyz/offshoot-api v0.0.0-20220329041708-c076b2bcb0f8
+# kmodules.xyz/offshoot-api v0.0.0-20220419215722-c7fc995091d3
 ## explicit
 kmodules.xyz/offshoot-api/api/v1
 # kmodules.xyz/prober v0.0.0-20220317043828-5ae0114adcad
@@ -553,7 +553,7 @@ sigs.k8s.io/structured-merge-diff/v4/typed
 sigs.k8s.io/structured-merge-diff/v4/value
 # sigs.k8s.io/yaml v1.3.0
 sigs.k8s.io/yaml
-# stash.appscode.dev/apimachinery v0.19.1-0.20220412093604-dbb9ce30b8b9
+# stash.appscode.dev/apimachinery v0.19.1-0.20220425033401-c840c081133c
 ## explicit
 stash.appscode.dev/apimachinery/apis/repositories
 stash.appscode.dev/apimachinery/apis/repositories/v1alpha1
