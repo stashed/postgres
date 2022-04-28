@@ -509,7 +509,7 @@ k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/pointer
 k8s.io/utils/trace
-# kmodules.xyz/client-go v0.0.0-20220317213815-2a6d5a5784f2
+# kmodules.xyz/client-go v0.0.0-20220404224906-af7b092cfac5
 ## explicit
 kmodules.xyz/client-go
 kmodules.xyz/client-go/api/v1
