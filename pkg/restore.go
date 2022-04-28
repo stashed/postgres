@@ -80,6 +80,7 @@ func NewCmdRestore() *cobra.Command {
 				APIVersion: appcatalog.SchemeGroupVersion.String(),
 				Kind:       appcatalog.ResourceKindApp,
 				Name:       opt.appBindingName,
+				Namespace:  opt.appBindingNamespace,
 			}
 			var restoreOutput *restic.RestoreOutput
 			restoreOutput, err = opt.restorePostgreSQL(targetRef)
@@ -114,6 +115,7 @@ func NewCmdRestore() *cobra.Command {
 	cmd.Flags().StringVar(&kubeconfigPath, "kubeconfig", kubeconfigPath, "Path to kubeconfig file with authorization information (the master location is set by the master flag).")
 	cmd.Flags().StringVar(&opt.namespace, "namespace", "default", "Namespace of Backup/Restore Session")
 	cmd.Flags().StringVar(&opt.appBindingName, "appbinding", opt.appBindingName, "Name of the app binding")
+	cmd.Flags().StringVar(&opt.appBindingNamespace, "appbinding-namespace", opt.appBindingNamespace, "Namespace of the app binding")
 	cmd.Flags().StringVar(&opt.storageSecret.Name, "storage-secret-name", opt.storageSecret.Name, "Name of the storage secret")
 	cmd.Flags().StringVar(&opt.storageSecret.Namespace, "storage-secret-namespace", opt.storageSecret.Namespace, "Namespace of the storage secret")
 
@@ -152,7 +154,7 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 		return nil, err
 	}
 
-	appBinding, err := opt.catalogClient.AppcatalogV1alpha1().AppBindings(opt.namespace).Get(context.TODO(), opt.appBindingName, metav1.GetOptions{})
+	appBinding, err := opt.catalogClient.AppcatalogV1alpha1().AppBindings(opt.appBindingNamespace).Get(context.TODO(), opt.appBindingName, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
