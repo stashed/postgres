@@ -66,10 +66,6 @@ func NewCmdBackup() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			err = license.CheckLicenseEndpoint(config, licenseApiService, SupportedProducts)
-			if err != nil {
-				return err
-			}
 			opt.kubeClient, err = kubernetes.NewForConfig(config)
 			if err != nil {
 				return err
@@ -156,6 +152,11 @@ func NewCmdBackup() *cobra.Command {
 
 func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*restic.BackupOutput, error) {
 	var err error
+	err = license.CheckLicenseEndpoint(opt.config, licenseApiService, SupportedProducts)
+	if err != nil {
+		return nil, err
+	}
+
 	opt.setupOptions.StorageSecret, err = opt.kubeClient.CoreV1().Secrets(opt.storageSecret.Namespace).Get(context.TODO(), opt.storageSecret.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
