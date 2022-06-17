@@ -229,6 +229,11 @@ func (in *BackupBlueprintSpec) DeepCopyInto(out *BackupBlueprintSpec) {
 		*out = new(apiv1.PersistentVolumeClaim)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Hooks != nil {
+		in, out := &in.Hooks, &out.Hooks
+		*out = new(BackupHooks)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.BackupHistoryLimit != nil {
 		in, out := &in.BackupHistoryLimit, &out.BackupHistoryLimit
 		*out = new(int32)
@@ -526,6 +531,7 @@ func (in *BackupSessionStatus) DeepCopyInto(out *BackupSessionStatus) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	in.SessionDeadline.DeepCopyInto(&out.SessionDeadline)
 	return
 }
 
@@ -1001,6 +1007,7 @@ func (in *RestoreBatchStatus) DeepCopyInto(out *RestoreBatchStatus) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	in.SessionDeadline.DeepCopyInto(&out.SessionDeadline)
 	return
 }
 
@@ -1180,6 +1187,7 @@ func (in *RestoreSessionStatus) DeepCopyInto(out *RestoreSessionStatus) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
+	in.SessionDeadline.DeepCopyInto(&out.SessionDeadline)
 	return
 }
 
