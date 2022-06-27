@@ -31,7 +31,6 @@ import (
 	"gomodules.xyz/flags"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	restclient "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	appcatalog "kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
@@ -67,6 +66,8 @@ func NewCmdBackup() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			opt.config = config
+
 			opt.kubeClient, err = kubernetes.NewForConfig(config)
 			if err != nil {
 				return err
@@ -87,7 +88,7 @@ func NewCmdBackup() *cobra.Command {
 			}
 
 			var backupOutput *restic.BackupOutput
-			backupOutput, err = opt.backupPostgreSQL(targetRef, config)
+			backupOutput, err = opt.backupPostgreSQL(targetRef)
 			if err != nil {
 				backupOutput = &restic.BackupOutput{
 					BackupTargetStatus: api_v1beta1.BackupTargetStatus{
@@ -151,9 +152,9 @@ func NewCmdBackup() *cobra.Command {
 	return cmd
 }
 
-func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef, config *restclient.Config) (*restic.BackupOutput, error) {
+func (opt *postgresOptions) backupPostgreSQL(targetRef api_v1beta1.TargetRef) (*restic.BackupOutput, error) {
 	var err error
-	err = license.CheckLicenseEndpoint(config, licenseApiService, SupportedProducts)
+	err = license.CheckLicenseEndpoint(opt.config, licenseApiService, SupportedProducts)
 	if err != nil {
 		return nil, err
 	}
