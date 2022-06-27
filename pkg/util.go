@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	restclient "k8s.io/client-go/rest"
 	"path/filepath"
 	"strings"
 
@@ -77,6 +78,7 @@ type postgresOptions struct {
 	setupOptions  restic.SetupOptions
 	backupOptions restic.BackupOptions
 	dumpOptions   restic.DumpOptions
+	config        *restclient.Config
 }
 
 func must(v []byte, err error) string {
