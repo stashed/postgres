@@ -66,6 +66,8 @@ func NewCmdBackup() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			opt.config = config
+
 			opt.kubeClient, err = kubernetes.NewForConfig(config)
 			if err != nil {
 				return err
