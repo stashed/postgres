@@ -27,13 +27,13 @@ import (
 // ResourceID identifies a resource
 type ResourceID struct {
 	Group   string `json:"group" protobuf:"bytes,1,opt,name=group"`
-	Version string `json:"version" protobuf:"bytes,2,opt,name=version"`
+	Version string `json:"version,omitempty" protobuf:"bytes,2,opt,name=version"`
 	// Name is the plural name of the resource to serve.  It must match the name of the CustomResourceDefinition-registration
 	// too: plural.group and it must be all lowercase.
-	Name string `json:"name" protobuf:"bytes,3,opt,name=name"`
+	Name string `json:"name,omitempty" protobuf:"bytes,3,opt,name=name"`
 	// Kind is the serialized kind of the resource.  It is normally CamelCase and singular.
-	Kind  string        `json:"kind" protobuf:"bytes,4,opt,name=kind"`
-	Scope ResourceScope `json:"scope" protobuf:"bytes,5,opt,name=scope,casttype=ResourceScope"`
+	Kind  string        `json:"kind,omitempty" protobuf:"bytes,4,opt,name=kind"`
+	Scope ResourceScope `json:"scope,omitempty" protobuf:"bytes,5,opt,name=scope,casttype=ResourceScope"`
 }
 
 // ResourceScope is an enum defining the different scopes available to a custom resource
@@ -147,6 +147,12 @@ func EqualsGVR(a schema.GroupVersionResource, b metav1.GroupVersionResource) boo
 func ExtractResourceID(mapper meta.RESTMapper, in ResourceID) (*ResourceID, error) {
 	if in.Group == "core" {
 		in.Group = ""
+	}
+	if in.Version != "" &&
+		in.Kind != "" &&
+		in.Name != "" &&
+		in.Scope != "" {
+		return &in, nil
 	}
 
 	kindFound := in.Kind != ""
