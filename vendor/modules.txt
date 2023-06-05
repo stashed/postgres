@@ -29,6 +29,8 @@ github.com/PuerkitoBio/purell
 # github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2
 ## explicit
 github.com/armon/circbuf
+# github.com/cespare/xxhash/v2 v2.2.0
+## explicit; go 1.11
 # github.com/codegangsta/inject v0.0.0-20150114235600-33e0aa1cb7c0
 ## explicit
 github.com/codegangsta/inject
@@ -148,13 +150,13 @@ go.bytebuilders.dev/license-proxyserver/apis/proxyserver/v1alpha1
 go.bytebuilders.dev/license-proxyserver/client/clientset/versioned
 go.bytebuilders.dev/license-proxyserver/client/clientset/versioned/scheme
 go.bytebuilders.dev/license-proxyserver/client/clientset/versioned/typed/proxyserver/v1alpha1
-# go.bytebuilders.dev/license-verifier v0.13.0
+# go.bytebuilders.dev/license-verifier v0.13.2
 ## explicit; go 1.18
 go.bytebuilders.dev/license-verifier
 go.bytebuilders.dev/license-verifier/apis/licenses
 go.bytebuilders.dev/license-verifier/apis/licenses/v1alpha1
 go.bytebuilders.dev/license-verifier/info
-# go.bytebuilders.dev/license-verifier/kubernetes v0.12.0
+# go.bytebuilders.dev/license-verifier/kubernetes v0.13.2
 ## explicit; go 1.18
 go.bytebuilders.dev/license-verifier/kubernetes
 # golang.org/x/crypto v0.9.0
