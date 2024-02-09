@@ -16,7 +16,7 @@ require (
 	kmodules.xyz/client-go v0.29.4
 	kmodules.xyz/custom-resources v0.29.0
 	kmodules.xyz/offshoot-api v0.29.0
-	stash.appscode.dev/apimachinery v0.32.1-0.20240101013736-ef308633d8b2
+	stash.appscode.dev/apimachinery v0.32.1-0.20240206075719-41610d0ce38f
 )
 
 require (
@@ -83,7 +83,7 @@ require (
 	k8s.io/kube-openapi v0.0.0-20231129212854-f0671cc7e66a // indirect
 	k8s.io/utils v0.0.0-20231127182322-b307cd553661 // indirect
 	kmodules.xyz/apiversion v0.2.0 // indirect
-	kmodules.xyz/objectstore-api v0.29.0 // indirect
+	kmodules.xyz/objectstore-api v0.29.1-0.20240205052451-a5cf0aa669f1 // indirect
 	kmodules.xyz/prober v0.29.0 // indirect
 	sigs.k8s.io/controller-runtime v0.16.3 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
