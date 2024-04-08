@@ -114,8 +114,11 @@ func (opt *postgresOptions) setDatabaseCredentials(appBinding *appcatalog.AppBin
 	}
 
 	userName := ""
-
-	if _, ok := appBindingSecret.Data[core.TLSPrivateKeyKey]; ok {
+	if appBinding.Spec.TLSSecret != nil && appBinding.Spec.TLSSecret.Name != "" {
+		appBindingSecret, err = opt.kubeClient.CoreV1().Secrets(appBinding.Namespace).Get(context.TODO(), appBinding.Spec.TLSSecret.Name, metav1.GetOptions{})
+		if err != nil {
+			return err
+		}
 		certByte, ok := appBindingSecret.Data[core.TLSCertKey]
 		if !ok {
 			return fmt.Errorf("can't find client cert")
