@@ -113,7 +113,9 @@ func (opt *postgresOptions) setDatabaseCredentials(appBinding *appcatalog.AppBin
 		return err
 	}
 
-	userName := ""
+	userName := must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser))
+	session.sh.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
+
 	if appBinding.Spec.TLSSecret != nil && appBinding.Spec.TLSSecret.Name != "" {
 		appBindingSecret, err = opt.kubeClient.CoreV1().Secrets(appBinding.Namespace).Get(context.TODO(), appBinding.Spec.TLSSecret.Name, metav1.GetOptions{})
 		if err != nil {
@@ -138,14 +140,10 @@ func (opt *postgresOptions) setDatabaseCredentials(appBinding *appcatalog.AppBin
 		}
 		session.sh.SetEnv(EnvPGSSLKEY, filepath.Join(opt.setupOptions.ScratchDir, core.TLSPrivateKeyKey))
 
-		// TODO: this one is hard coded here but need to change later
-		userName = opt.user
-	} else {
-		// set env for pg_dump/pg_dumpall
-		session.sh.SetEnv(EnvPgPassword, must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthPasswordKey, envPostgresPassword)))
-		userName = must(meta_util.GetBytesForKeys(appBindingSecret.Data, core.BasicAuthUsernameKey, envPostgresUser))
+		if opt.user != "" {
+			userName = opt.user
+		}
 	}
-
 	pgSSlmode, err := getSSLMODE(appBinding)
 	if err != nil {
 		return err
