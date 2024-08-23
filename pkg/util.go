@@ -19,6 +19,7 @@ package pkg
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -203,14 +204,26 @@ func (session *sessionWrapper) waitForDBReady(waitTimeout int32) error {
 }
 
 func getSSLMODE(appBinding *v1alpha1.AppBinding) (string, error) {
-	sslmodeString := appBinding.Spec.ClientConfig.Service.Query
-	if sslmodeString == "" {
-		return "", nil
-	}
-	temps := strings.Split(sslmodeString, "=")
-	if len(temps) != 2 {
-		return "", fmt.Errorf("the sslmode is not valid. please provide the valid template. the temlpate should be like this: sslmode=<your_desire_sslmode>")
+	if appBinding.Spec.ClientConfig.Service != nil {
+		sslmodeString := appBinding.Spec.ClientConfig.Service.Query
+		if sslmodeString == "" {
+			return "", nil
+		}
+		temps := strings.Split(sslmodeString, "=")
+		if len(temps) != 2 {
+			return "", fmt.Errorf("the sslmode is not valid. please provide the valid template. the temlpate should be like this: sslmode=<your_desire_sslmode>")
+		}
+		return strings.TrimSpace(temps[1]), nil
+	} else if appBinding.Spec.ClientConfig.URL != nil {
+		parsedURL, err := url.Parse(*appBinding.Spec.ClientConfig.URL)
+		if err != nil {
+			return "", err
+		}
+		queryParams := parsedURL.Query()
+		sslmode := queryParams.Get("sslmode")
+		klog.Infoln("SSLMODE: ", sslmode)
+		return sslmode, nil
 	}
 
-	return strings.TrimSpace(temps[1]), nil
+	return "", nil
 }
