@@ -34,8 +34,8 @@ jobs:
 
       - name: Build
         env:
-          REGISTRY: appscodeci
-          DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          REGISTRY: ghcr.io/appscodeci
+          DOCKER_TOKEN: ${{ secrets.LGTM_GITHUB_TOKEN }}
           USERNAME: 1gtm
         run: |
           docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
