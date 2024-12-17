@@ -40,6 +40,9 @@ github.com/fatih/structs
 # github.com/fsnotify/fsnotify v1.7.0
 ## explicit; go 1.17
 github.com/fsnotify/fsnotify
+# github.com/ghodss/yaml v1.0.0
+## explicit
+github.com/ghodss/yaml
 # github.com/go-logr/logr v1.4.2
 ## explicit; go 1.18
 github.com/go-logr/logr
@@ -94,6 +97,9 @@ github.com/google/gofuzz/bytesource
 # github.com/google/uuid v1.6.0
 ## explicit
 github.com/google/uuid
+# github.com/gorilla/websocket v1.5.1
+## explicit; go 1.20
+github.com/gorilla/websocket
 # github.com/imdario/mergo v0.3.16 => github.com/imdario/mergo v0.3.6
 ## explicit
 github.com/imdario/mergo
@@ -163,11 +169,29 @@ github.com/prometheus/common/model
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
+# github.com/rancher/norman v0.0.0-20240708202514-a0127673d1b9
+## explicit; go 1.22.0
+github.com/rancher/norman/clientbase
+github.com/rancher/norman/httperror
+github.com/rancher/norman/types
+github.com/rancher/norman/types/convert
+github.com/rancher/norman/types/definition
+github.com/rancher/norman/types/slice
+github.com/rancher/norman/types/values
+# github.com/rancher/rancher/pkg/client v0.0.0-20240710123941-93e332156bbe
+## explicit; go 1.22.0
+github.com/rancher/rancher/pkg/client/generated/management/v3
+# github.com/rancher/wrangler/v3 v3.0.0
+## explicit; go 1.22.0
+github.com/rancher/wrangler/v3/pkg/name
 # github.com/rogpeppe/go-internal v1.12.0
 ## explicit; go 1.20
 # github.com/sergi/go-diff v1.2.0
 ## explicit; go 1.12
 github.com/sergi/go-diff/diffmatchpatch
+# github.com/sirupsen/logrus v1.9.3
+## explicit; go 1.13
+github.com/sirupsen/logrus
 # github.com/spf13/cobra v1.8.0
 ## explicit; go 1.15
 github.com/spf13/cobra
@@ -205,7 +229,7 @@ go.bytebuilders.dev/license-verifier/kubernetes
 # golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842
 ## explicit; go 1.20
 golang.org/x/exp/maps
-# golang.org/x/net v0.27.0
+# golang.org/x/net v0.29.0
 ## explicit; go 1.18
 golang.org/x/net/html
 golang.org/x/net/html/atom
@@ -214,20 +238,23 @@ golang.org/x/net/http/httpguts
 golang.org/x/net/http2
 golang.org/x/net/http2/hpack
 golang.org/x/net/idna
-# golang.org/x/oauth2 v0.21.0
+golang.org/x/net/internal/socks
+golang.org/x/net/proxy
+# golang.org/x/oauth2 v0.22.0
 ## explicit; go 1.18
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
-# golang.org/x/sys v0.22.0
+# golang.org/x/sys v0.28.0
 ## explicit; go 1.18
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.22.0
+# golang.org/x/term v0.27.0
 ## explicit; go 1.18
 golang.org/x/term
-# golang.org/x/text v0.16.0
+# golang.org/x/text v0.21.0
 ## explicit; go 1.18
+golang.org/x/text/cases
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap
 golang.org/x/text/encoding/htmlindex
@@ -238,6 +265,7 @@ golang.org/x/text/encoding/korean
 golang.org/x/text/encoding/simplifiedchinese
 golang.org/x/text/encoding/traditionalchinese
 golang.org/x/text/encoding/unicode
+golang.org/x/text/internal
 golang.org/x/text/internal/language
 golang.org/x/text/internal/language/compact
 golang.org/x/text/internal/tag
@@ -452,6 +480,7 @@ k8s.io/apimachinery/third_party/forked/golang/json
 k8s.io/apimachinery/third_party/forked/golang/reflect
 # k8s.io/apiserver v0.30.2 => github.com/kmodules/apiserver v0.30.3-0.20240717062442-8d4dcc0bdd0b
 ## explicit; go 1.22.0
+k8s.io/apiserver/pkg/authentication/user
 k8s.io/apiserver/pkg/server/mux
 # k8s.io/client-go v0.30.2
 ## explicit; go 1.22.0
@@ -700,7 +729,7 @@ k8s.io/utils/trace
 # kmodules.xyz/apiversion v0.2.0
 ## explicit; go 1.14
 kmodules.xyz/apiversion
-# kmodules.xyz/client-go v0.30.13
+# kmodules.xyz/client-go v0.30.42
 ## explicit; go 1.22.0
 kmodules.xyz/client-go
 kmodules.xyz/client-go/api/v1
@@ -729,7 +758,7 @@ kmodules.xyz/custom-resources/crds
 # kmodules.xyz/objectstore-api v0.29.1
 ## explicit; go 1.21
 kmodules.xyz/objectstore-api/api/v1
-# kmodules.xyz/offshoot-api v0.30.0
+# kmodules.xyz/offshoot-api v0.30.1
 ## explicit; go 1.22.0
 kmodules.xyz/offshoot-api/api/v1
 # kmodules.xyz/prober v0.29.0
@@ -793,7 +822,7 @@ sigs.k8s.io/structured-merge-diff/v4/value
 ## explicit; go 1.12
 sigs.k8s.io/yaml
 sigs.k8s.io/yaml/goyaml.v2
-# stash.appscode.dev/apimachinery v0.35.0
+# stash.appscode.dev/apimachinery v0.37.0
 ## explicit; go 1.22.0
 stash.appscode.dev/apimachinery/apis
 stash.appscode.dev/apimachinery/apis/repositories
