@@ -36,8 +36,15 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
 RUN set -x \
+  && rm -rf /etc/apt/sources.list.d/pgdg.list \
   && apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates tzdata locales \
+  && apt-get install -y --no-install-recommends apt-transport-https ca-certificates tzdata locales software-properties-common
+
+# Use postgresql apt-archive repository.
+# ref: https://www.postgresql.org/message-id/Y2kmqL%2BpCuSZiQBV%40msg.df7cb.de
+RUN set -x \
+  && add-apt-repository "deb https://apt-archive.postgresql.org/pub/repos/apt buster-pgdg main" \
+  && apt-get update \
   && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man /tmp/* \
   && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
   && echo 'Etc/UTC' > /etc/timezone && dpkg-reconfigure tzdata
