@@ -42,7 +42,7 @@ else
 	endif
 endif
 
-RESTIC_VER       := 0.13.1
+RESTIC_VER       := 0.17.3
 
 ###
 ### These variables should not need tweaking.
@@ -281,7 +281,7 @@ lint: $(BUILD_DIRS)
 	    --env GO111MODULE=on                                    \
 	    --env GOFLAGS="-mod=vendor"                             \
 	    $(BUILD_IMAGE)                                          \
-	    golangci-lint run --enable $(ADDTL_LINTERS) --timeout=30m --skip-files="generated.*\.go$\" --skip-dirs-use-default --skip-dirs=client,vendor
+	    golangci-lint run --enable $(ADDTL_LINTERS) --timeout=30m --exclude-files="generated.*\.go$\" --exclude-dirs-use-default --exclude-dirs=client,vendor
 
 $(BUILD_DIRS):
 	@mkdir -p $@
