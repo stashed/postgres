@@ -6,7 +6,7 @@ toolchain go1.23.0
 
 require (
 	github.com/spf13/cobra v1.8.0
-	go.bytebuilders.dev/license-verifier/kubernetes v0.14.4
+	go.bytebuilders.dev/license-verifier/kubernetes v0.14.6
 	gomodules.xyz/flags v0.1.3
 	gomodules.xyz/go-sh v0.1.0
 	gomodules.xyz/logs v0.0.7
@@ -18,12 +18,12 @@ require (
 	kmodules.xyz/client-go v0.30.44
 	kmodules.xyz/custom-resources v0.30.0
 	kmodules.xyz/offshoot-api v0.30.1
-	stash.appscode.dev/apimachinery v0.38.1-0.20250114050236-cca8469a4c04
+	stash.appscode.dev/apimachinery v0.39.0
 )
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
-	github.com/Masterminds/semver/v3 v3.2.1 // indirect
+	github.com/Masterminds/semver/v3 v3.3.0 // indirect
 	github.com/PuerkitoBio/purell v1.2.1 // indirect
 	github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -77,8 +77,8 @@ require (
 	github.com/yudai/gojsondiff v1.0.0 // indirect
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
-	go.bytebuilders.dev/license-proxyserver v0.0.19 // indirect
-	go.bytebuilders.dev/license-verifier v0.14.4 // indirect
+	go.bytebuilders.dev/license-proxyserver v0.0.20 // indirect
+	go.bytebuilders.dev/license-verifier v0.14.6 // indirect
 	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.22.0 // indirect
