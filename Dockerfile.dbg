@@ -26,8 +26,6 @@ RUN set -x                                                                      
   && bzip2 -d restic.bz2                                                                                                                   \
   && chmod 755 restic
 
-
-
 FROM {ARG_FROM}
 
 LABEL org.opencontainers.image.source https://github.com/stashed/postgres
@@ -35,19 +33,7 @@ LABEL org.opencontainers.image.source https://github.com/stashed/postgres
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
-RUN set -x \
-  && rm -rf /etc/apt/sources.list.d/pgdg.list \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends apt-transport-https ca-certificates tzdata locales software-properties-common
-
-# Use postgresql apt-archive repository.
-# ref: https://www.postgresql.org/message-id/Y2kmqL%2BpCuSZiQBV%40msg.df7cb.de
-RUN set -x \
-  && add-apt-repository "deb https://apt-archive.postgresql.org/pub/repos/apt buster-pgdg main" \
-  && apt-get update \
-  && rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man /tmp/* \
-  && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
-  && echo 'Etc/UTC' > /etc/timezone && dpkg-reconfigure tzdata
+LABEL org.opencontainers.image.source https://github.com/stashed/postgres
 
 ENV TZ     :/etc/localtime
 ENV LANG   en_US.utf8
@@ -55,5 +41,6 @@ ENV LC_ALL en_US.UTF-8
 
 COPY --from=0 restic /bin/restic
 COPY bin/{ARG_OS}_{ARG_ARCH}/{ARG_BIN} /{ARG_BIN}
+COPY --from=0 /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 ENTRYPOINT ["/{ARG_BIN}"]
