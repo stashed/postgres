@@ -494,7 +494,7 @@ func (w *ResticWrapper) run(commands ...Command) ([]byte, error) {
 	if err != nil {
 		return nil, formatError(err, errBuff.String())
 	}
-	klog.Infoln("sh-output:", string(out))
+	klog.V(2).Infoln("sh-output:", string(out))
 	return out, nil
 }
 
@@ -586,6 +586,32 @@ func (w *ResticWrapper) listKey() ([]byte, error) {
 	klog.Infoln("Listing restic keys")
 
 	args := []interface{}{"key", "list", "--no-lock"}
+
+	args = w.appendCacheDirFlag(args)
+	args = w.appendMaxConnectionsFlag(args)
+	args = w.appendCaCertFlag(args)
+	args = w.appendInsecureTLSFlag(args)
+
+	return w.run(Command{Name: ResticCMD, Args: args})
+}
+
+func (w *ResticWrapper) listLocks() ([]byte, error) {
+	klog.Infoln("Listing restic locks")
+
+	args := []interface{}{"list", "locks", "--no-lock"}
+
+	args = w.appendCacheDirFlag(args)
+	args = w.appendMaxConnectionsFlag(args)
+	args = w.appendCaCertFlag(args)
+	args = w.appendInsecureTLSFlag(args)
+
+	return w.run(Command{Name: ResticCMD, Args: args})
+}
+
+func (w *ResticWrapper) lockStats(lockID string) ([]byte, error) {
+	klog.Infoln("Getting stats of restic lock")
+
+	args := []interface{}{"cat", "lock", lockID, "--no-lock"}
 
 	args = w.appendCacheDirFlag(args)
 	args = w.appendMaxConnectionsFlag(args)
