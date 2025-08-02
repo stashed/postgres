@@ -494,7 +494,7 @@ func (w *ResticWrapper) run(commands ...Command) ([]byte, error) {
 	if err != nil {
 		return nil, formatError(err, errBuff.String())
 	}
-	klog.V(2).Infoln("sh-output:", string(out))
+	klog.Infoln("sh-output:", string(out))
 	return out, nil
 }
 
