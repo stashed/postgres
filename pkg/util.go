@@ -35,7 +35,6 @@ import (
 	"k8s.io/klog/v2"
 	kmapi "kmodules.xyz/client-go/api/v1"
 	meta_util "kmodules.xyz/client-go/meta"
-	"kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog "kmodules.xyz/custom-resources/apis/appcatalog/v1alpha1"
 	appcatalog_cs "kmodules.xyz/custom-resources/client/clientset/versioned"
 )
@@ -203,7 +202,7 @@ func (session *sessionWrapper) waitForDBReady(waitTimeout int32) error {
 	return session.sh.Command("pg_isready", args...).Run()
 }
 
-func getSSLMODE(appBinding *v1alpha1.AppBinding) (string, error) {
+func getSSLMODE(appBinding *appcatalog.AppBinding) (string, error) {
 	if appBinding.Spec.ClientConfig.Service != nil {
 		sslmodeString := appBinding.Spec.ClientConfig.Service.Query
 		if sslmodeString == "" {
