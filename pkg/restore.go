@@ -186,7 +186,7 @@ func (opt *postgresOptions) restorePostgreSQL(targetRef api_v1beta1.TargetRef) (
 	// So, we are going to use "sed" to remove the password altering line from the sql file.
 	passwordOverwriteRemover := restic.Command{
 		Name: SedCMD,
-		Args: []interface{}{sedArgs},
+		Args: []any{sedArgs},
 	}
 
 	// The backup process should follow the following pipeline: restic restore | sed <args> | psql -f dumpfile.sql .
