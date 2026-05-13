@@ -16,11 +16,6 @@ jobs:
           fetch-depth: 1
           fetch-tags: true
 
-      - name: Install GitHub CLI
-        run: |
-          curl -fsSL https://github.com/github/hub/raw/master/script/get | bash -s 2.14.1
-          sudo mv bin/hub /usr/local/bin
-
       - name: Print version info
         id: semver
         run: |
