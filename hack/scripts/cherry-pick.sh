@@ -37,10 +37,10 @@ while IFS=/ read -r -u9 repo branch; do
     git checkout -b $pr_branch
     git cherry-pick --strategy=recursive -X theirs $GITHUB_SHA
     git push -u origin HEAD -f
-    hub pull-request \
+    gh pr create \
         --base $branch \
-        --labels automerge \
-        --message "[cherry-pick] $(git show -s --format=%s)" \
-        --message "$(git show -s --format=%b | sed --expression='/\/cherry-pick/d')" || true
+        --label automerge \
+        --title "[cherry-pick] $(git show -s --format=%s)" \
+        --body "$(git show -s --format=%b | sed --expression='/\/cherry-pick/d')" || true
     sleep 15
 done 9< <(git branch -r | grep release)
